@@ -1,0 +1,25 @@
+{
+  "name": "@keypering/specs",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Keith <keithwhisper@gmail.com>",
+  "homepage": "https://github.com/Keith-CY/keypering/tree/master/packages/specs#readme",
+  "license": "MIT",
+  "files": [
+    "api.d.ts"
+  ],
+  "types": "api.d.ts",
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Keith-CY/keypering.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/Keith-CY/keypering/issues"
+  }
+}
