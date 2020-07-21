@@ -1,4 +1,3 @@
-
 function promisified(method: string, params: any) {
   const win = window as any;
   const { __TAURI__ } = win;

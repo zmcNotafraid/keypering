@@ -1,15 +1,15 @@
-import React from "react";
-import { Button } from "antd-mobile";
-import styles from "./authorization.module.scss";
-import Timestamp from "../timestamp";
+import React from 'react'
+import { Button } from 'antd-mobile'
+import styles from './authorization.module.scss'
+import Timestamp from '../timestamp'
 
 interface AuthorizationProps {
-  url: string;
-  description: string;
-  token: string;
-  timestamp: string | number | Date;
-  onRevoke: any;
-  [key: string]: any;
+  url: string
+  description: string
+  token: string
+  timestamp: string | number | Date
+  onRevoke: any
+  [key: string]: any
 }
 
 const Authorization = ({ url, description, token, timestamp, onRevoke }: AuthorizationProps) => {
@@ -17,7 +17,7 @@ const Authorization = ({ url, description, token, timestamp, onRevoke }: Authori
     <div>
       <div className={styles.applicationContainer}>
         <span className={styles.applicationLabel}>Application: </span>
-        <a className={styles.link} href={url} target="_blank">
+        <a className={styles.link} href={url} target="_blank" rel="noopener noreferrer">
           {url}
         </a>
       </div>
@@ -28,7 +28,7 @@ const Authorization = ({ url, description, token, timestamp, onRevoke }: Authori
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Authorization;
+export default Authorization

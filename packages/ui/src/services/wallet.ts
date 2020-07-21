@@ -1,7 +1,7 @@
 import {ec as EC} from "elliptic";
 import {Buffer} from "buffer";
 import {addressToScript, Config, RawTransaction, scriptToAddress, SignatureAlgorithm, SignContext} from "@keyper/specs";
-import {hexToBytes, scriptToHash} from "@nervosnetwork/ckb-sdk-utils";
+import { hexToBytes } from "@nervosnetwork/ckb-sdk-utils";
 import Storage from "./storage";
 import * as rpc from "./rpc";
 import {decryptKeystore, encryptKeystore} from "./messaging";

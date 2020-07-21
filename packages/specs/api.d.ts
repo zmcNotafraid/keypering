@@ -1,4 +1,4 @@
-declare namespace API {
+export declare namespace API {
   interface JsonRpcRequest<RequestParams> {
     id: string
     jsonrpc: string

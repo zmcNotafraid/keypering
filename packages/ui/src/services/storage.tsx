@@ -1,9 +1,5 @@
 import { IDBPDatabase, openDB, deleteDB } from "idb";
 import {decryptKeystore, encryptKeystore} from "./messaging";
-import {ec as EC} from "elliptic";
-import {Buffer} from "buffer";
-// import "indexeddb-getall-shim";
-// require("indexeddb-getall-shim");
 
 interface Current {
   id?: number;
@@ -190,7 +186,7 @@ export default class Storage {
     if (!wallet) {
       return;
     }
-    const { ks, publicKeys } = wallet;
+    const { publicKeys } = wallet;
 
     let privateKey;
     try {

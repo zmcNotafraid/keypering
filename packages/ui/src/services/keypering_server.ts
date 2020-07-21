@@ -1,7 +1,7 @@
+import type { API } from '@keypering/specs'
 import Storage from "./storage"
 import { getLiveCell, getLiveCellsByLockHash } from "./rpc"
 import { formatDate } from "../widgets/timestamp"
-import { History } from "history"
 import { camelCaseKey } from "./misc"
 
 export function sendAck(token: any, payload: any) {
@@ -14,7 +14,7 @@ export function sendAck(token: any, payload: any) {
 }
 
 export default class KeyperingServer {
-  constructor(public history: History, public addresses: API.AddressInfo[]) {
+  constructor(public history: any, public addresses: API.AddressInfo[]) {
     this.install()
   }
 
@@ -65,7 +65,7 @@ export default class KeyperingServer {
 
   signSend = async (url: string, request: API.SignSendRequest): Promise<API.SignSendResponse | void> => {
     const { id, params } = request
-    const { description, tx, lockHash } = params
+    const { description, tx } = params
     const txMeta = {
       url,
       state: "pending",
@@ -78,7 +78,6 @@ export default class KeyperingServer {
   };
 
   handleWsEvent = async (msg: any) => {
-    const { history } = this
 
     const { detail } = msg
     const request = JSON.parse(detail.payload)

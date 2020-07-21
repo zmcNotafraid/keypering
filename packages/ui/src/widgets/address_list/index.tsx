@@ -1,5 +1,6 @@
 import React from 'react'
 import { Flex } from 'antd-mobile'
+import type { API } from '@keypering/specs'
 import styles from './address_list.module.scss'
 import Balance from '../balance'
 import Address from '../address'
