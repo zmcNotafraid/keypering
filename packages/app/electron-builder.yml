@@ -1,0 +1,46 @@
+appId: de.ezcook
+copyright: Copyright (C) 2020 Ezcook
+productName: Keypering
+
+asar: true
+
+directories:
+  buildResources: .
+  output: ../../release
+
+files:
+  - package.json
+  - build
+  - '!**/*.map'
+  - '!**/src/'
+
+nsis:
+  oneClick: false
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  runAfterFinish: false
+
+win:
+  verifyUpdateCodeSignature: false
+  artifactName: '${productName}-v${version}-setup.${ext}'
+  icon: assets/icons/icon.ico
+  target:
+    - target: nsis
+      arch: [x64]
+
+mac:
+  artifactName: '${productName}-v${version}-${os}.${ext}'
+  category: public.app-category.finance
+  icon: assets/icons/icons.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: assets/entitlements.plist
+  entitlementsInherit: assets/entitlements.plist
+  electronLanguages: [en]
+  target: [zip]
+
+linux:
+  artifactName: '${productName}-v${version}-${arch}.${ext}'
+  category: Finance
+  icon: assets/icons/
+  target: [AppImage]

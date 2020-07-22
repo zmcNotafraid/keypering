@@ -2,10 +2,19 @@
   "name": "@keypering/ui",
   "version": "0.0.0",
   "private": true,
+  "homepage": ".",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "clean:build": "rimraf ./build",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "dependencies": {
     "@keyper/container": "0.1.0",
@@ -34,9 +43,6 @@
     "@keypering/specs": "0.0.0",
     "node-sass": "4.14.1",
     "@nervosnetwork/ckb-types": "0.32.0",
-    "@testing-library/jest-dom": "4.2.4",
-    "@testing-library/react": "9.3.2",
-    "@testing-library/user-event": "7.1.2",
     "@types/elliptic": "6.4.12",
     "less": "3.11.3",
     "less-loader": "6.2.0",
@@ -45,9 +51,6 @@
     "@types/react-copy-to-clipboard": "4.3.0",
     "@types/react-dom": "16.9.0",
     "@types/react-router-dom": "5.1.5"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -58,7 +61,6 @@
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
-      "last 5 edge version",
       "last 1 safari version"
     ]
   }

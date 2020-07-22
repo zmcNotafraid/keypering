@@ -1,0 +1,35 @@
+{
+  "name": "@keypering/app",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Keith <keithwhisper@gmail.com>",
+  "homepage": "https://github.com/Keith-CY/keypering/tree/master/packages/app#readme",
+  "license": "MIT",
+  "main": "build/index.js",
+  "scripts": {
+    "start": "nodemon ./src --exec \"yarn run build && electron .\"",
+    "build": "yarn run tsc",
+    "precommit": "lint-staged",
+    "clean:build": "rimraf ./build && rimraf ./public/ui"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Keith-CY/keypering.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Keith-CY/keypering/issues"
+  },
+  "devDependencies": {
+    "electron": "9.1.1",
+    "electron-builder": "22.7.0"
+  }
+}
