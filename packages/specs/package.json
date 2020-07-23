@@ -8,6 +8,7 @@
   "files": [
     "api.d.ts"
   ],
+  "main": "api.d.ts",
   "types": "api.d.ts",
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"

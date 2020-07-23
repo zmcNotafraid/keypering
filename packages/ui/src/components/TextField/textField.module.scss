@@ -1,0 +1,32 @@
+.container {
+  display: grid;
+  grid-template:
+    'label input' 26px
+    '. error' 12px /
+    auto 1fr;
+
+  label {
+    grid-area: label;
+    align-self: center;
+    line-height: 1;
+    margin-right: 5px;
+    font-size: 0.875rem;
+    &::after {
+      content: ':';
+    }
+  }
+  input {
+    grid-area: input;
+    height: 26px;
+    border: 1px solid #000;
+  }
+  .error {
+    align-self: flex-end;
+    grid-area: error;
+    color: var(--error);
+    font-size: 9px;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    font-weight: bold;
+  }
+}

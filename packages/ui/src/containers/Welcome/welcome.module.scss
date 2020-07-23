@@ -1,0 +1,63 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.banner {
+  height: 360px;
+  background-color: #111;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-size: 60px 60px;
+  background-position: 30px 30px;
+  background-image: linear-gradient(to right, rgba(128, 128, 128, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(128, 128, 128, 0.1) 1px, transparent 1px);
+}
+
+.logo {
+  width: 119px;
+  align-self: center;
+  margin-top: 70px;
+}
+
+.slogan {
+  color: #fff;
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+}
+
+.navs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 50px;
+  background-color: var(--primary-grey);
+  button,
+  a {
+    line-height: 1;
+    font-size: 0.75rem;
+    color: #fff;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 30px;
+    margin-bottom: 14px;
+    background: var(--primary-purple);
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+  a:first-child {
+    background-color: var(--primary-green);
+  }
+}

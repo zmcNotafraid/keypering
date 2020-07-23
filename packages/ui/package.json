@@ -41,16 +41,17 @@
   },
   "devDependencies": {
     "@keypering/specs": "0.0.0",
-    "node-sass": "4.14.1",
     "@nervosnetwork/ckb-types": "0.32.0",
-    "@types/elliptic": "6.4.12",
-    "less": "3.11.3",
-    "less-loader": "6.2.0",
     "@types/crypto-js": "3.1.47",
+    "@types/elliptic": "6.4.12",
     "@types/react": "16.9.0",
     "@types/react-copy-to-clipboard": "4.3.0",
     "@types/react-dom": "16.9.0",
-    "@types/react-router-dom": "5.1.5"
+    "@types/react-router-dom": "5.1.5",
+    "electron": "9.1.1",
+    "less": "3.11.3",
+    "less-loader": "6.2.0",
+    "node-sass": "4.14.1"
   },
   "browserslist": {
     "production": [

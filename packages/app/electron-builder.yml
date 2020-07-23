@@ -11,8 +11,10 @@ directories:
 files:
   - package.json
   - build
+  - public
   - '!**/*.map'
   - '!**/src/'
+  - '!**/*.d.ts'
 
 nsis:
   oneClick: false
@@ -31,12 +33,12 @@ win:
 mac:
   artifactName: '${productName}-v${version}-${os}.${ext}'
   category: public.app-category.finance
-  icon: assets/icons/icons.icns
+  icon: assets/icons/icon.icns
   hardenedRuntime: true
   gatekeeperAssess: false
   entitlements: assets/entitlements.plist
   entitlementsInherit: assets/entitlements.plist
-  electronLanguages: [en]
+  electronLanguages: ['en']
   target: [zip]
 
 linux:

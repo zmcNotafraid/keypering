@@ -1,0 +1,51 @@
+.container {
+  display: grid;
+  grid-template:
+    'title' auto
+    'mnemonic' auto
+    'warn' 10px
+    'buttons' auto /
+    1fr;
+
+  h1 {
+    grid-area: title;
+  }
+
+  textarea {
+    grid-area: mnemonic;
+    resize: none;
+    padding: 10px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    height: 54px;
+    line-height: 1.2 !important;
+    font-size: 0.875rem;
+    letter-spacing: 0.2px;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+}
+
+.warn {
+  grid-area: warn;
+  color: var(--warn);
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  line-height: 1;
+}
+
+.buttons {
+  grid-area: buttons;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  button {
+    margin-left: 10px;
+    color: #fff;
+    &:first-child {
+      background: var(--cancel);
+      color: #000;
+    }
+  }
+}

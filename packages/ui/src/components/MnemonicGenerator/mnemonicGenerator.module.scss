@@ -1,0 +1,62 @@
+.container {
+  display: grid;
+  grid-template:
+    'title title' auto
+    'mnemonic mnemonic' auto
+    'info regenerate' auto
+    'buttons buttons' auto /
+    1fr 80px;
+
+  h1 {
+    grid-area: title;
+  }
+
+  textarea {
+    grid-area: mnemonic;
+    background-color: #f0f0f0;
+    resize: none;
+    padding: 10px;
+    border: none;
+    border-radius: 2px;
+    height: 54px;
+    font-size: 0.875rem;
+    letter-spacing: 0.2px;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+}
+.info {
+  display: flex;
+  grid-area: info;
+  font-size: 11px;
+  letter-spacing: 0.2px;
+  color: #666;
+  span {
+    margin-left: 5px;
+    line-height: 12px;
+  }
+}
+
+.regenerate {
+  grid-area: regenerate;
+  width: 80px !important;
+  height: 24px !important;
+  background-color: transparent !important;
+  color: var(--primary-green);
+  border: 1px solid currentColor;
+}
+
+.buttons {
+  grid-area: buttons;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  button {
+    margin-left: 10px;
+    color: #fff;
+    &:first-child {
+      background: var(--cancel);
+      color: #000;
+    }
+  }
+}

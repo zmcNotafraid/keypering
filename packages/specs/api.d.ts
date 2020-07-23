@@ -159,3 +159,83 @@ export declare namespace API {
   type SignSendResponse = JsonRpcResponse<SignSendRequest, SignSendError>
   type FnSignSend = (request: SignSendRequest) => Promise<SignSendResponse>
 }
+
+export declare namespace Channel {
+  enum Code {
+    Success = 0,
+    Error = 1
+  }
+  type ChannelName =
+    | 'create-wallet'
+    | 'select-wallet'
+    | 'delete-wallet'
+    | 'update-wallet'
+    | 'get-mnemonic'
+    | 'get-setting'
+    | 'update-setting'
+    | 'get-wallet-index'
+    | 'get-tx-list'
+    | 'get-addr-list'
+    | 'get-auth-list'
+    | 'submit-password'
+
+  // eslint-disable-next-line
+  type SuccessResponse<T = any> = {
+    code: Code.Success,
+    result: T
+  }
+  type ErrorResponse = {
+    code: Code.Error,
+    message: string
+  }
+
+  interface WalletProfile {
+    name: string
+    id: string
+    xpub: string
+  }
+
+  namespace GetWalletIndex {
+
+    type Response = SuccessResponse<{ current: string, wallets: WalletProfile[] }> | ErrorResponse
+  }
+
+  namespace CreateWallet {
+    interface Params {
+      name: string
+      mnemonic: string
+      password: string
+    }
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace DeleteWallet {
+    interface Params {
+      id: string
+      password: string
+    }
+
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace SelectWallet {
+    interface Params {
+      id: string
+    }
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace UpdateWallet {
+    interface Params {
+      id: string
+      name: string
+    }
+
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+  namespace GetMnemonic {
+    type Response = SuccessResponse<string> | ErrorResponse
+  }
+
+
+}
