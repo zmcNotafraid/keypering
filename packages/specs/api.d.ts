@@ -189,6 +189,7 @@ export declare namespace Channel {
     message: string
   }
 
+  // Wallet
   interface WalletProfile {
     name: string
     id: string
@@ -237,5 +238,31 @@ export declare namespace Channel {
     type Response = SuccessResponse<string> | ErrorResponse
   }
 
+  // Setting
+  interface Setting {
+    locks: {
+      [id: string]: {
+        name: string
+        enabled: boolean
+      }
+    },
+
+    networks: {
+      [id: string]: {
+        name: string
+        url: string
+        enabled: boolean
+      }
+    }
+  }
+
+  namespace GetSetting {
+    type Response = SuccessResponse<Setting> | ErrorResponse
+  }
+
+  namespace UpdateSetting {
+    type Params = Setting
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
 
 }

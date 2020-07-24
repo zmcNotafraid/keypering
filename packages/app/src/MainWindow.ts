@@ -2,6 +2,7 @@ import path from 'path'
 import { BrowserWindow, ipcMain, dialog } from 'electron'
 import type { Channel } from '@keypering/specs'
 import * as walletManager from './wallet'
+import * as settingManager from './setting'
 
 const channelName: { [key: string]: Channel.ChannelName } = {
   getWalletIndex: 'get-wallet-index',
@@ -105,15 +106,29 @@ export default class MainWindow {
         const result = walletManager.getMnemonic()
         return { code: Code.Success, result }
       } catch (err) {
+        dialog.showErrorBox('Error', err.message)
         return { code: Code.Error, message: err.message }
       }
     })
 
     ipcMain.handle(channelName.getSetting, () => {
-      // TODO:
+      try {
+        const result = settingManager.getSetting()
+        return { code: Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Code.Error, message: err.message }
+      }
     })
-    ipcMain.handle(channelName.updateSetting, () => {
-      // TODO:
+
+    ipcMain.handle(channelName.updateSetting, (_e, params: Channel.UpdateSetting.Params) => {
+      try {
+        const result = settingManager.updateSetting(params)
+        return { code: Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Code.Error, message: err.message }
+      }
     })
     ipcMain.handle(channelName.getTxList, () => {
       // TODO:
