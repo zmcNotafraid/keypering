@@ -266,3 +266,114 @@ export declare namespace Channel {
   }
 
 }
+
+declare namespace KeyperingAgency {
+  enum Method {
+    Auth = 'auth',
+    QueryAddresses = 'query_addresses',
+    SignTransaction = 'sign_transaction',
+    SendTransaction = 'send_transaction',
+    SignAndSendTransactoin = 'sign_and_send_transaction'
+  }
+  enum Code {
+    Rejected = 1001,
+    InvalidToken,
+    RemoteError,
+
+  }
+  interface ParamsBase<M = Method, P = unknown> {
+    id: number
+    jsonrpc: '2.0'
+    method: M
+    params: P
+  }
+
+  interface SuccessResponse<R = unknown> {
+    id: number
+    jsonrpc: '2.0',
+    result: R
+  }
+
+  interface ErrorResponse {
+    id: number
+    jsonrpc: '2.0'
+    error: Error
+  }
+
+  type ResponseBase<R> = SuccessResponse<R> | ErrorResponse
+
+  namespace Auth {
+    type Params = ParamsBase<Method.Auth, { description?: string }>
+    type Response = ResponseBase<{ token: string }>
+  }
+
+  namespace QueryAddresses {
+    interface Address {
+      address: string
+      lockHash: string
+      lockScript: {
+        codeHash: string
+        hashType: string
+        args: string
+      },
+      publicKey: string
+      lockScriptMeta: {
+        name: string
+        cellDeps: {
+          outPoint: {
+            txHash: string, index: string
+          }
+        }[],
+        headerDeps: string[]
+      }
+    }
+    type Params = ParamsBase<Method.QueryAddresses, unknown>
+    type Response = ResponseBase<{
+      token: string,
+      userId: string,
+      addresses: Address[]
+    }>
+  }
+
+  namespace SignTransaction {
+    type Transaction = unknown
+    type Params = ParamsBase<Method.SignTransaction, {
+      tx: Transaction
+      lockHash: string
+      description: string
+      inputSignConfig: {
+        index: number
+        length: number
+      }
+    }>
+
+    type Response = ResponseBase<{ token: string, tx: Transaction }>
+  }
+
+  namespace SendTransaction {
+    type Transaction = unknown
+
+    type Params = ParamsBase<Method.SendTransaction, { description: string, tx: Transaction }>
+    type Response = ResponseBase<{ token: string, txHash: string }>
+  }
+
+  namespace SignAndSendTransaction {
+    type Transaction = unknown
+    type Params = ParamsBase<Method.SignAndSendTransactoin, {
+      tx: Transaction
+      lockHash: string
+      description: string
+      inputSignConfig: {
+        index: number
+        length: number
+      }
+    }>
+
+    type Response = ResponseBase<{
+      token: string
+      tx: Transaction
+      txHash: string
+    }>
+
+  }
+}
