@@ -8,15 +8,18 @@ import styles from './mnemonic.module.scss'
 enum Step {
   Generate,
   Validate,
-  Submit
+  Submit,
 }
 
 const Mnemonic = () => {
-  const [step, setStep] = useState(Step.Generate)
   const [mnemonic, setMnemonic] = useState('')
   const history = useHistory()
-  const { type } = useParams<{type: 'create'|'import' }>()
-  const handleMnemonic = (value: string) => { setMnemonic(value); setStep(s => s + 1) }
+  const { type } = useParams<{ type: 'create' | 'import' }>()
+  const [step, setStep] = useState(type === 'create' ? Step.Generate : Step.Validate)
+  const handleMnemonic = (value: string) => {
+    setMnemonic(value)
+    setStep(s => s + 1)
+  }
   const handleBack = () => {
     if (type === 'import' && step === Step.Validate) {
       history.goBack()

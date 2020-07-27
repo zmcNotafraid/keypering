@@ -7,14 +7,15 @@ const Welcome = () => (
     <div className={styles.banner}>
       <img src="logo.png" alt="logo" className={styles.logo} />
       <div className={styles.slogan}>
-        <span>Welcome to</span>
-        <span>Keypering</span>
+        <span>Welcome to Keypering</span>
       </div>
     </div>
     <div className={styles.navs}>
       <Link to="/create_wallet/create">Create a Wallet</Link>
       <Link to="/create_wallet/import">Import Wallet Seed</Link>
-      <button type="button" onClick={() => {}}>Import from Keystore</button>
+      <button type="button" onClick={() => {}}>
+        Import from Keystore
+      </button>
     </div>
   </div>
 )

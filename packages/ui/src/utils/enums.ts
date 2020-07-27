@@ -2,7 +2,7 @@ export enum Routes {
   Welcome = '/welcome',
   Setting = '/setting',
   CreateWallet = '/create_wallet',
-  HomePage = '/'
+  HomePage = '/',
 }
 
 export default undefined
