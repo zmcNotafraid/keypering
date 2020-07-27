@@ -1,3 +1,4 @@
+import './preprocess'
 import path from 'path'
 import { app } from 'electron'
 import MainWindow from './MainWindow'
