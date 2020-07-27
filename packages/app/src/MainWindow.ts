@@ -33,7 +33,6 @@ export default class MainWindow {
     maximizable: false,
     fullscreenable: false,
     autoHideMenuBar: true,
-    skipTaskbar: true,
     title: 'Keypering',
     show: false,
     webPreferences: {

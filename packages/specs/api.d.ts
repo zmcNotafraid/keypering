@@ -6,8 +6,8 @@ export declare namespace API {
     params: RequestParams
   }
   enum ErrorCode {
-    Rejected = 1,
-    TokenInvalid,
+    Rejected = 1001,
+    TokenInvalid
   }
 
   interface JsonRpcResponseError<C = ErrorCode> {
@@ -272,6 +272,15 @@ export declare namespace Channel {
   namespace UpdateSetting {
     type Params = Setting
     type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace GetAuthList {
+    interface AuthProfile {
+      url: string
+      time: string
+    }
+
+    type Response = SuccessResponse<AuthProfile> | ErrorResponse
   }
 }
 

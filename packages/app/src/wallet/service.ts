@@ -1,19 +1,14 @@
 import path from 'path'
 import fs from 'fs'
-import { app } from 'electron'
 import type { Channel } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword } from './keystore'
-import { DATA_PATH_BASE } from '../utils'
+import { getDataPath } from '../utils'
 import { IncorrectPasswordException, WalletNotFoundException } from '../exception'
 
-const dataPath = path.resolve(app.getPath('userData'), DATA_PATH_BASE, 'wallet')
+const dataPath = getDataPath('wallet')
 const indexPath = path.resolve(dataPath, 'index.json')
 
 const getKeystorePath = (id: string) => path.resolve(dataPath, `${id}.json`)
-
-if (!fs.existsSync(dataPath)) {
-  fs.mkdirSync(dataPath, { recursive: true })
-}
 
 const udpateWalletIndex = (current: string, wallets: Channel.WalletProfile[]) => {
   fs.writeFileSync(indexPath, JSON.stringify({ current, wallets }))
