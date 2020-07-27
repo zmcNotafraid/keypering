@@ -2,6 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styles from './welcome.module.scss'
 
+const handleKeystore = () => {}
+
 const Welcome = () => (
   <div className={styles.container}>
     <div className={styles.banner}>
@@ -13,9 +15,7 @@ const Welcome = () => (
     <div className={styles.navs}>
       <Link to="/create_wallet/create">Create a Wallet</Link>
       <Link to="/create_wallet/import">Import Wallet Seed</Link>
-      <button type="button" onClick={() => {}}>
-        Import from Keystore
-      </button>
+      <Link to="/import_keystore">Import from Keystore</Link>
     </div>
   </div>
 )

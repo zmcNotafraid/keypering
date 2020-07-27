@@ -7,7 +7,7 @@ export declare namespace API {
   }
   enum ErrorCode {
     Rejected = 1,
-    TokenInvalid
+    TokenInvalid,
   }
 
   interface JsonRpcResponseError<C = ErrorCode> {
@@ -44,7 +44,7 @@ export declare namespace API {
   }
 
   type Hash256 = string
-  type ScriptHashType = "data" | "type"
+  type ScriptHashType = 'data' | 'type'
   type Bytes = string
   type Uint64 = string
 
@@ -54,7 +54,7 @@ export declare namespace API {
     args: Bytes
   }
 
-  type DepType = "code" | "depGroup"
+  type DepType = 'code' | 'depGroup'
 
   interface OutPoint {
     txHash: Hash256
@@ -163,10 +163,11 @@ export declare namespace API {
 export declare namespace Channel {
   enum Code {
     Success = 0,
-    Error = 1
+    Error = 1,
   }
   type ChannelName =
     | 'create-wallet'
+    | 'import-keystore'
     | 'select-wallet'
     | 'delete-wallet'
     | 'update-wallet'
@@ -181,11 +182,11 @@ export declare namespace Channel {
 
   // eslint-disable-next-line
   type SuccessResponse<T = any> = {
-    code: Code.Success,
+    code: Code.Success
     result: T
   }
   type ErrorResponse = {
-    code: Code.Error,
+    code: Code.Error
     message: string
   }
 
@@ -197,14 +198,22 @@ export declare namespace Channel {
   }
 
   namespace GetWalletIndex {
-
-    type Response = SuccessResponse<{ current: string, wallets: WalletProfile[] }> | ErrorResponse
+    type Response = SuccessResponse<{ current: string; wallets: WalletProfile[] }> | ErrorResponse
   }
 
   namespace CreateWallet {
     interface Params {
       name: string
       mnemonic: string
+      password: string
+    }
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace ImportKeystore {
+    interface Params {
+      name: string
+      keystorePath: string
       password: string
     }
     type Response = SuccessResponse<boolean> | ErrorResponse
@@ -245,7 +254,7 @@ export declare namespace Channel {
         name: string
         enabled: boolean
       }
-    },
+    }
 
     networks: {
       [id: string]: {
@@ -264,7 +273,6 @@ export declare namespace Channel {
     type Params = Setting
     type Response = SuccessResponse<boolean> | ErrorResponse
   }
-
 }
 
 declare namespace KeyperingAgency {
@@ -273,13 +281,12 @@ declare namespace KeyperingAgency {
     QueryAddresses = 'query_addresses',
     SignTransaction = 'sign_transaction',
     SendTransaction = 'send_transaction',
-    SignAndSendTransactoin = 'sign_and_send_transaction'
+    SignAndSendTransactoin = 'sign_and_send_transaction',
   }
   enum Code {
     Rejected = 1001,
     InvalidToken,
     RemoteError,
-
   }
   interface ParamsBase<M = Method, P = unknown> {
     id: number
@@ -290,7 +297,7 @@ declare namespace KeyperingAgency {
 
   interface SuccessResponse<R = unknown> {
     id: number
-    jsonrpc: '2.0',
+    jsonrpc: '2.0'
     result: R
   }
 
@@ -315,65 +322,71 @@ declare namespace KeyperingAgency {
         codeHash: string
         hashType: string
         args: string
-      },
+      }
       publicKey: string
       lockScriptMeta: {
         name: string
         cellDeps: {
           outPoint: {
-            txHash: string, index: string
+            txHash: string
+            index: string
           }
-        }[],
+        }[]
         headerDeps: string[]
       }
     }
     type Params = ParamsBase<Method.QueryAddresses, unknown>
     type Response = ResponseBase<{
-      token: string,
-      userId: string,
+      token: string
+      userId: string
       addresses: Address[]
     }>
   }
 
   namespace SignTransaction {
     type Transaction = unknown
-    type Params = ParamsBase<Method.SignTransaction, {
-      tx: Transaction
-      lockHash: string
-      description: string
-      inputSignConfig: {
-        index: number
-        length: number
+    type Params = ParamsBase<
+      Method.SignTransaction,
+      {
+        tx: Transaction
+        lockHash: string
+        description: string
+        inputSignConfig: {
+          index: number
+          length: number
+        }
       }
-    }>
+    >
 
-    type Response = ResponseBase<{ token: string, tx: Transaction }>
+    type Response = ResponseBase<{ token: string; tx: Transaction }>
   }
 
   namespace SendTransaction {
     type Transaction = unknown
 
-    type Params = ParamsBase<Method.SendTransaction, { description: string, tx: Transaction }>
-    type Response = ResponseBase<{ token: string, txHash: string }>
+    type Params = ParamsBase<Method.SendTransaction, { description: string; tx: Transaction }>
+    type Response = ResponseBase<{ token: string; txHash: string }>
   }
 
   namespace SignAndSendTransaction {
     type Transaction = unknown
-    type Params = ParamsBase<Method.SignAndSendTransactoin, {
-      tx: Transaction
-      lockHash: string
-      description: string
-      inputSignConfig: {
-        index: number
-        length: number
+    type Params = ParamsBase<
+      Method.SignAndSendTransactoin,
+      {
+        tx: Transaction
+        lockHash: string
+        description: string
+        inputSignConfig: {
+          index: number
+          length: number
+        }
       }
-    }>
+    >
 
     type Response = ResponseBase<{
       token: string
       tx: Transaction
       txHash: string
     }>
-
   }
 }

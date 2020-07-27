@@ -14,6 +14,7 @@ import ImportWalletPage from './pages/import_wallet_page'
 import ImportKeystorePage from './pages/import_keystore_page'
 import TransferCapacityPage from './pages/transfer_capacity_page'
 import { Routes } from './utils'
+import Keystore from './containers/Keystore'
 
 require('typeface-source-code-pro')
 require('typeface-lato')
@@ -32,11 +33,11 @@ function App() {
           <Route path={`${Routes.CreateWallet}/:type`}>
             <Mnemonic />
           </Route>
+          <Route path={Routes.ImportKeystore}>
+            <Keystore />
+          </Route>
           <Route path="/import_wallet">
             <ImportWalletPage />
-          </Route>
-          <Route path="/import_keystore">
-            <ImportKeystorePage />
           </Route>
           <Route path="/change_wallet_name">
             <ChangeWalletNamePage />
