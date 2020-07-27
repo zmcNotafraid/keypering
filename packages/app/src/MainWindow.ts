@@ -11,6 +11,7 @@ const channelName: { [key: string]: Channel.ChannelName } = {
   deleteWallet: 'delete-wallet',
   updateWallet: 'update-wallet',
   getMnemonic: 'get-mnemonic',
+  importKeystore: 'import-keystore',
   getSetting: 'get-setting',
   updateSetting: 'update-setting',
   getTxList: 'get-tx-list',
@@ -104,6 +105,17 @@ export default class MainWindow {
     ipcMain.handle(channelName.getMnemonic, () => {
       try {
         const result = walletManager.getMnemonic()
+        return { code: Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Code.Error, message: err.message }
+      }
+    })
+
+    ipcMain.handle(channelName.importKeystore, (_e, params: Channel.ImportKeystore.Params) => {
+      const {keystorePath, password} = params
+      try {
+        const result = walletManager.checkPasswordFromPath(keystorePath, password)
         return { code: Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)

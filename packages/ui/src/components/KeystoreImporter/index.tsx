@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useCallback } from 'react'
+import React, { useReducer, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import TextField from '../TextField'
 import { importKeystore } from '../../services/channels'
@@ -29,7 +29,6 @@ const reducer = (state: FormState, { fieldName, value }: { fieldName: keyof Form
 const KeystoreImporter = () => {
   const [form, dispatch] = useReducer(reducer, initState)
   const [submitting, setSubmitting] = useState(false)
-  const [filePath, setFilePath] = useState('')
   const history = useHistory()
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +45,7 @@ const KeystoreImporter = () => {
     e.preventDefault()
     if (!disabled) {
       setSubmitting(true)
-      importKeystore({ name: form.name, keystorePath: filePath, password: form.password })
+      importKeystore({ name: form.name, keystorePath: form.keystore, password: form.password })
         .then(res => {
           if (isSuccessResponse(res)) {
             history.push(Routes.HomePage)

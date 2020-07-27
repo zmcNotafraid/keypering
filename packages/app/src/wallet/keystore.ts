@@ -1,3 +1,4 @@
+import fs from 'fs'
 import { privateToPublic } from './Keychain'
 import crypto from 'crypto'
 import { Keccak } from 'sha3'
@@ -28,7 +29,8 @@ export interface Keystore {
   crypto: Crypto
 }
 
-const getMac = (derivedKey: Buffer, ciphertext: Buffer) => new Keccak(256).update(Buffer.concat([derivedKey.slice(16, 32), ciphertext])).digest('hex')
+const getMac = (derivedKey: Buffer, ciphertext: Buffer) =>
+  new Keccak(256).update(Buffer.concat([derivedKey.slice(16, 32), ciphertext])).digest('hex')
 
 const getScryptOptions = (kdfparams: KdfParams) => ({
   N: kdfparams.n,
@@ -59,18 +61,13 @@ export const getKeystoreFromXPrv = (xPrv: Buffer, password: string) => {
       kdf: 'scrypt',
       kdfparams,
       mac: getMac(derivedKey, ciphertext),
-    }
+    },
   }
 }
 
 export const getDerivedKey = (keystore: Keystore, password: string) => {
   const { kdfparams } = keystore.crypto
-  return crypto.scryptSync(
-    password,
-    Buffer.from(kdfparams.salt, 'hex'),
-    kdfparams.dklen,
-    getScryptOptions(kdfparams)
-  )
+  return crypto.scryptSync(password, Buffer.from(kdfparams.salt, 'hex'), kdfparams.dklen, getScryptOptions(kdfparams))
 }
 export const decryptKeystore = (keystore: Keystore, password: string): string => {
   const derivedKey = getDerivedKey(keystore, password)
@@ -98,4 +95,16 @@ export const checkPassword = (keystore: Keystore, password: string) => {
   const derivedKey = getDerivedKey(keystore, password)
   const ciphertext = Buffer.from(keystore.crypto.ciphertext, 'hex')
   return getMac(derivedKey, ciphertext) === keystore.crypto.mac
+}
+
+export const checkPasswordFromPath = (keystorePath: string, password: string) => {
+  const keystore = JSON.parse(fs.readFileSync(keystorePath).toString('utf-8')) as Keystore
+  if (!keystore) {
+    throw new UnsupportedCipherException()
+  }
+  const result = checkPassword(keystore, password)
+  if (!result) {
+    throw new IncorrectPasswordException()
+  }
+  return result
 }
