@@ -1,0 +1,35 @@
+.container {
+  padding: 0 10px;
+  font-size: 0.875rem;
+}
+
+.item {
+  padding: 14px 10px;
+  border-bottom: 1px solid #ededed;
+  display: grid;
+  grid-template:
+    'info info'auto 'time revoke'auto / 1fr auto;
+  gap: 0.875rem;
+}
+
+.info {
+  grid-area: info;
+  font-weight: bold;
+
+  .url {
+    margin-left: 8px;
+    color: var(--primary-green);
+  }
+}
+
+.time {
+  grid-area: time
+}
+
+
+.revoke {
+  grid-area: revoke;
+  background-color: var(--cancel);
+  width: 82px;
+  height: 24px;
+}

@@ -1,6 +1,7 @@
 import './preprocess'
 import path from 'path'
 import { app } from 'electron'
+import './server'
 import MainWindow from './MainWindow'
 
 const createWindow = () => {

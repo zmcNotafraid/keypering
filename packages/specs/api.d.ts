@@ -6,8 +6,8 @@ export declare namespace API {
     params: RequestParams
   }
   enum ErrorCode {
-    Rejected = 1,
-    TokenInvalid,
+    Rejected = 1001,
+    TokenInvalid
   }
 
   interface JsonRpcResponseError<C = ErrorCode> {
@@ -178,6 +178,7 @@ export declare namespace Channel {
     | 'get-tx-list'
     | 'get-addr-list'
     | 'get-auth-list'
+    | 'delete-auth'
     | 'submit-password'
 
   // eslint-disable-next-line
@@ -271,6 +272,22 @@ export declare namespace Channel {
 
   namespace UpdateSetting {
     type Params = Setting
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace GetAuthList {
+    interface AuthProfile {
+      url: string
+      time: string
+    }
+
+    type Response = SuccessResponse<AuthProfile[]> | ErrorResponse
+  }
+
+  namespace DeleteAuth{
+    interface Params{
+      url:string
+    }
     type Response = SuccessResponse<boolean> | ErrorResponse
   }
 }
