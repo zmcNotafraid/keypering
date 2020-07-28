@@ -2,8 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styles from './welcome.module.scss'
 
-const handleKeystore = () => {}
-
 const Welcome = () => (
   <div className={styles.container}>
     <div className={styles.banner}>
