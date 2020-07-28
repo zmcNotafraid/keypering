@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 10px;
+
+  button {
+    width: 160px;
+    height: 30px;
+    margin-top: 12px;
+    font-size: 15px;
+    color: #fff;
+    background-color: var(--primary-green);
+
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import AuthList from '../../components/AuthList'
 import { useEffect } from 'react'
+import styles from './main.module.scss'
 import { getWalletIndex } from '../../services/channels'
 import { isSuccessResponse } from '../../utils'
 import { Channel } from '@keypering/specs'
@@ -21,13 +22,13 @@ const Main = () => {
   }, [])
 
   return (
-    <div>
+    <div className={styles.container}>
       <h1>{currentWallet.name}</h1>
       <div>
         <AuthList />
       </div>
 
-      <button onClick={toggleWalletManager}>Open Wallet Manager</button>
+      <button onClick={toggleWalletManager}>Wallet Manager</button>
       <WalletManager show={showWalletManager} setShow={setShowWalletManager} />
     </div>
   )
