@@ -1,18 +1,14 @@
 import React, { useReducer, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import TextField from '../TextField'
-import { createWallet } from '../../services/channels'
+import { importKeystore } from '../../services/channels'
 import { isSuccessResponse, Routes } from '../../utils'
-import styles from './walletSubmitForm.module.scss'
+import styles from './keystoreImporter.module.scss'
 
-interface WalletSubmitFormProps {
-  mnemonic: string
-  onBack: () => void
-}
 const initState = {
+  keystore: '',
   name: '',
   password: '',
-  rePassword: '',
 }
 
 type FormState = typeof initState
@@ -21,7 +17,7 @@ const reducer = (state: FormState, { fieldName, value }: { fieldName: keyof Form
   switch (fieldName) {
     case 'name':
     case 'password':
-    case 'rePassword': {
+    case 'keystore': {
       return { ...state, [fieldName]: value }
     }
     default: {
@@ -30,7 +26,7 @@ const reducer = (state: FormState, { fieldName, value }: { fieldName: keyof Form
   }
 }
 
-const WalletSubmitForm = ({ mnemonic, onBack }: WalletSubmitFormProps) => {
+const KeystoreImporter = () => {
   const [form, dispatch] = useReducer(reducer, initState)
   const [submitting, setSubmitting] = useState(false)
   const history = useHistory()
@@ -38,20 +34,18 @@ const WalletSubmitForm = ({ mnemonic, onBack }: WalletSubmitFormProps) => {
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {
       value,
+      files,
       dataset: { fieldName },
     } = e.target
-    dispatch({ fieldName: fieldName as keyof FormState, value })
+    dispatch({ fieldName: fieldName as keyof FormState, value: files && files.length > 0 ? files[0].path : value })
   }
 
-  const rePasswrodError =
-    form.password && form.rePassword && form.password !== form.rePassword ? 'Please re-confirm password' : undefined
-
-  const disabled = Object.values(form).some(v => !v) || !!rePasswrodError || submitting
+  const disabled = Object.values(form).some(v => !v) || submitting
   const handleConfirm = (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (!disabled) {
       setSubmitting(true)
-      createWallet({ name: form.name, password: form.password, mnemonic })
+      importKeystore({ name: form.name, keystorePath: form.keystore, password: form.password })
         .then(res => {
           if (isSuccessResponse(res)) {
             history.push(Routes.HomePage)
@@ -66,8 +60,15 @@ const WalletSubmitForm = ({ mnemonic, onBack }: WalletSubmitFormProps) => {
 
   return (
     <form className={styles.container} onSubmit={handleConfirm}>
-      <h1>Setup your new wallet</h1>
+      <h1>Import keystore</h1>
       <div className={styles.fields}>
+        <TextField
+          label="Keystore File"
+          fieldName="keystore"
+          type="file"
+          disabled={submitting}
+          onChange={handleInput}
+        />
         <TextField
           label="Wallet Name"
           fieldName="name"
@@ -83,18 +84,9 @@ const WalletSubmitForm = ({ mnemonic, onBack }: WalletSubmitFormProps) => {
           type="password"
           disabled={submitting}
         />
-        <TextField
-          label="Confirm Password"
-          fieldName="rePassword"
-          value={form.rePassword}
-          onChange={handleInput}
-          type="password"
-          disabled={submitting}
-          error={rePasswrodError}
-        />
       </div>
       <div className={styles.buttons}>
-        <button type="button" onClick={onBack}>
+        <button type="button" onClick={() => history.goBack()}>
           Back
         </button>
         <button type="submit" disabled={disabled}>
@@ -105,4 +97,4 @@ const WalletSubmitForm = ({ mnemonic, onBack }: WalletSubmitFormProps) => {
   )
 }
 
-export default WalletSubmitForm
+export default KeystoreImporter

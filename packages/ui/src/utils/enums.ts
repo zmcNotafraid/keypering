@@ -2,7 +2,8 @@ export enum Routes {
   Welcome = '/welcome',
   Setting = '/setting',
   CreateWallet = '/create_wallet',
-  HomePage = '/'
+  ImportKeystore = '/import_keystore',
+  HomePage = '/',
 }
 
 export default undefined

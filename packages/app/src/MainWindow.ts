@@ -11,6 +11,7 @@ const channelName: { [key: string]: Channel.ChannelName } = {
   deleteWallet: 'delete-wallet',
   updateWallet: 'update-wallet',
   getMnemonic: 'get-mnemonic',
+  importKeystore: 'import-keystore',
   getSetting: 'get-setting',
   updateSetting: 'update-setting',
   getTxList: 'get-tx-list',
@@ -63,8 +64,8 @@ export default class MainWindow {
     ipcMain.handle(channelName.createWallet, (_e, params: Channel.CreateWallet.Params) => {
       try {
         const keystore = walletManager.getKeystoreFromMnemonic(params)
-        const profile = walletManager.addKeystore({ ...params, keystore })
-        return { code: Code.Success, result: profile }
+        walletManager.addKeystore({ ...params, keystore })
+        return { code: Code.Success, result: true }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
         return { code: Code.Error, message: err.message }
@@ -105,6 +106,18 @@ export default class MainWindow {
       try {
         const result = walletManager.getMnemonic()
         return { code: Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Code.Error, message: err.message }
+      }
+    })
+
+    ipcMain.handle(channelName.importKeystore, (_e, params: Channel.ImportKeystore.Params) => {
+      const {keystorePath, password} = params
+      try {
+        const keystore = walletManager.getKeystoreFromPath(keystorePath, password)
+        walletManager.addKeystore({ ...params, keystore })
+        return { code: Code.Success, result: true }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
         return { code: Code.Error, message: err.message }
