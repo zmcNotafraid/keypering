@@ -178,6 +178,7 @@ export declare namespace Channel {
     | 'get-tx-list'
     | 'get-addr-list'
     | 'get-auth-list'
+    | 'delete-auth'
     | 'submit-password'
 
   // eslint-disable-next-line
@@ -280,7 +281,14 @@ export declare namespace Channel {
       time: string
     }
 
-    type Response = SuccessResponse<AuthProfile> | ErrorResponse
+    type Response = SuccessResponse<AuthProfile[]> | ErrorResponse
+  }
+
+  namespace DeleteAuth{
+    interface Params{
+      url:string
+    }
+    type Response = SuccessResponse<boolean> | ErrorResponse
   }
 }
 

@@ -3,8 +3,9 @@ import { BrowserWindow, ipcMain, dialog } from 'electron'
 import type { Channel } from '@keypering/specs'
 import * as walletManager from './wallet'
 import * as settingManager from './setting'
+import * as authManager from './auth'
 
-const channelName: { [key: string]: Channel.ChannelName } = {
+export const channelName: { [key: string]: Channel.ChannelName } = {
   getWalletIndex: 'get-wallet-index',
   createWallet: 'create-wallet',
   selectWallet: 'select-wallet',
@@ -17,15 +18,17 @@ const channelName: { [key: string]: Channel.ChannelName } = {
   getTxList: 'get-tx-list',
   getAddrList: 'get-addr-list',
   getAuthList: 'get-auth-list',
-  submitPassword: 'submit-password'
+  deleteAuth: 'delete-auth',
+  submitPassword: 'submit-password',
 }
 
 enum Code {
   Success,
-  Error
+  Error,
 }
 
 export default class MainWindow {
+  static id: number
   #win = new BrowserWindow({
     width: 440,
     height: 690,
@@ -37,16 +40,25 @@ export default class MainWindow {
     show: false,
     webPreferences: {
       nodeIntegration: true,
-      preload: path.join(__dirname, 'preload.js')
-    }
+      preload: path.join(__dirname, 'preload.js'),
+    },
   })
 
   get win() {
     return this.#win
   }
 
+  public static broadcast = <P = any>(channel: Channel.ChannelName, params: P) => {
+    if (MainWindow.id === undefined) {
+      return
+    }
+
+    BrowserWindow.fromId(MainWindow.id).webContents.send(channel, params)
+  }
+
   constructor() {
     this.#registerChannels()
+    MainWindow.id = this.win.id
   }
 
   #registerChannels = () => {
@@ -133,24 +145,55 @@ export default class MainWindow {
       }
     })
 
-    ipcMain.handle(channelName.updateSetting, (_e, params: Channel.UpdateSetting.Params) => {
+    ipcMain.handle(
+      channelName.updateSetting,
+      (_e, params: Channel.UpdateSetting.Params): Channel.UpdateSetting.Response => {
+        try {
+          const result = settingManager.updateSetting(params)
+          return { code: Code.Success, result }
+        } catch (err) {
+          dialog.showErrorBox('Error', err.message)
+          return { code: Code.Error, message: err.message }
+        }
+      }
+    )
+
+    ipcMain.handle(channelName.getTxList, () => {
+      // TODO:
+    })
+
+    ipcMain.handle(channelName.getAddrList, () => {
+      // TODO:
+    })
+
+    ipcMain.handle(channelName.getAuthList, () => {
       try {
-        const result = settingManager.updateSetting(params)
-        return { code: Code.Success, result }
+        const { current } = walletManager.getWalletIndex()
+        const list = authManager.getAuthList(current)
+        return {
+          code: Code.Success,
+          result: list.map(auth => ({ url: auth.url, time: auth.time })),
+        }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
         return { code: Code.Error, message: err.message }
       }
     })
-    ipcMain.handle(channelName.getTxList, () => {
-      // TODO:
-    })
-    ipcMain.handle(channelName.getAddrList, () => {
-      // TODO:
-    })
-    ipcMain.handle(channelName.getAuthList, () => {
-      // TODO:
-    })
+
+    ipcMain.handle(
+      channelName.deleteAuth,
+      async (_e, params: Channel.DeleteAuth.Params): Promise<Channel.DeleteAuth.Response> => {
+        try {
+          const { current } = walletManager.getWalletIndex()
+          const result = await authManager.deleteAuth(current, params.url)
+          return { code: Code.Success, result }
+        } catch (err) {
+          dialog.showErrorBox('Error', err.message)
+          return { code: Code.Error, message: err.message }
+        }
+      }
+    )
+
     ipcMain.handle(channelName.submitPassword, () => {
       // TODO:
     })

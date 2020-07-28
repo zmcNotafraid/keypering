@@ -1,6 +1,7 @@
 import React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
+import Main from './containers/Main'
 import Welcome from './containers/Welcome'
 import Mnemonic from './containers/Mnemonic'
 import SettingPage from './pages/setting_page'
@@ -23,6 +24,9 @@ function App() {
     <Router>
       <div className="root">
         <Switch>
+          <Route path={`${Routes.Main}/:tab?`}>
+            <Main />
+          </Route>
           <Route path={Routes.Welcome}>
             <Welcome />
           </Route>

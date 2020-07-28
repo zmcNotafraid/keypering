@@ -3,6 +3,7 @@ export enum Routes {
   Setting = '/setting',
   CreateWallet = '/create_wallet',
   ImportKeystore = '/import_keystore',
+  Main = '/main',
   HomePage = '/',
 }
 

@@ -66,5 +66,10 @@ export class AuthRejected extends Error {
   constructor() {
     super(`Authentication request is rejected`)
   }
+}
 
+export class FileNotFoundException extends Error {
+  constructor() {
+    super(`File is not found`)
+  }
 }

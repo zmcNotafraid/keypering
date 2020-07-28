@@ -4,6 +4,7 @@ import type { Channel } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword } from './keystore'
 import { getDataPath } from '../utils'
 import { IncorrectPasswordException, WalletNotFoundException } from '../exception'
+import { deleteAuthList } from '../auth'
 
 const dataPath = getDataPath('wallet')
 const indexPath = path.resolve(dataPath, 'index.json')
@@ -87,5 +88,10 @@ export const deleteWallet = ({ id, password }: { id: string, password: string })
 
   udpateWalletIndex(newCurrent, newWalletList)
   fs.unlinkSync(keystorePath)
+  try {
+    deleteAuthList(id)
+  } catch (err) {
+    console.error(err)
+  }
   return true
 }
