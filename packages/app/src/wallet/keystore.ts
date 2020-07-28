@@ -97,14 +97,18 @@ export const checkPassword = (keystore: Keystore, password: string) => {
   return getMac(derivedKey, ciphertext) === keystore.crypto.mac
 }
 
-export const checkPasswordFromPath = (keystorePath: string, password: string) => {
-  const keystore = JSON.parse(fs.readFileSync(keystorePath).toString('utf-8')) as Keystore
-  if (!keystore) {
+export const getKeystoreFromPath = (keystorePath: string, password: string) => {
+  try {
+    const keystore = JSON.parse(fs.readFileSync(keystorePath).toString('utf-8')) as Keystore
+    if (!keystore) {
+      throw new UnsupportedCipherException()
+    }
+    const result = checkPassword(keystore, password)
+    if (!result) {
+      throw new IncorrectPasswordException()
+    }
+    return keystore
+  } catch (error) {
     throw new UnsupportedCipherException()
   }
-  const result = checkPassword(keystore, password)
-  if (!result) {
-    throw new IncorrectPasswordException()
-  }
-  return keystore
 }

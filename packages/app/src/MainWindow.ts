@@ -115,7 +115,7 @@ export default class MainWindow {
     ipcMain.handle(channelName.importKeystore, (_e, params: Channel.ImportKeystore.Params) => {
       const {keystorePath, password} = params
       try {
-        const keystore = walletManager.checkPasswordFromPath(keystorePath, password)
+        const keystore = walletManager.getKeystoreFromPath(keystorePath, password)
         const profile = walletManager.addKeystore({ ...params, keystore })
         return { code: Code.Success, result: profile }
       } catch (err) {
