@@ -4,6 +4,7 @@ import type { Channel } from '@keypering/specs'
 import * as walletManager from './wallet'
 import * as settingManager from './setting'
 import * as authManager from './auth'
+import * as txManager from './tx'
 
 export const channelName: { [key: string]: Channel.ChannelName } = {
   getWalletIndex: 'get-wallet-index',
@@ -11,11 +12,13 @@ export const channelName: { [key: string]: Channel.ChannelName } = {
   selectWallet: 'select-wallet',
   deleteWallet: 'delete-wallet',
   updateWallet: 'update-wallet',
+  checkCurrentPassword: 'check-current-password',
   getMnemonic: 'get-mnemonic',
   importKeystore: 'import-keystore',
   getSetting: 'get-setting',
   updateSetting: 'update-setting',
   getTxList: 'get-tx-list',
+  requestSign: 'request-sign',
   getAddrList: 'get-addr-list',
   getAuthList: 'get-auth-list',
   deleteAuth: 'delete-auth',
@@ -28,7 +31,7 @@ enum Code {
 }
 
 export default class MainWindow {
-  static id: number
+  static id: number | undefined
   #win = new BrowserWindow({
     width: 440,
     height: 690,
@@ -48,6 +51,11 @@ export default class MainWindow {
     return this.#win
   }
 
+  #filePath =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000/#welcome'
+      : path.join('file://', __dirname, '..', 'public', 'ui', 'index.html#welcome')
+
   public static broadcast = <P = any>(channel: Channel.ChannelName, params: P) => {
     if (MainWindow.id === undefined) {
       return
@@ -59,6 +67,17 @@ export default class MainWindow {
   constructor() {
     this.#registerChannels()
     MainWindow.id = this.win.id
+
+    this.#win.on('ready-to-show', () => {
+      this.#win.show()
+    })
+    this.#win.on('closed', () => {
+      MainWindow.id = undefined
+    })
+  }
+
+  public load = () => {
+    this.#win.loadURL(this.#filePath)
   }
 
   #registerChannels = () => {
@@ -113,6 +132,16 @@ export default class MainWindow {
       }
     })
 
+    ipcMain.handle(channelName.checkCurrentPassword, (_e, params: Channel.CheckCurrentPassword.Params) => {
+      try {
+        const result = walletManager.checkCurrentPassword(params.password)
+        return { code: Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Code.Error, message: err.message }
+      }
+    })
+
     ipcMain.handle(channelName.getMnemonic, () => {
       try {
         const result = walletManager.getMnemonic()
@@ -124,7 +153,7 @@ export default class MainWindow {
     })
 
     ipcMain.handle(channelName.importKeystore, (_e, params: Channel.ImportKeystore.Params) => {
-      const {keystorePath, password} = params
+      const { keystorePath, password } = params
       try {
         const keystore = walletManager.getKeystoreFromPath(keystorePath, password)
         walletManager.addKeystore({ ...params, keystore })
@@ -160,6 +189,15 @@ export default class MainWindow {
 
     ipcMain.handle(channelName.getTxList, () => {
       // TODO:
+    })
+
+    ipcMain.handle(channelName.requestSign, async (_e, params: Channel.RequestSign.Params) => {
+      try {
+        const result = await txManager.requestSignTx({ ...params, origin: 'Keypering' })
+        return { code: Code.Success, result }
+      } catch (err) {
+        return { code: err.code || Code.Error, message: err.message }
+      }
     })
 
     ipcMain.handle(channelName.getAddrList, () => {
