@@ -8,6 +8,7 @@ export const channelName: { [key: string]: Channel.ChannelName } = {
   createWallet: 'create-wallet',
   getMnemonic: 'get-mnemonic',
   importKeystore: 'import-keystore',
+  getWalletIndex: 'get-wallet-index',
   getAuthList: 'get-auth-list',
   deleteAuth: 'delete-auth',
 }
@@ -17,6 +18,8 @@ export const createWallet = (params: Channel.CreateWallet.Params): Promise<Chann
 export const getMnemonic = (): Promise<Channel.GetMnemonic.Response> => invoke(channelName.getMnemonic)
 export const importKeystore = (params: Channel.ImportKeystore.Params): Promise<Channel.ImportKeystore.Response> =>
   invoke(channelName.importKeystore, params)
+
+export const getWalletIndex = () : Promise<Channel.GetWalletIndex.Response> => invoke(channelName.getWalletIndex)
 
 export const getAuthList = (): Promise<Channel.GetAuthList.Response> => invoke(channelName.getAuthList)
 

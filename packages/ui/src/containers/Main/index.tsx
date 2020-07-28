@@ -1,13 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
 import AuthList from '../../components/AuthList'
+import { useEffect } from 'react'
+import { getWalletIndex } from '../../services/channels'
+import { isSuccessResponse } from '../../utils'
+import { Channel } from '@keypering/specs'
+import WalletManager from '../../components/WalletManager'
 
-const Main = () => (
-  <div>
-    <h1>Main</h1>
+const Main = () => {
+  const [currentWallet, setCurrentWallet] = useState<Channel.WalletProfile>({ name: '', id: '', xpub: '' })
+  const [showWalletManager, setShowWalletManager] = useState(false)
+
+  const toggleWalletManager = () => setShowWalletManager(!showWalletManager)
+
+  useEffect(() => {
+    getWalletIndex().then(res => {
+      if (isSuccessResponse(res) && res.result.wallets.length > 0) {
+        setCurrentWallet(res.result.wallets[0])
+      }
+    })
+  }, [])
+
+  return (
     <div>
-      <AuthList />
+      <h1>{currentWallet.name}</h1>
+      <div>
+        <AuthList />
+      </div>
+
+      <button onClick={toggleWalletManager}>Open Wallet Manager</button>
+      <WalletManager show={showWalletManager} setShow={setShowWalletManager} />
     </div>
-  </div>
-)
+  )
+}
 
 export default Main
