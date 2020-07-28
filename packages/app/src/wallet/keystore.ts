@@ -106,5 +106,5 @@ export const checkPasswordFromPath = (keystorePath: string, password: string) =>
   if (!result) {
     throw new IncorrectPasswordException()
   }
-  return result
+  return keystore
 }
