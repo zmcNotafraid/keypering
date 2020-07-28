@@ -37,7 +37,7 @@ const KeystoreImporter = () => {
       files,
       dataset: { fieldName },
     } = e.target
-    dispatch({ fieldName: fieldName as keyof FormState, value: files ? files[0].path : value })
+    dispatch({ fieldName: fieldName as keyof FormState, value: files && files.length > 0 ? files[0].path : value })
   }
 
   const disabled = Object.values(form).some(v => !v) || submitting

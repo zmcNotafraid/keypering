@@ -64,8 +64,8 @@ export default class MainWindow {
     ipcMain.handle(channelName.createWallet, (_e, params: Channel.CreateWallet.Params) => {
       try {
         const keystore = walletManager.getKeystoreFromMnemonic(params)
-        const profile = walletManager.addKeystore({ ...params, keystore })
-        return { code: Code.Success, result: profile }
+        walletManager.addKeystore({ ...params, keystore })
+        return { code: Code.Success, result: true }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
         return { code: Code.Error, message: err.message }
@@ -116,8 +116,8 @@ export default class MainWindow {
       const {keystorePath, password} = params
       try {
         const keystore = walletManager.getKeystoreFromPath(keystorePath, password)
-        const profile = walletManager.addKeystore({ ...params, keystore })
-        return { code: Code.Success, result: profile }
+        walletManager.addKeystore({ ...params, keystore })
+        return { code: Code.Success, result: true }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
         return { code: Code.Error, message: err.message }
