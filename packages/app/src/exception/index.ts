@@ -1,4 +1,4 @@
-import type { KeyperingAgency } from '@keypering/specs'
+import { KeyperingAgency } from '@keypering/specs'
 
 export class UnsupportedCipherException extends Error {
   constructor() {
@@ -62,14 +62,14 @@ export class InvalidJsonRpcRequestException extends Error {
 }
 
 export class AuthRejected extends Error {
-  code: typeof KeyperingAgency.Code.Rejected = 1001
+  code = KeyperingAgency.Code.Rejected
   constructor() {
     super(`Authentication request is rejected`)
   }
 }
 
 export class RequestRejected extends Error {
-  code: typeof KeyperingAgency.Code.Rejected = 1001
+  code = KeyperingAgency.Code.Rejected
   constructor() {
     super(`Request of signing transaction is rejected`)
   }
@@ -78,5 +78,11 @@ export class RequestRejected extends Error {
 export class FileNotFoundException extends Error {
   constructor() {
     super(`File is not found`)
+  }
+}
+
+export class NetworkNotFoundException extends Error {
+  constructor() {
+    super(`Network is not found`)
   }
 }

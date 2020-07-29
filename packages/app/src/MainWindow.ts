@@ -1,34 +1,10 @@
 import path from 'path'
 import { BrowserWindow, ipcMain, dialog } from 'electron'
-import type { Channel } from '@keypering/specs'
+import { Channel } from '@keypering/specs'
 import * as walletManager from './wallet'
 import * as settingManager from './setting'
 import * as authManager from './auth'
 import * as txManager from './tx'
-
-export const channelName: { [key: string]: Channel.ChannelName } = {
-  getWalletIndex: 'get-wallet-index',
-  createWallet: 'create-wallet',
-  selectWallet: 'select-wallet',
-  deleteWallet: 'delete-wallet',
-  updateWallet: 'update-wallet',
-  checkCurrentPassword: 'check-current-password',
-  getMnemonic: 'get-mnemonic',
-  importKeystore: 'import-keystore',
-  getSetting: 'get-setting',
-  updateSetting: 'update-setting',
-  getTxList: 'get-tx-list',
-  requestSign: 'request-sign',
-  getAddrList: 'get-addr-list',
-  getAuthList: 'get-auth-list',
-  deleteAuth: 'delete-auth',
-  submitPassword: 'submit-password',
-}
-
-enum Code {
-  Success,
-  Error,
-}
 
 export default class MainWindow {
   static id: number | undefined
@@ -81,158 +57,158 @@ export default class MainWindow {
   }
 
   #registerChannels = () => {
-    ipcMain.handle(channelName.getWalletIndex, () => {
+    ipcMain.handle(Channel.ChannelName.GetWalletIndex, () => {
       try {
         const result = walletManager.getWalletIndex()
-        return { code: Code.Success, result }
+        return { code: Channel.Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.createWallet, (_e, params: Channel.CreateWallet.Params) => {
+    ipcMain.handle(Channel.ChannelName.CreateWallet, (_e, params: Channel.CreateWallet.Params) => {
       try {
         const keystore = walletManager.getKeystoreFromMnemonic(params)
         walletManager.addKeystore({ ...params, keystore })
-        return { code: Code.Success, result: true }
+        return { code: Channel.Code.Success, result: true }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.selectWallet, (_e, params: Channel.SelectWallet.Params) => {
+    ipcMain.handle(Channel.ChannelName.SelectWallet, (_e, params: Channel.SelectWallet.Params) => {
       try {
         const res = walletManager.selectWallet(params.id)
-        return { code: Code.Success, result: res }
+        return { code: Channel.Code.Success, result: res }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.deleteWallet, (_e, params: Channel.DeleteWallet.Params) => {
+    ipcMain.handle(Channel.ChannelName.DeleteWallet, (_e, params: Channel.DeleteWallet.Params) => {
       try {
         const result = walletManager.deleteWallet(params)
-        return { code: Code.Success, result }
+        return { code: Channel.Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.updateWallet, (_e, params: Channel.UpdateWallet.Params) => {
+    ipcMain.handle(Channel.ChannelName.UpdateWallet, (_e, params: Channel.UpdateWallet.Params) => {
       try {
         const result = walletManager.updateWallet(params)
-        return { code: Code.Success, result }
+        return { code: Channel.Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.checkCurrentPassword, (_e, params: Channel.CheckCurrentPassword.Params) => {
+    ipcMain.handle(Channel.ChannelName.CheckCurrentPassword, (_e, params: Channel.CheckCurrentPassword.Params) => {
       try {
         const result = walletManager.checkCurrentPassword(params.password)
-        return { code: Code.Success, result }
+        return { code: Channel.Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.getMnemonic, () => {
+    ipcMain.handle(Channel.ChannelName.GetMnemonic, () => {
       try {
         const result = walletManager.getMnemonic()
-        return { code: Code.Success, result }
+        return { code: Channel.Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.importKeystore, (_e, params: Channel.ImportKeystore.Params) => {
+    ipcMain.handle(Channel.ChannelName.ImportKeystore, (_e, params: Channel.ImportKeystore.Params) => {
       const { keystorePath, password } = params
       try {
         const keystore = walletManager.getKeystoreFromPath(keystorePath, password)
         walletManager.addKeystore({ ...params, keystore })
-        return { code: Code.Success, result: true }
+        return { code: Channel.Code.Success, result: true }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.getSetting, () => {
+    ipcMain.handle(Channel.ChannelName.GetSetting, () => {
       try {
         const result = settingManager.getSetting()
-        return { code: Code.Success, result }
+        return { code: Channel.Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
     ipcMain.handle(
-      channelName.updateSetting,
+      Channel.ChannelName.UpdateSetting,
       (_e, params: Channel.UpdateSetting.Params): Channel.UpdateSetting.Response => {
         try {
           const result = settingManager.updateSetting(params)
-          return { code: Code.Success, result }
+          return { code: Channel.Code.Success, result }
         } catch (err) {
           dialog.showErrorBox('Error', err.message)
-          return { code: Code.Error, message: err.message }
+          return { code: Channel.Code.Error, message: err.message }
         }
       }
     )
 
-    ipcMain.handle(channelName.getTxList, () => {
+    ipcMain.handle(Channel.ChannelName.GetTxList, () => {
       // TODO:
     })
 
-    ipcMain.handle(channelName.requestSign, async (_e, params: Channel.RequestSign.Params) => {
+    ipcMain.handle(Channel.ChannelName.RequestSign, async (_e, params: Channel.RequestSign.Params) => {
       try {
         const result = await txManager.requestSignTx({ ...params, origin: 'Keypering' })
-        return { code: Code.Success, result }
+        return { code: Channel.Code.Success, result }
       } catch (err) {
-        return { code: err.code || Code.Error, message: err.message }
+        return { code: err.code || Channel.Code.Error, message: err.message }
       }
     })
 
-    ipcMain.handle(channelName.getAddrList, () => {
+    ipcMain.handle(Channel.ChannelName.GetAddrList, () => {
       // TODO:
     })
 
-    ipcMain.handle(channelName.getAuthList, () => {
+    ipcMain.handle(Channel.ChannelName.GetAuthList, () => {
       try {
         const { current } = walletManager.getWalletIndex()
         const list = authManager.getAuthList(current)
         return {
-          code: Code.Success,
+          code: Channel.Code.Success,
           result: list.map(auth => ({ url: auth.url, time: auth.time })),
         }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
-        return { code: Code.Error, message: err.message }
+        return { code: Channel.Code.Error, message: err.message }
       }
     })
 
     ipcMain.handle(
-      channelName.deleteAuth,
+      Channel.ChannelName.DeleteAuth,
       async (_e, params: Channel.DeleteAuth.Params): Promise<Channel.DeleteAuth.Response> => {
         try {
           const { current } = walletManager.getWalletIndex()
           const result = await authManager.deleteAuth(current, params.url)
-          return { code: Code.Success, result }
+          return { code: Channel.Code.Success, result }
         } catch (err) {
           dialog.showErrorBox('Error', err.message)
-          return { code: Code.Error, message: err.message }
+          return { code: Channel.Code.Error, message: err.message }
         }
       }
     )
 
-    ipcMain.handle(channelName.submitPassword, () => {
+    ipcMain.handle(Channel.ChannelName.SubmitPassword, () => {
       // TODO:
     })
   }
