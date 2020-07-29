@@ -12,6 +12,7 @@ import {
 } from '../exception'
 import { getWalletIndex } from '../wallet'
 import MainWindow from '../MainWindow'
+import PasswordWindow from '../wallet/PasswordWindow'
 
 const dataPath = getDataPath('auth')
 const getAuthFilePath = (id: string) => path.resolve(dataPath, `${id}.json`)
@@ -109,6 +110,18 @@ export const requestAuth = async (origin: string, url: string): Promise<string> 
   if (response === 0) {
     throw new AuthRejected()
   }
+  const requestId = `auth:${Date.now()}`
+
+  const pwdWindow = new PasswordWindow(requestId, 'Approve Authentication')
+
+  const res = await pwdWindow.response()
+  pwdWindow.win.close()
+
+  if (!res) {
+    throw new AuthRejected()
+  }
+
+  // TODO: add real token
   const token = addAuth(current, origin)
 
   return token
