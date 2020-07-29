@@ -232,8 +232,14 @@ export default class MainWindow {
       }
     )
 
-    ipcMain.handle(channelName.submitPassword, () => {
-      // TODO:
+    ipcMain.handle(channelName.submitPassword, (_e, params: Channel.SubmitPassword.Params) => {
+      try {
+        const result = walletManager.updateWallet(params)
+        return { code: Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Code.Error, message: err.message }
+      }
     })
   }
 }

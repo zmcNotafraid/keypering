@@ -251,6 +251,16 @@ export declare namespace Channel {
     interface Params {
       password: string
     }
+
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace SubmitPassword {
+    interface Params {
+      currentPassword: string
+      newPassword: string
+    }
+
     type Response = SuccessResponse<boolean> | ErrorResponse
   }
 

@@ -1,12 +1,12 @@
 import React from 'react'
-import styles from './changeWalletName.module.scss'
+import styles from './changePassword.module.scss'
 import { useHistory } from 'react-router-dom'
 import TextField from '../../components/TextField'
 import { useState } from 'react'
 import { getWalletIndex, updateWalletName } from '../../services/channels'
 import { isSuccessResponse, Routes } from '../../utils'
 
-const ChangeWalletName = () => {
+const ChangePassword = () => {
   const [name, setName] = useState('')
   const history = useHistory()
 
@@ -36,7 +36,9 @@ const ChangeWalletName = () => {
   return (
     <div className={styles.container}>
       <h2>Change Wallet Name</h2>
-      <TextField label="New Wallet Name" fieldName="walletName" type="text" onChange={handleInput} />
+      <TextField label="Current Password" fieldName="currentPassword" type="password" onChange={handleInput} />
+      <TextField label="New Password" fieldName="newPassword" type="password" onChange={handleInput} />
+      <TextField label="Confirm Password" fieldName="repPassword" type="password" onChange={handleInput} />
       <div className={styles.buttons}>
         <button type="button" onClick={handleBack}>
           Back
@@ -48,4 +50,4 @@ const ChangeWalletName = () => {
     </div>
   )
 }
-export default ChangeWalletName
+export default ChangePassword
