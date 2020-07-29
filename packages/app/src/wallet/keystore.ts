@@ -99,7 +99,7 @@ export const checkPassword = (keystore: Keystore, password: string) => {
 
 export const getKeystoreFromPath = (keystorePath: string, password: string) => {
   try {
-    const keystore = JSON.parse(fs.readFileSync(keystorePath).toString('utf-8')) as Keystore
+    const keystore = JSON.parse(fs.readFileSync(keystorePath).toString('utf8')) as Keystore
     if (!keystore) {
       throw new UnsupportedCipherException()
     }

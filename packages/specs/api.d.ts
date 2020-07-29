@@ -171,6 +171,7 @@ export declare namespace Channel {
     | 'select-wallet'
     | 'delete-wallet'
     | 'update-wallet'
+    | 'backup-wallet'
     | 'check-current-password'
     | 'get-mnemonic'
     | 'get-setting'
@@ -245,6 +246,10 @@ export declare namespace Channel {
     }
 
     type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace BackupWallet {
+    type Response = SuccessResponse<string> | ErrorResponse
   }
 
   namespace CheckCurrentPassword {

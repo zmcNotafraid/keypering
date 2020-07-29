@@ -12,6 +12,7 @@ export const channelName: { [key: string]: Channel.ChannelName } = {
   selectWallet: 'select-wallet',
   deleteWallet: 'delete-wallet',
   updateWallet: 'update-wallet',
+  backupWallet: 'backup-wallet',
   checkCurrentPassword: 'check-current-password',
   getMnemonic: 'get-mnemonic',
   importKeystore: 'import-keystore',
@@ -132,6 +133,16 @@ export default class MainWindow {
       }
     })
 
+    ipcMain.handle(channelName.backupWallet, async _e => {
+      try {
+        const result = JSON.stringify(await walletManager.exportKeystore())
+        return { code: Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Code.Error, message: err.message }
+      }
+    })
+
     ipcMain.handle(channelName.checkCurrentPassword, (_e, params: Channel.CheckCurrentPassword.Params) => {
       try {
         const result = walletManager.checkCurrentPassword(params.password)
@@ -233,8 +244,9 @@ export default class MainWindow {
     )
 
     ipcMain.handle(channelName.submitPassword, (_e, params: Channel.SubmitPassword.Params) => {
+      const { currentPassword, newPassword } = params
       try {
-        const result = walletManager.updateWallet(params)
+        const result = walletManager.updateCurrentPassword(currentPassword, newPassword)
         return { code: Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)

@@ -1,10 +1,12 @@
 import path from 'path'
 import fs from 'fs'
 import type { Channel } from '@keypering/specs'
-import { getXpub, Keystore, checkPassword } from './keystore'
+import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
 import { getDataPath } from '../utils'
 import { IncorrectPasswordException, WalletNotFoundException, CurrentWalletNotSetException } from '../exception'
 import { deleteAuthList } from '../auth'
+import PasswordWindow from './PasswordWindow'
+import { dialog } from 'electron'
 
 const dataPath = getDataPath('wallet')
 const indexPath = path.resolve(dataPath, 'index.json')
@@ -96,6 +98,32 @@ export const deleteWallet = ({ id, password }: { id: string, password: string })
   return true
 }
 
+export const exportKeystore = async() => {
+  const { current } = getWalletIndex()
+  if (!current) {
+    throw new CurrentWalletNotSetException()
+  }
+  const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
+  const pwdWindow = new PasswordWindow("Password", 'Input Password')
+  try {
+    await pwdWindow.response()
+  } catch (error) {
+    console.error(error)
+  }
+  pwdWindow.close()
+  const filePath = (await dialog.showSaveDialog({
+    filters: [{
+        name: 'keystore',
+        extensions: ['json'] 
+    }],
+    defaultPath: 'keystore',
+    title: 'Export',
+    buttonLabel: 'Export'
+  })).filePath as string
+  fs.writeFileSync(filePath, JSON.stringify(keystore), 'utf8')
+  return true
+}
+
 export const checkCurrentPassword = (password: string) => {
   const { current } = getWalletIndex()
   if (!current) {
@@ -103,4 +131,26 @@ export const checkCurrentPassword = (password: string) => {
   }
   const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
   return checkPassword(keystore, password)
+}
+
+export const updateCurrentPassword = (currentPassword: string, newPassword: string) => {
+  try {
+    const { current, wallets } = getWalletIndex()
+    if (!current) {
+      throw new CurrentWalletNotSetException()
+    }
+    const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
+    if (!checkPassword(keystore, currentPassword)) {
+      throw new IncorrectPasswordException()
+    }
+    const xprv = decryptKeystore(keystore, currentPassword)
+    const newKeystore = getKeystoreFromXPrv(Buffer.from(xprv), newPassword)
+    const xpub = getXpub(newKeystore, newPassword)
+    fs.writeFileSync(getKeystorePath(newKeystore.id), JSON.stringify(newKeystore))
+    const profile = { name, xpub, id: newKeystore.id }
+    udpateWalletIndex(current || profile.id, [...wallets, profile])
+  } catch (err) {
+    console.error(err)
+  }
+  return true
 }

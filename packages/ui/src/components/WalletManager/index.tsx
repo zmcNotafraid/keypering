@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 import styles from './walletManager.module.scss'
 import { createPortal } from 'react-dom'
 import { useHistory } from 'react-router-dom'
-import { Routes } from '../../utils'
+import { backupWallet } from '../../services/channels'
+import { Routes, isSuccessResponse } from '../../utils'
 
 const modalRoot = document.getElementById('root-modal') as HTMLDivElement
 
@@ -10,9 +11,17 @@ const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function })
   const element = document.createElement('div')
   const history = useHistory()
 
-  const openChangeWalletName = () => {
+  const changeWalletName = () => {
     history.push(Routes.ChangeWalletName)
     setShow(false)
+  }
+
+  const handleBackupWallet = () => {
+    backupWallet().then(res => {
+      if (isSuccessResponse(res)) {
+        setShow(false)
+      }
+    })
   }
 
   useEffect(() => {
@@ -27,9 +36,9 @@ const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function })
         <div className={styles.container} onClick={() => setShow(false)}>
           <div className={styles.modal}>
             <div className={styles.navs}>
-              <button onClick={openChangeWalletName}>Change Wallet Name</button>
+              <button onClick={changeWalletName}>Change Wallet Name</button>
               <button>Change Password</button>
-              <button>Backup Wallet</button>
+              <button onClick={handleBackupWallet}>Backup Wallet</button>
               <button>Delete Wallet</button>
             </div>
           </div>
