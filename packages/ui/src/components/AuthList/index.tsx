@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import type { Channel } from '@keypering/specs'
-import { getAuthList, revokeAuth, channelName } from '../../services/channels'
+import { Channel } from '@keypering/specs'
+import { getAuthList, revokeAuth } from '../../services/channels'
 import { isSuccessResponse } from '../../utils'
 import styles from './authList.module.scss'
 
@@ -8,7 +8,7 @@ const AuthList = () => {
   const [list, setList] = useState<Channel.GetAuthList.AuthProfile[]>([])
   useEffect(() => {
     const { ipcRenderer } = window
-    getAuthList().then((res) => {
+    getAuthList().then(res => {
       if (isSuccessResponse(res)) {
         setList(res.result)
       }
@@ -18,15 +18,15 @@ const AuthList = () => {
         setList(p)
       }
     }
-    ipcRenderer.on(channelName.getAuthList, listener)
+    ipcRenderer.on(Channel.ChannelName.GetAuthList, listener)
     return () => {
-      ipcRenderer.removeListener(channelName.getAuthList, listener)
+      ipcRenderer.removeListener(Channel.ChannelName.GetAuthList, listener)
     }
   }, [setList])
 
   return (
     <div className={styles.container}>
-      {list.map((auth) => (
+      {list.map(auth => (
         <div key={auth.url} className={styles.item}>
           <div className={styles.info}>
             Application:

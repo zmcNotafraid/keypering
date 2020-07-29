@@ -6,7 +6,7 @@ import Welcome from './containers/Welcome'
 import Mnemonic from './containers/Mnemonic'
 import Keystore from './containers/Keystore'
 import ChangeWalletName from './containers/ChangeWalletName'
-import SettingPage from './pages/setting_page'
+import Setting from './containers/Setting'
 import HomePage from './pages/home_page'
 import ChangePasswordPage from './pages/change_password_page'
 import DeleteWalletPage from './pages/delete_wallet_page'
@@ -22,49 +22,47 @@ require('typeface-lato')
 function App() {
   return (
     <Router>
-      <div className="root">
-        <Switch>
-          <Route path={`${Routes.Main}/:tab?`}>
-            <Main />
-          </Route>
-          <Route path={Routes.Welcome}>
-            <Welcome />
-          </Route>
-          <Route path={Routes.Setting}>
-            <SettingPage />
-          </Route>
-          <Route path={`${Routes.CreateWallet}/:type`}>
-            <Mnemonic />
-          </Route>
-          <Route path={Routes.ImportKeystore}>
-            <Keystore />
-          </Route>
-          <Route path={Routes.ChangeWalletName}>
-            <ChangeWalletName />
-          </Route>
-          <Route path="/import_wallet">
-            <ImportWalletPage />
-          </Route>
-          <Route path="/change_password">
-            <ChangePasswordPage />
-          </Route>
-          <Route path="/delete_wallet">
-            <DeleteWalletPage />
-          </Route>
-          <Route path="/authorization_request">
-            <AuthorizationRequestPage />
-          </Route>
-          <Route path="/transaction_request">
-            <TransactionRequestPage />
-          </Route>
-          <Route path="/transfer_capacity">
-            <TransferCapacityPage />
-          </Route>
-          <Route path={Routes.HomePage}>
-            <HomePage />
-          </Route>
-        </Switch>
-      </div>
+      <Switch>
+        <Route path={`${Routes.Main}/:tab?`}>
+          <Main />
+        </Route>
+        <Route path={Routes.Welcome}>
+          <Welcome />
+        </Route>
+        <Route path={Routes.Setting}>
+          <Setting />
+        </Route>
+        <Route path={`${Routes.CreateWallet}/:type`}>
+          <Mnemonic />
+        </Route>
+        <Route path={Routes.ImportKeystore}>
+          <Keystore />
+        </Route>
+        <Route path={Routes.ChangeWalletName}>
+          <ChangeWalletName />
+        </Route>
+        <Route path="/import_wallet">
+          <ImportWalletPage />
+        </Route>
+        <Route path="/change_password">
+          <ChangePasswordPage />
+        </Route>
+        <Route path="/delete_wallet">
+          <DeleteWalletPage />
+        </Route>
+        <Route path="/authorization_request">
+          <AuthorizationRequestPage />
+        </Route>
+        <Route path="/transaction_request">
+          <TransactionRequestPage />
+        </Route>
+        <Route path="/transfer_capacity">
+          <TransferCapacityPage />
+        </Route>
+        <Route path={Routes.HomePage}>
+          <HomePage />
+        </Route>
+      </Switch>
     </Router>
   )
 }

@@ -11,14 +11,14 @@ import {
   FileNotFoundException,
 } from '../exception'
 import { getWalletIndex } from '../wallet'
-import MainWindow, { channelName } from '../MainWindow'
+import MainWindow from '../MainWindow'
 
 const dataPath = getDataPath('auth')
 const getAuthFilePath = (id: string) => path.resolve(dataPath, `${id}.json`)
 
 const broadcast = (list: ReturnType<typeof getAuthList>) => {
   MainWindow.broadcast<Channel.GetAuthList.AuthProfile[]>(
-    channelName.getAuthList,
+    Channel.ChannelName.GetAuthList,
     list.map(auth => ({ url: auth.url, time: auth.time }))
   )
 }
