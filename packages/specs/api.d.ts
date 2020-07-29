@@ -229,7 +229,7 @@ export declare namespace Channel {
       password: string
     }
 
-    type Response = SuccessResponse<boolean> | ErrorResponse
+    type Response = SuccessResponse<string> | ErrorResponse
   }
 
   namespace SelectWallet {

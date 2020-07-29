@@ -113,9 +113,9 @@ export default class MainWindow {
       }
     })
 
-    ipcMain.handle(channelName.deleteWallet, (_e, params: Channel.DeleteWallet.Params) => {
+    ipcMain.handle(channelName.deleteWallet, async _e => {
       try {
-        const result = walletManager.deleteWallet(params)
+        const result = await walletManager.deleteWallet()
         return { code: Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styles from './walletManager.module.scss'
 import { createPortal } from 'react-dom'
 import { useHistory } from 'react-router-dom'
-import { backupWallet } from '../../services/channels'
+import { backupWallet, deleteWallet } from '../../services/channels'
 import { Routes, isSuccessResponse } from '../../utils'
 
 const modalRoot = document.getElementById('root-modal') as HTMLDivElement
@@ -24,6 +24,17 @@ const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function })
     })
   }
 
+  const handleDeleteWallet = () => {
+    deleteWallet().then(res => {
+      if (isSuccessResponse(res)) {
+        setShow(false)
+        if (!res.result) {
+          history.push(Routes.Welcome)
+        }
+      }
+    })
+  }
+
   useEffect(() => {
     modalRoot.appendChild(element)
     return () => {
@@ -39,7 +50,7 @@ const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function })
               <button onClick={changeWalletName}>Change Wallet Name</button>
               <button>Change Password</button>
               <button onClick={handleBackupWallet}>Backup Wallet</button>
-              <button>Delete Wallet</button>
+              <button onClick={handleDeleteWallet}>Delete Wallet</button>
             </div>
           </div>
         </div>,

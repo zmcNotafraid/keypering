@@ -54,8 +54,7 @@ const WalletSubmitForm = ({ mnemonic, onBack }: WalletSubmitFormProps) => {
       createWallet({ name: form.name, password: form.password, mnemonic })
         .then(res => {
           if (isSuccessResponse(res)) {
-            history.push(Routes.HomePage)
-            window.alert(res.code)
+            history.push(Routes.Main)
           }
         })
         .finally(() => {

@@ -72,30 +72,33 @@ export const updateWallet = ({ id, name }: { id: string, name: string }) => {
   return true
 }
 
-export const deleteWallet = ({ id, password }: { id: string, password: string }) => {
-  const { wallets, current } = getWalletIndex()
-  if (!wallets.some(w => w.id === id)) {
-    throw new WalletNotFoundException()
+export const deleteWallet = async () => {
+  const { current, wallets } = getWalletIndex()
+  if (!current) {
+    throw new CurrentWalletNotSetException()
+  }
+  const pwdWindow = new PasswordWindow("Password", 'Input Password')
+  try {
+    await pwdWindow.response()
+    pwdWindow.close()
+  } catch (error) {
+    console.error(error)
   }
 
-  const keystorePath = getKeystorePath(id)
-  const keystore = JSON.parse(fs.readFileSync(keystorePath, 'utf8'))
-
-  if (!checkPassword(keystore, password)) {
-    throw new IncorrectPasswordException()
-  }
-
-  const newWalletList = wallets.filter(w => w.id !== id)
-  const newCurrent = current === id ? newWalletList[0]?.id ?? '' : current
-
-  udpateWalletIndex(newCurrent, newWalletList)
+  const keystorePath = getKeystorePath(current)
   fs.unlinkSync(keystorePath)
   try {
-    deleteAuthList(id)
+    deleteAuthList(current)
   } catch (err) {
     console.error(err)
   }
-  return true
+
+  const newWallets = wallets.filter(w => w.id !== current)
+  const newCurrent = newWallets.length > 0 ? newWallets[0].id : undefined
+  if (newCurrent) {
+    udpateWalletIndex(newCurrent, newWallets)
+  }
+  return newCurrent
 }
 
 export const exportKeystore = async() => {

@@ -11,6 +11,7 @@ export const channelName: { [key: string]: Channel.ChannelName } = {
   getWalletIndex: 'get-wallet-index',
   updateWallet: 'update-wallet',
   backupWallet: 'backup-wallet',
+  deleteWallet: 'delete-wallet',
   submitPassword: 'submit-password',
   getAuthList: 'get-auth-list',
   deleteAuth: 'delete-auth',
@@ -29,6 +30,9 @@ export const updateWalletName = (params: Channel.UpdateWallet.Params) : Promise<
 
 export const backupWallet = () : Promise<Channel.BackupWallet.Response> =>
   invoke(channelName.backupWallet)
+
+export const deleteWallet = () : Promise<Channel.DeleteWallet.Response> =>
+  invoke(channelName.deleteWallet)
 
 export const updatePassword = (params: Channel.SubmitPassword.Params) : Promise<Channel.SubmitPassword.Response> =>
   invoke(channelName.submitPassword, params)
