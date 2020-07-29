@@ -1,9 +1,10 @@
+import { MAINNET_ID, TESTNET_ID } from '../utils'
 const networks = new Map([
-  ['ckb',{
+  [MAINNET_ID, {
     name: 'mainnet',
     url: 'http://localhost:8114'
   }],
-  ['ckb_test', {
+  [TESTNET_ID, {
     name: 'testnet',
     url: 'http://localhost:8114'
   }]

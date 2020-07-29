@@ -21,6 +21,7 @@ export enum ChannelName {
   GetAuthList = 'get-auth-list',
   DeleteAuth = 'delete-auth',
   SubmitPassword = 'submit-password',
+  OpenInBrowser = 'open-in-browser'
 }
 
 export type SuccessResponse<T = any> = {
@@ -109,6 +110,7 @@ export namespace GetMnemonic {
 // Setting
 export interface Setting {
   locks: {
+    // id: code hash : hash type
     [id: string]: {
       name: string
       enabled: boolean
@@ -158,17 +160,10 @@ export namespace DeleteAuth {
 }
 
 export namespace GetTxList {
-  export interface TokenMeta {
-    symbol: string
-    amount: string
-  }
-
   export interface TxProfile {
-    origin: string
-    meta: {
-      [tokenName: string]: TokenMeta
-    }
-    chainType: 'ckb' | 'ckb_testnet' | 'ckb_devnet'
+    hash: string
+    referer: string
+    meta: string
     isApproved: boolean
     time: string
   }
@@ -180,5 +175,12 @@ export namespace RequestSign {
   export interface Params {
     tx: any
   }
-  export type Response = SuccessResponse<any> | ErrorResponse
+  export type Response = SuccessResponse<{ tx: any, token?: string }> | ErrorResponse
+}
+
+export namespace OpenInBrowser {
+  export interface Params {
+    url: string
+  }
+  export type Response = SuccessResponse<boolean> | ErrorResponse
 }

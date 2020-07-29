@@ -2,6 +2,7 @@ export enum Code {
   Rejected = 1001,
   InvalidToken,
   RemoteError,
+  UnknownError,
 }
 export enum Method {
   Auth = 'auth',
@@ -68,16 +69,17 @@ export namespace QueryAddresses {
 
 export namespace SignTransaction {
   export type Transaction = unknown
+  export type InputSignConfig = {
+    index: number
+    length: number
+  } | null
   export type Params = ParamsBase<
     Method.SignTransaction,
     {
       tx: Transaction
       lockHash: string
       description: string
-      inputSignConfig: {
-        index: number
-        length: number
-      }
+      inputSignConfig?: InputSignConfig
     }
   >
 

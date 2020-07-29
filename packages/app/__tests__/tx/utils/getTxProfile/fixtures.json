@@ -1,0 +1,83 @@
+{
+  "basic": {
+    "params": [
+      {
+        "hash": "0xb52c9fd2e8f8fbc1ccde66d4014822c7727ce4df5a01abd9dfb4a6417032f85b",
+        "version": "0x0",
+        "cellDeps": [
+          {
+            "outPoint": {
+              "txHash": "0xace5ea83c478bb866edf122ff862085789158f5cbff155b7bb5f13058555b708",
+              "index": "0x0"
+            },
+            "depType": "depGroup"
+          }
+        ],
+        "headerDeps": [],
+        "inputs": [
+          {
+            "previousOutput": {
+              "txHash": "0x5b8184b27bad1238809300cb116ad85bdd2cc1ce0736d619c1468774cf27d4ce",
+              "index": "0x0"
+            },
+            "since": "0x0"
+          }
+        ],
+        "outputs": [
+          {
+            "capacity": "0x8bb2c97000",
+            "lock": {
+              "codeHash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+              "hashType": "type",
+              "args": "0xddbd7f09eb480450c1b1ed2c8696248de91c6802"
+            }
+          },
+          {
+            "capacity": "0x11bbed27249f",
+            "lock": {
+              "codeHash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+              "hashType": "type",
+              "args": "0xe2fa82e70b062c8644b80ad7ecf6e015e5f352f6"
+            }
+          }
+        ],
+        "witnesses": [{ "lock": "", "inputType": "", "outputType": "" }],
+        "outputsData": ["0x", "0x"]
+      },
+      "http://localhost:8114",
+      "tx description"
+    ],
+    "expected": {
+      "referer": "http://localhost:8114",
+      "meta": "tx description",
+      "tx": {
+        "hash": "0xb52c9fd2e8f8fbc1ccde66d4014822c7727ce4df5a01abd9dfb4a6417032f85b",
+        "inputs": [
+          {
+            "addr": "ckb1qyqw975zuu9svtyxgjuq44lv7mspte0n2tmqqm3w53",
+            "amount": "0x12479ff21b3f",
+            "data": null,
+            "lockName": "secp256k1",
+            "type": null
+          }
+        ],
+        "outputs": [
+          {
+            "addr": "ckb1qyqdm0tlp845spzscxc76tyxjcjgm6gudqpqgjqpz6",
+            "amount": "0x8bb2c97000",
+            "data": null,
+            "lockName": "secp256k1",
+            "type": null
+          },
+          {
+            "addr": "ckb1qyqw975zuu9svtyxgjuq44lv7mspte0n2tmqqm3w53",
+            "amount": "0x11bbed27249f",
+            "data": null,
+            "lockName": "secp256k1",
+            "type": null
+          }
+        ]
+      }
+    }
+  }
+}

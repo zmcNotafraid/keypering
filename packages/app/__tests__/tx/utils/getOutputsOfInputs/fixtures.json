@@ -1,0 +1,32 @@
+{
+  "basic": {
+    "params": [
+      {
+        "inputs": [
+          {
+            "previousOutput": {
+              "txHash": "0x5b8184b27bad1238809300cb116ad85bdd2cc1ce0736d619c1468774cf27d4ce",
+              "index": "0x0"
+            },
+            "since": "0x0"
+          }
+        ],
+        "nodeUrl": "http://localhost:8114"
+      }
+    ],
+    "expected": {
+      "data": ["0x"],
+      "outputs": [
+        {
+          "capacity": "0x12479ff21b3f",
+          "lock": {
+            "args": "0xe2fa82e70b062c8644b80ad7ecf6e015e5f352f6",
+            "codeHash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+            "hashType": "type"
+          },
+          "type": null
+        }
+      ]
+    }
+  }
+}

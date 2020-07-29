@@ -1,8 +1,8 @@
 import path from 'path'
 import fs from 'fs'
 import { Channel } from '@keypering/specs'
-import MainWindow  from '../MainWindow'
-import { getDataPath } from '../utils'
+import MainWindow from '../MainWindow'
+import { getDataPath, MAINNET_ID } from '../utils'
 import systemScripts from './scripts'
 import systemNetworks from './networks'
 import { NetworkNotFoundException } from '../exception'
@@ -14,12 +14,12 @@ const broadcast = (setting: Channel.Setting) => {
 }
 
 export const getSetting = (): Channel.Setting => {
-  let setting: Channel.Setting = { locks: {}, networks: {}, networkId: 'ckb'}
+  let setting: Channel.Setting = { locks: {}, networks: {}, networkId: MAINNET_ID }
   if (fs.existsSync(filePath)) {
-    setting =  JSON.parse(fs.readFileSync(filePath, 'utf8')) as Channel.Setting
+    setting = JSON.parse(fs.readFileSync(filePath, 'utf8')) as Channel.Setting
   }
   systemScripts.forEach((script, name) => {
-    setting.locks[script.codeHash] = setting.locks[script.codeHash] ?? {
+    setting.locks[`${script.codeHash}:${script.hashType}`] = {
       name,
       enabled: true,
       system: true
@@ -29,7 +29,7 @@ export const getSetting = (): Channel.Setting => {
   systemNetworks.forEach((network, id) => {
     setting.networks[id] = network
   })
-  setting.networkId = setting.networkId || 'ckb'
+  setting.networkId = setting.networkId || MAINNET_ID
   // TODO: filter deleted scripts
   return setting
 }

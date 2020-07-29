@@ -31,3 +31,4 @@ build
 packages/app/public/ui
 release
 .env
+playground

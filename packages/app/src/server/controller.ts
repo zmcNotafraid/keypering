@@ -8,9 +8,11 @@ export const handleAuth = async (_params: KeyperingAgency.Auth.Params['params'],
 }
 
 export const handleSign = async (params: KeyperingAgency.SignTransaction.Params['params'], url: string) => {
-  const result = await requestSignTx({
-    tx: params.tx as any,
-    origin: url
+  const tx = await requestSignTx({
+    tx: params.tx as CKBComponents.Transaction,
+    description: params.description as string,
+    referer: url,
+    signConfig: params.inputSignConfig,
   })
-  return { result }
+  return { tx }
 }

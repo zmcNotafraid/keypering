@@ -1,6 +1,7 @@
 import path from 'path'
 import http from 'http'
 import dotenv from 'dotenv'
+import { KeyperingAgency } from '@keypering/specs'
 import setCors from './setCors'
 import routes from './routes'
 import { validateJsonRpcFields } from '../utils'
@@ -13,12 +14,13 @@ if (!PORT) {
   throw new Error(`Port is required`)
 }
 
-http.createServer((req, res) => {
+http
+  .createServer((req, res) => {
+    setCors(res)
     const {
       method,
-      headers: { origin = '', referer: url = '' },
+      headers: { origin = '', referer = '' },
     } = req
-    setCors(res)
 
     switch (method) {
       case 'OPTIONS': {
@@ -34,15 +36,24 @@ http.createServer((req, res) => {
         })
         req.on('end', async () => {
           data = Buffer.concat(chunks).toString('utf8')
+          let parsed: any = {}
+
           try {
-            const parsed = JSON.parse(data)
+            parsed = JSON.parse(data)
             validateJsonRpcFields(parsed)
-            const result = await routes(parsed.method, parsed.params, { origin, url })
+            const result = await routes(parsed.method, parsed.params, { origin, referer })
             res.statusCode = 200
             res.end(JSON.stringify({ id: parsed.id, jsonrpc: parsed.jsonrpc, result }))
           } catch (err) {
             res.statusCode = 200
-            res.end(JSON.stringify({ error: err.code, message: err.message }))
+            res.end(
+              JSON.stringify({
+                id: parsed.id,
+                jsonrpc: '2.0',
+                error: err.code || KeyperingAgency.Code.UnknownError,
+                message: err.message,
+              })
+            )
           }
         })
         break

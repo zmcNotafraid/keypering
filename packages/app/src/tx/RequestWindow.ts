@@ -1,6 +1,7 @@
 import path from 'path'
 import { BrowserWindow } from 'electron'
 import MainWindow from '../MainWindow'
+import type { TxInfo } from './utils'
 
 export default class RequestWindow {
   #win = new BrowserWindow({
@@ -34,12 +35,12 @@ export default class RequestWindow {
     return this.#channel
   }
 
-  constructor({ tx, origin }: { tx: CKBComponents.Transaction; origin: string }) {
+  constructor({ tx, referer, meta }: TxInfo) {
     this.#filePath = path.join('file://', __dirname, '..', '..', 'public', 'dialogs', `signTx.html?tx-hash=${tx.hash}`)
     this.#channel = `sign:${tx.hash}`
     this.#win.on('ready-to-show', () => {
       this.#win.show()
-      this.#win.webContents.send(this.#channel, { tx, origin })
+      this.#win.webContents.send(this.#channel, { tx, referer, meta })
     })
   }
 
