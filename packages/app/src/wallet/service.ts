@@ -3,7 +3,7 @@ import fs from 'fs'
 import type { Channel } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
 import { getDataPath } from '../utils'
-import { IncorrectPasswordException, WalletNotFoundException, CurrentWalletNotSetException } from '../exception'
+import { IncorrectPasswordException, WalletNotFoundException, CurrentWalletNotSetException, RequestPasswordRejected, SelectDirectoryRejected } from '../exception'
 import { deleteAuthList } from '../auth'
 import PasswordWindow from './PasswordWindow'
 import { dialog } from 'electron'
@@ -78,12 +78,11 @@ export const deleteWallet = async () => {
     throw new CurrentWalletNotSetException()
   }
   const pwdWindow = new PasswordWindow("Password", 'Input Password')
-  try {
-    await pwdWindow.response()
-    pwdWindow.close()
-  } catch (error) {
-    console.error(error)
+  const approve = await pwdWindow.response()
+  if (!approve) {
+    throw new RequestPasswordRejected()
   }
+  pwdWindow.close()
 
   const keystorePath = getKeystorePath(current)
   fs.unlinkSync(keystorePath)
@@ -108,13 +107,12 @@ export const exportKeystore = async() => {
   }
   const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
   const pwdWindow = new PasswordWindow("Password", 'Input Password')
-  try {
-    await pwdWindow.response()
-  } catch (error) {
-    console.error(error)
+  const approve = await pwdWindow.response()
+  if (!approve) {
+    throw new RequestPasswordRejected()
   }
   pwdWindow.close()
-  const filePath = (await dialog.showSaveDialog({
+  const {filePath, canceled} = (await dialog.showSaveDialog({
     filters: [{
         name: 'keystore',
         extensions: ['json'] 
@@ -122,7 +120,10 @@ export const exportKeystore = async() => {
     defaultPath: 'keystore',
     title: 'Export',
     buttonLabel: 'Export'
-  })).filePath as string
+  }))
+  if (canceled || typeof filePath !== 'string') {
+    throw new SelectDirectoryRejected()
+  }
   fs.writeFileSync(filePath, JSON.stringify(keystore), 'utf8')
   return true
 }

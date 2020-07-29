@@ -82,7 +82,7 @@ export namespace UpdateWallet {
 }
 
 export namespace BackupWallet {
-  export type Response = SuccessResponse<string> | ErrorResponse
+  export type Response = SuccessResponse<boolean> | ErrorResponse
 }
 
 export namespace CheckCurrentPassword {

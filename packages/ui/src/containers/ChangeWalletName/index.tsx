@@ -8,6 +8,7 @@ import { isSuccessResponse, Routes } from '../../utils'
 
 const ChangeWalletName = () => {
   const [name, setName] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const history = useHistory()
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,25 +19,37 @@ const ChangeWalletName = () => {
     history.push(Routes.Main)
   }
 
-  const handleSubmit = () => {
-    getWalletIndex().then(res => {
-      if (isSuccessResponse(res) && res.result.current) {
-        const id = res.result.current
-        updateWalletName({ id, name }).then(res => {
-          if (isSuccessResponse(res)) {
-            history.push(Routes.Main)
-          } else {
-            throw new Error(res.message)
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault()
+    if (name) {
+      setSubmitting(true)
+      getWalletIndex()
+        .then(res => {
+          if (isSuccessResponse(res) && res.result.current) {
+            const id = res.result.current
+            updateWalletName({ id, name }).then(res => {
+              if (isSuccessResponse(res)) {
+                history.push(Routes.Main)
+              }
+            })
           }
         })
-      }
-    })
+        .finally(() => {
+          setSubmitting(false)
+        })
+    }
   }
 
   return (
     <div className={styles.container}>
       <h2>Change Wallet Name</h2>
-      <TextField label="New Wallet Name" fieldName="walletName" type="text" onChange={handleInput} />
+      <TextField
+        label="New Wallet Name"
+        fieldName="walletName"
+        type="text"
+        onChange={handleInput}
+        disabled={submitting}
+      />
       <div className={styles.buttons}>
         <button type="button" onClick={handleBack}>
           Back

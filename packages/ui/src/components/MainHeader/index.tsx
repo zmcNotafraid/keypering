@@ -23,6 +23,8 @@ const MainHeader = () => {
           } else {
             history.push(Routes.Welcome)
           }
+        } else {
+          history.push(Routes.Welcome)
         }
       })
       .catch(() => {
