@@ -7,7 +7,7 @@ export declare namespace API {
   }
   enum ErrorCode {
     Rejected = 1001,
-    TokenInvalid
+    TokenInvalid,
   }
 
   interface JsonRpcResponseError<C = ErrorCode> {
@@ -171,11 +171,13 @@ export declare namespace Channel {
     | 'select-wallet'
     | 'delete-wallet'
     | 'update-wallet'
+    | 'check-current-password'
     | 'get-mnemonic'
     | 'get-setting'
     | 'update-setting'
     | 'get-wallet-index'
     | 'get-tx-list'
+    | 'request-sign'
     | 'get-addr-list'
     | 'get-auth-list'
     | 'delete-auth'
@@ -244,6 +246,14 @@ export declare namespace Channel {
 
     type Response = SuccessResponse<boolean> | ErrorResponse
   }
+
+  namespace CheckCurrentPassword {
+    interface Params {
+      password: string
+    }
+    type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
   namespace GetMnemonic {
     type Response = SuccessResponse<string> | ErrorResponse
   }
@@ -284,11 +294,38 @@ export declare namespace Channel {
     type Response = SuccessResponse<AuthProfile[]> | ErrorResponse
   }
 
-  namespace DeleteAuth{
-    interface Params{
-      url:string
+  namespace DeleteAuth {
+    interface Params {
+      url: string
     }
+
     type Response = SuccessResponse<boolean> | ErrorResponse
+  }
+
+  namespace GetTxList {
+    interface TokenMeta {
+      symbol: string
+      amount: string
+    }
+
+    interface TxProfile {
+      origin: string
+      meta: {
+        [tokenName: string]: TokenMeta
+      }
+      chainType: 'ckb' | 'ckb_testnet' | 'ckb_devnet'
+      isApproved: boolean
+      time: string
+    }
+
+    type Response = SuccessResponse<TxProfile[]> | ErrorResponse
+  }
+
+  namespace RequestSign {
+    interface Params {
+      tx: any
+    }
+    type Response = SuccessResponse<any> | ErrorResponse
   }
 }
 

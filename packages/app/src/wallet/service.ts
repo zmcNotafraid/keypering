@@ -3,7 +3,7 @@ import fs from 'fs'
 import type { Channel } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword } from './keystore'
 import { getDataPath } from '../utils'
-import { IncorrectPasswordException, WalletNotFoundException } from '../exception'
+import { IncorrectPasswordException, WalletNotFoundException, CurrentWalletNotSetException } from '../exception'
 import { deleteAuthList } from '../auth'
 
 const dataPath = getDataPath('wallet')
@@ -94,4 +94,13 @@ export const deleteWallet = ({ id, password }: { id: string, password: string })
     console.error(err)
   }
   return true
+}
+
+export const checkCurrentPassword = (password: string) => {
+  const { current } = getWalletIndex()
+  if (!current) {
+    throw new CurrentWalletNotSetException()
+  }
+  const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
+  return checkPassword(keystore, password)
 }

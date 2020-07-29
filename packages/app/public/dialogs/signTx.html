@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Signing</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      --primary-green: #3cc68a;
+      margin: 0;
+      padding: 20px;
+      font-size: 14px;
+      letter-spacing: 0.23px;
+      user-select: none;
+      line-height: 1.2;
+      font-weight: 400;
+      background: #fff;
+    }
+
+    .url {
+      color: var(--primary-green);
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 16px;
+      letter-spacing: 0.2px;
+      color: #000;
+      margin-bottom: 20px;
+    }
+
+    form div {
+      margin-bottom: 14px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .tx {
+      overflow: visible;
+    }
+
+    table {
+      width: 100%;
+    }
+
+    table td {
+      padding: 0 2.5px 10px 2.5px;
+    }
+
+    table .addr {
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 280px;
+      white-space: nowrap;
+    }
+
+    table .type::after,
+    table .data::after,
+    table .lock-name::after {
+      display: block;
+      color: #fff;
+      background-color: #e3e3e3;
+      font-size: 10px;
+      padding: 2px;
+      border-radius: 2px;
+    }
+
+
+    table .type::after {
+      content: 'Type';
+    }
+
+    table .data::after {
+      content: 'Data';
+    }
+
+    table .lock-name::after {
+      content: attr(data-name)
+    }
+
+    table .lock-name:after {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100px;
+      text-align: center;
+      color: #000;
+      background: #979797;
+    }
+
+    table .type {
+      position: relative;
+    }
+
+    table .type code {
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      padding: 10px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+      border-radius: 10px;
+      max-width: 200px;
+      overflow: auto;
+      transform: translate3d(-50%, -10px, 0) scale(0);
+      transform-origin: bottom center;
+      transition: 0.1s linear;
+    }
+
+    table .type:hover code {
+      transform: translate3d(-50%, 0, 0) scale(1);
+    }
+
+
+    table .amount {
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100px;
+    }
+
+    table .on::after {
+      background: var(--primary-green);
+    }
+
+
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    button {
+      width: 80px;
+      height: 30px;
+      border-radius: 2px;
+      outline: none;
+      border: none;
+      text-transform: capitalize;
+      margin-left: 10px;
+    }
+
+    button:hover {
+      filter: brightness(0.9);
+    }
+
+    button[type=submit] {
+      background-color: var(--primary-green);
+      color: #fff;
+    }
+
+    button:disabled {
+      filter: grayscale(0) !important;
+    }
+  </style>
+</head>
+
+<body>
+  <form>
+    <h1>Transaction Request</h1>
+    <div>Request from: <span id="request-origin" class="url">...</span></div>
+    <div>Meta Info: <span id="meta-info" class="meta-info">...</span></div>
+    <div class="tx">
+      <table id="inputs">
+        <thead>
+          <tr>
+            <th>Inputs</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <table id="outputs">
+        <thead>
+          <tr>
+            <th>Outputs</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="footer">
+      <button type="button">decline</button>
+      <button type="submit">approve</button>
+    </div>
+  </form>
+  <script>
+    const search = new URLSearchParams(location.search)
+    const txHash = search.get('tx-hash')
+    if (!txHash) {
+      window.alert('Invalid request')
+      window.close()
+    }
+
+    const channel = `sign:${txHash}`
+
+    const requestOrigin = document.querySelector("#request-origin")
+    const form = document.querySelector('form')
+    const submitBtn = document.querySelector('button[type=submit]')
+    const declineBtn = document.querySelector('button[type=button]')
+
+    const handleCancel = () => {
+      ipcRenderer?.send(channel, false)
+      window.close()
+    }
+
+    const handleSubmit = () => {
+      ipcRenderer?.send(channel, true)
+      submitBtn?.setAttribute('disabled', true)
+      declineBtn?.setAttribute('disabled', true)
+    }
+
+    const fillTable = (tableId, cells) => {
+      const cellTableBody = document.querySelector(`#${tableId} tbody`)
+      if (!cellTableBody) {
+        return
+      }
+      const rows = cells.map(cell => {
+        const row = document.createElement('tr')
+        const [addrTd, typeTd, dataTd, lockNameTd, amountTd] =
+          Array.from({ length: 5 }).map(() => document.createElement('td'))
+        row.append(addrTd, typeTd, dataTd, lockNameTd, amountTd)
+
+        addrTd.classList.add('addr')
+        addrTd.innerText = cell.addr.length >= 33 ? `${cell.addr.substr(0, 15)}...${cell.addr.slice(-15)}` : cell.addr
+
+        amountTd.classList.add('amount')
+        amountTd.innerText = cell.amount
+
+        typeTd.classList.add('type')
+        if (cell.type) {
+          const typeScript = document.createElement('code')
+          typeScript.innerText = Object.entries(cell.type)
+            .map(([name, value]) => `${name}: ${value}`)
+            .join('\n')
+          typeTd.append(typeScript)
+          typeTd.classList.add('on')
+        }
+
+        dataTd.classList.add('data')
+        if (cell.data) {
+          dataTd.classList.add('on')
+        }
+
+        lockNameTd.classList.add('lock-name')
+        lockNameTd.setAttribute('data-name', cell.lockName)
+        return row
+      })
+      cellTableBody.append(...rows)
+    }
+
+    declineBtn?.addEventListener('click', handleCancel)
+    submitBtn?.focus()
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      handleSubmit()
+    })
+
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'Escape') {
+        handleCancel()
+      }
+    })
+
+    ipcRenderer?.once(channel, (_e, params) => {
+      try {
+        const { tx, origin } = params
+        fillTable('inputs', tx.inputs)
+        fillTable('outputs', tx.outputs)
+        requestOrigin.innerText = origin
+      } catch (err) {
+        window.alert(err.message)
+        window.close()
+      }
+    })
+
+  </script>
+</body>
+
+</html>

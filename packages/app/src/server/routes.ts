@@ -1,5 +1,5 @@
 import { KeyperingAgency } from '@keypering/specs'
-import { handleAuth} from './controller'
+import { handleAuth, handleSign } from './controller'
 import { MethodNotFoundException } from '../exception'
 
 interface Options {
@@ -8,7 +8,9 @@ interface Options {
 
 }
 
-export default async (method: KeyperingAgency.Method, params: any, { origin, url }: Options) => {
+// TODO: overload types
+
+const routes = async (method: KeyperingAgency.Method, params: any, { origin, url }: Options) => {
   switch (method) {
     case 'auth': {
       return handleAuth(params, origin, url)
@@ -17,7 +19,7 @@ export default async (method: KeyperingAgency.Method, params: any, { origin, url
       return params
     }
     case 'sign_transaction': {
-      return params
+      return handleSign(params, url)
     }
     case 'send_transaction': {
       return params
@@ -31,3 +33,5 @@ export default async (method: KeyperingAgency.Method, params: any, { origin, url
   }
 }
 
+
+export default routes

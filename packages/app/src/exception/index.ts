@@ -68,6 +68,13 @@ export class AuthRejected extends Error {
   }
 }
 
+export class RequestRejected extends Error {
+  code: typeof KeyperingAgency.Code.Rejected = 1001
+  constructor() {
+    super(`Request of signing transaction is rejected`)
+  }
+}
+
 export class FileNotFoundException extends Error {
   constructor() {
     super(`File is not found`)
