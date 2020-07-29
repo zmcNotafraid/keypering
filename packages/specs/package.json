@@ -6,10 +6,13 @@
   "homepage": "https://github.com/Keith-CY/keypering/tree/master/packages/specs#readme",
   "license": "MIT",
   "files": [
-    "api.d.ts"
+    "lib/*"
   ],
-  "main": "api.d.ts",
-  "types": "api.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "yarn run tsc"
+  },
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"
   },

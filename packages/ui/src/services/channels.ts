@@ -1,24 +1,22 @@
-import type { Channel } from '@keypering/specs'
+import { Channel } from '@keypering/specs'
 
 const {
   ipcRenderer: { invoke },
 } = window
 
-export const channelName: { [key: string]: Channel.ChannelName } = {
-  createWallet: 'create-wallet',
-  getMnemonic: 'get-mnemonic',
-  importKeystore: 'import-keystore',
-  getAuthList: 'get-auth-list',
-  deleteAuth: 'delete-auth',
-}
-
 export const createWallet = (params: Channel.CreateWallet.Params): Promise<Channel.CreateWallet.Response> =>
-  invoke(channelName.createWallet, params)
-export const getMnemonic = (): Promise<Channel.GetMnemonic.Response> => invoke(channelName.getMnemonic)
+  invoke(Channel.ChannelName.CreateWallet, params)
+export const getMnemonic = (): Promise<Channel.GetMnemonic.Response> => invoke(Channel.ChannelName.GetMnemonic)
 export const importKeystore = (params: Channel.ImportKeystore.Params): Promise<Channel.ImportKeystore.Response> =>
-  invoke(channelName.importKeystore, params)
+  invoke(Channel.ChannelName.ImportKeystore, params)
 
-export const getAuthList = (): Promise<Channel.GetAuthList.Response> => invoke(channelName.getAuthList)
+export const getAuthList = (): Promise<Channel.GetAuthList.Response> => invoke(Channel.ChannelName.GetAuthList)
 
 export const revokeAuth = (params: Channel.DeleteAuth.Params): Promise<Channel.DeleteAuth.Response> =>
-  invoke(channelName.deleteAuth, params)
+  invoke(Channel.ChannelName.DeleteAuth, params)
+
+export const getSetting = (): Promise<Channel.GetSetting.Response> =>
+  invoke(Channel.ChannelName.GetSetting)
+
+export const updateSetting = (params: Channel.UpdateSetting.Params): Promise<Channel.UpdateSetting.Response> =>
+  invoke(Channel.ChannelName.UpdateSetting, params)
