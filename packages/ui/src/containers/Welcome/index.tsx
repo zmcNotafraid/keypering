@@ -14,7 +14,6 @@ const Welcome = () => (
       <Link to="/create_wallet/create">Create a Wallet</Link>
       <Link to="/create_wallet/import">Import Wallet Seed</Link>
       <Link to="/import_keystore">Import from Keystore</Link>
-      <Link to="/main">Main page</Link>
     </div>
   </div>
 )

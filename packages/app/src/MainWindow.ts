@@ -110,7 +110,7 @@ export default class MainWindow {
 
     ipcMain.handle(Channel.ChannelName.BackupWallet, async _e => {
       try {
-        const result = JSON.stringify(await walletManager.exportKeystore())
+        const result = await walletManager.exportKeystore()
         return { code: Channel.Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
