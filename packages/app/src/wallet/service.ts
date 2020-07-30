@@ -1,20 +1,29 @@
 import path from 'path'
 import fs from 'fs'
-import type { Channel } from '@keypering/specs'
+import { Channel } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
 import { getDataPath } from '../utils'
 import { IncorrectPasswordException, WalletNotFoundException, CurrentWalletNotSetException, RequestPasswordRejected, DirectoryNotFound } from '../exception'
 import { deleteAuthList } from '../auth'
 import PasswordWindow from './PasswordWindow'
 import { dialog } from 'electron'
+import MainWindow from '../MainWindow'
 
 const dataPath = getDataPath('wallet')
 const indexPath = path.resolve(dataPath, 'index.json')
+
+const broadcast = (walletIndex: ReturnType<typeof getWalletIndex>) => {
+  MainWindow.broadcast<{ current: string; wallets: Channel.WalletProfile[] }>(
+    Channel.ChannelName.GetWalletIndex,
+    walletIndex
+  )
+}
 
 const getKeystorePath = (id: string) => path.resolve(dataPath, `${id}.json`)
 
 const udpateWalletIndex = (current: string, wallets: Channel.WalletProfile[]) => {
   fs.writeFileSync(indexPath, JSON.stringify({ current, wallets }))
+  broadcast({ current, wallets })
 }
 
 export const getWalletIndex = (): { current: string, wallets: Channel.WalletProfile[] } => {
@@ -93,9 +102,11 @@ export const deleteWallet = async () => {
   }
 
   const newWallets = wallets.filter(w => w.id !== current)
-  const newCurrent = newWallets.length > 0 ? newWallets[0].id : undefined
+  const newCurrent = newWallets.length > 0 ? newWallets[0].id : ''
   if (newCurrent) {
     udpateWalletIndex(newCurrent, newWallets)
+  } else {
+    broadcast({ current: newCurrent, wallets: newWallets })
   }
   return newCurrent
 }

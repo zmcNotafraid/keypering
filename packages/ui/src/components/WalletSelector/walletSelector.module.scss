@@ -1,0 +1,28 @@
+.container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #ededed;
+}
+
+.navs {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  
+
+  button {
+    padding: 12px;
+    color: #000000;
+    font-size: 15px;
+  }
+
+  button:hover {
+    color: var(--primary-green);
+  }
+
+}

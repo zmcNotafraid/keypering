@@ -5,6 +5,7 @@ import * as walletManager from './wallet'
 import * as settingManager from './setting'
 import * as authManager from './auth'
 import * as txManager from './tx'
+import { getWalletIndex } from './wallet'
 
 export default class MainWindow {
   static id: number | undefined
@@ -27,11 +28,21 @@ export default class MainWindow {
     return this.#win
   }
 
+  #firstRouter = () => {
+    try {
+      const {current }= getWalletIndex()
+      return current ? 'main' : 'welcome'
+    } catch (error) {
+      console.error(error)
+    }
+    return 'welcome'
+  }
+
   #filePath =
     process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000/#welcome'
-      : path.join('file://', __dirname, '..', 'public', 'ui', 'index.html#welcome')
-
+      ? `http://localhost:3000/#${this.#firstRouter()}`
+      : path.join('file://', __dirname, '..', 'public', 'ui', `index.html#${this.#firstRouter()}`)
+      
   public static broadcast = <P = any>(channel: Channel.ChannelName, params: P) => {
     if (MainWindow.id === undefined) {
       return

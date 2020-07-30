@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { backupWallet, deleteWallet } from '../../services/channels'
 import { Routes, isSuccessResponse } from '../../utils'
 
-const modalRoot = document.getElementById('dialog') as HTMLDivElement
+const dialogRoot = document.getElementById('dialog') as HTMLDivElement
 
 const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function }) => {
   const element = document.createElement('div')
@@ -36,9 +36,9 @@ const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function })
   }
 
   useEffect(() => {
-    modalRoot.appendChild(element)
+    dialogRoot.appendChild(element)
     return () => {
-      modalRoot.removeChild(element)
+      dialogRoot.removeChild(element)
     }
   }, [element])
 
