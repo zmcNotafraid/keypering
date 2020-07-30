@@ -28,7 +28,7 @@ export default class MainWindow {
     return this.#win
   }
 
-  _firstRouter = () => {
+  #firstRouter = () => {
     try {
       const {current }= getWalletIndex()
       return current ? 'main' : 'welcome'
@@ -40,8 +40,8 @@ export default class MainWindow {
 
   #filePath =
     process.env.NODE_ENV === 'development'
-      ? `http://localhost:3000/#${this._firstRouter()}`
-      : path.join('file://', __dirname, '..', 'public', 'ui', `index.html#${this._firstRouter()}`)
+      ? `http://localhost:3000/#${this.#firstRouter()}`
+      : path.join('file://', __dirname, '..', 'public', 'ui', `index.html#${this.#firstRouter()}`)
       
   public static broadcast = <P = any>(channel: Channel.ChannelName, params: P) => {
     if (MainWindow.id === undefined) {
