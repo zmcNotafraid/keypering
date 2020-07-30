@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { backupWallet, deleteWallet } from '../../services/channels'
 import { Routes, isSuccessResponse } from '../../utils'
 
-const modalRoot = document.getElementById('root-modal') as HTMLDivElement
+const modalRoot = document.getElementById('dialog') as HTMLDivElement
 
 const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function }) => {
   const element = document.createElement('div')
