@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import styles from './walletList.module.scss'
+import styles from './walletSelector.module.scss'
 import { createPortal } from 'react-dom'
 import { Channel } from '@keypering/specs'
 import { getWalletIndex, selectWallet } from '../../services/channels'
@@ -13,20 +13,12 @@ const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.Walle
   return current && wallets.length > 0
 }
 
-const WalletList = ({ show, setShow }: { show?: boolean; setShow: Function }) => {
+const WalletSelector = ({ show, setShow }: { show?: boolean; setShow: Function }) => {
   const element = document.createElement('div')
   const [walletIndex, setWalletIndex] = useState<{ current: string; wallets: Channel.WalletProfile[] }>({
     current: '',
     wallets: [],
   })
-
-  const fetchWalletIndex = () => {
-    getWalletIndex().then(res => {
-      if (isSuccessResponse(res) && checkWalletIndex(res.result)) {
-        setWalletIndex(res.result)
-      }
-    })
-  }
 
   const handleSelectWallet = (id: string) => {
     selectWallet({id}).then(res => {
@@ -66,4 +58,4 @@ const WalletList = ({ show, setShow }: { show?: boolean; setShow: Function }) =>
       )
     : null
 }
-export default WalletList
+export default WalletSelector
