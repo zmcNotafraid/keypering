@@ -10,6 +10,7 @@
   }
 }
 
+
 .nav {
   display: flex;
   align-items: center;
@@ -17,16 +18,29 @@
   padding: 5px 16px;
   background-color: #000000;
 
-  h1 {
+  .title {
+    display: flex;
     flex: 1;
     width: 100%;
-    text-align: center;
-    padding-left: 30px;
-    color: #fff;
-    font-size: 28px;
+    align-items: center;
+    justify-content: center;
+
+    h1 {
+      color: #fff;
+      font-size: 28px;
+    }
+
+    > img {
+      padding-left: 6px;
+      padding-top: 5px;
+      width: 24px;
+      height: 24px;
+      font-weight: 600;
+    }
   }
 
-  img {
+  > img {
     width: 26px;
   }
 }
+

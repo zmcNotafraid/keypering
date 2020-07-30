@@ -7,7 +7,9 @@ import { isSuccessResponse, Routes } from '../../utils'
 import WalletManager from '../WalletManager'
 import MenuIcon from '../../assets/menu.png'
 import ManagerIcon from '../../assets/manager.png'
+import DropdownIcon from '../../assets/dropdown.png'
 import MainSidebar from '../MainSidebar'
+import WalletList from '../WalletList'
 
 const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
   const { current, wallets } = walletIndex
@@ -28,10 +30,12 @@ const MainHeader = () => {
   })
   const [showWalletManager, setShowWalletManager] = useState(false)
   const [showSidebar, setShowSidebar] = useState(false)
+  const [showWalletList, setShowWalletList] = useState(false)
   const history = useHistory()
 
   const openWalletManager = () => setShowWalletManager(true)
   const openSidebar = () => setShowSidebar(true)
+  const toggleWalletList = () => setShowWalletList(!showWalletList)
   
   useEffect(() => {
     const { ipcRenderer } = window
@@ -68,7 +72,11 @@ const MainHeader = () => {
       <div className={styles.nav}>
         <img onClick={openSidebar} src={MenuIcon} />
         <MainSidebar show={showSidebar} setShow={setShowSidebar} />
-        <h1>{getCurrentWalletName(walletIndex)}</h1>
+        <div className={styles.title}>
+          <h1>{getCurrentWalletName(walletIndex)}</h1>
+          <img src={DropdownIcon} onClick={toggleWalletList} />
+          <WalletList show={showWalletList} setShow={setShowWalletList} />
+        </div>
         <img onClick={openWalletManager} src={ManagerIcon} />
         <WalletManager show={showWalletManager} setShow={setShowWalletManager} />
       </div>

@@ -12,6 +12,9 @@ export const importKeystore = (params: Channel.ImportKeystore.Params): Promise<C
 
 export const getWalletIndex = (): Promise<Channel.GetWalletIndex.Response> => invoke(Channel.ChannelName.GetWalletIndex)
 
+export const selectWallet = (params: Channel.SelectWallet.Params): Promise<Channel.SelectWallet.Response> =>
+  invoke(Channel.ChannelName.SelectWallet, params)
+
 export const updateWalletName = (params: Channel.UpdateWallet.Params): Promise<Channel.UpdateWallet.Response> =>
   invoke(Channel.ChannelName.UpdateWallet, params)
 

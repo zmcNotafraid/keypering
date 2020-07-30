@@ -1,0 +1,69 @@
+import React, { useEffect } from 'react'
+import styles from './walletList.module.scss'
+import { createPortal } from 'react-dom'
+import { Channel } from '@keypering/specs'
+import { getWalletIndex, selectWallet } from '../../services/channels'
+import { isSuccessResponse } from '../../utils'
+import { useState } from 'react'
+
+const dialogRoot = document.getElementById('dialog') as HTMLDivElement
+
+const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
+  const { current, wallets } = walletIndex
+  return current && wallets.length > 0
+}
+
+const WalletList = ({ show, setShow }: { show?: boolean; setShow: Function }) => {
+  const element = document.createElement('div')
+  const [walletIndex, setWalletIndex] = useState<{ current: string; wallets: Channel.WalletProfile[] }>({
+    current: '',
+    wallets: [],
+  })
+
+  const fetchWalletIndex = () => {
+    getWalletIndex().then(res => {
+      if (isSuccessResponse(res) && checkWalletIndex(res.result)) {
+        setWalletIndex(res.result)
+      }
+    })
+  }
+
+  const handleSelectWallet = (id: string) => {
+    selectWallet({id}).then(res => {
+      if (isSuccessResponse(res)) {
+        setShow(false)
+      }
+    })
+  }
+
+  useEffect(() => {
+    getWalletIndex().then(res => {
+      if (isSuccessResponse(res) && checkWalletIndex(res.result)) {
+        setWalletIndex(res.result)
+      }
+    })
+  }, [setWalletIndex])
+
+  useEffect(() => {
+    dialogRoot.appendChild(element)
+    return () => {
+      dialogRoot.removeChild(element)
+    }
+  }, [element])
+
+  return show
+    ? createPortal(
+        <div className={styles.container} onClick={() => setShow(false)}>
+          <div className={styles.navs}>
+            {walletIndex.wallets.map(wallet => (
+              <button key={wallet.name} onClick={() => {handleSelectWallet(wallet.id)}}>
+                {wallet.name}
+              </button>
+            ))}
+          </div>
+        </div>,
+        element
+      )
+    : null
+}
+export default WalletList
