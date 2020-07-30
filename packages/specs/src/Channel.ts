@@ -9,6 +9,7 @@ export enum ChannelName {
   SelectWallet = 'select-wallet',
   DeleteWallet = 'delete-wallet',
   UpdateWallet = 'update-wallet',
+  BackupWallet = 'backup-wallet',
   CheckCurrentPassword = 'check-current-password',
   GetMnemonic = 'get-mnemonic',
   GetSetting = 'get-setting',
@@ -61,11 +62,6 @@ export namespace ImportKeystore {
 }
 
 export namespace DeleteWallet {
-  export interface Params {
-    id: string
-    password: string
-  }
-
   export type Response = SuccessResponse<boolean> | ErrorResponse
 }
 
@@ -85,10 +81,24 @@ export namespace UpdateWallet {
   export type Response = SuccessResponse<boolean> | ErrorResponse
 }
 
+export namespace BackupWallet {
+  export type Response = SuccessResponse<boolean> | ErrorResponse
+}
+
 export namespace CheckCurrentPassword {
   export interface Params {
     password: string
   }
+
+  export type Response = SuccessResponse<boolean> | ErrorResponse
+}
+
+export namespace SubmitPassword {
+  export interface Params {
+    currentPassword: string
+    newPassword: string
+  }
+
   export type Response = SuccessResponse<boolean> | ErrorResponse
 }
 

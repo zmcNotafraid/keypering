@@ -1,7 +1,7 @@
 import path from 'path'
 import { BrowserWindow } from 'electron'
 
-export default class RequestWindow {
+export default class PasswordWindow {
   #win = new BrowserWindow({
     width: 300,
     height: 175,
@@ -45,6 +45,10 @@ export default class RequestWindow {
 
   public load = () => {
     this.#win.loadURL(this.#filePath)
+  }
+
+   public close = () => {
+    this.#win.close()
   }
 
   public response = (): Promise<boolean | string> => {

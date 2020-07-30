@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 10px;
+
+  h2 {
+    margin-bottom: 30px;
+  }
+}
+
+.buttons {
+  grid-area: buttons;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  button {
+    margin-left: 20px;
+    padding: 6px 0;
+    width: 80px;
+    color: #fff;
+    &:first-child {
+      background: var(--cancel);
+      color: #000;
+    }
+
+    &:last-child {
+      background: var(--primary-green);
+      color: #fff;
+    }
+  }
+}

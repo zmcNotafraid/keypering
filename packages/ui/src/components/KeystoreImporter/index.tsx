@@ -48,8 +48,7 @@ const KeystoreImporter = () => {
       importKeystore({ name: form.name, keystorePath: form.keystore, password: form.password })
         .then(res => {
           if (isSuccessResponse(res)) {
-            history.push(Routes.HomePage)
-            window.alert(res.code)
+            history.push(Routes.Main)
           }
         })
         .finally(() => {

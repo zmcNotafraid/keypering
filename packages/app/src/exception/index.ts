@@ -86,3 +86,17 @@ export class NetworkNotFoundException extends Error {
     super(`Network is not found`)
   }
 }
+
+export class RequestPasswordRejected extends Error {
+  code = KeyperingAgency.Code.Rejected
+  constructor() {
+    super(`Request of inputting password is rejected`)
+  }
+}
+
+export class DirectoryNotFound extends Error {
+  code = KeyperingAgency.Code.Rejected
+  constructor() {
+    super(`Directory or file are not found`)
+  }
+}

@@ -1,13 +1,17 @@
 import React from 'react'
 import AuthList from '../../components/AuthList'
+import styles from './main.module.scss'
+import MainHeader from '../../components/MainHeader'
 
-const Main = () => (
-  <div>
-    <h1>Main</h1>
-    <div>
-      <AuthList />
+const Main = () => {
+  return (
+    <div className={styles.container}>
+      <MainHeader />
+      <div>
+        <AuthList />
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default Main

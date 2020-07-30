@@ -88,9 +88,9 @@ export default class MainWindow {
       }
     })
 
-    ipcMain.handle(Channel.ChannelName.DeleteWallet, (_e, params: Channel.DeleteWallet.Params) => {
+    ipcMain.handle(Channel.ChannelName.DeleteWallet, _e => {
       try {
-        const result = walletManager.deleteWallet(params)
+        const result = walletManager.deleteWallet()
         return { code: Channel.Code.Success, result }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
@@ -107,6 +107,17 @@ export default class MainWindow {
         return { code: Channel.Code.Error, message: err.message }
       }
     })
+
+    ipcMain.handle(Channel.ChannelName.BackupWallet, async _e => {
+      try {
+        const result = await walletManager.exportKeystore()
+        return { code: Channel.Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Channel.Code.Error, message: err.message }
+      }
+    })
+
 
     ipcMain.handle(Channel.ChannelName.CheckCurrentPassword, (_e, params: Channel.CheckCurrentPassword.Params) => {
       try {
@@ -208,8 +219,15 @@ export default class MainWindow {
       }
     )
 
-    ipcMain.handle(Channel.ChannelName.SubmitPassword, () => {
-      // TODO:
+    ipcMain.handle(Channel.ChannelName.SubmitPassword, (_e, params: Channel.SubmitPassword.Params) => {
+      const { currentPassword, newPassword } = params
+      try {
+        const result = walletManager.updateCurrentPassword(currentPassword, newPassword)
+        return { code: Channel.Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Channel.Code.Error, message: err.message }
+      }
     })
   }
 }
