@@ -29,8 +29,8 @@ export default class MainWindow {
 
   #filePath =
     process.env.NODE_ENV === 'development'
-      ? 'http://localhost:3000/#welcome'
-      : path.join('file://', __dirname, '..', 'public', 'ui', 'index.html#welcome')
+      ? 'http://localhost:3000/#main'
+      : path.join('file://', __dirname, '..', 'public', 'ui', 'index.html#main')
 
   public static broadcast = <P = any>(channel: Channel.ChannelName, params: P) => {
     if (MainWindow.id === undefined) {
