@@ -5,6 +5,9 @@ import { useHistory } from 'react-router'
 import { Channel } from '@keypering/specs'
 import { isSuccessResponse, Routes } from '../../utils'
 import WalletManager from '../WalletManager'
+import MenuIcon from '../../assets/menu.png'
+import ManagerIcon from '../../assets/manager.png'
+import MainSidebar from '../MainSidebar'
 
 const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
   const { current, wallets } = walletIndex
@@ -24,9 +27,11 @@ const MainHeader = () => {
     wallets: [],
   })
   const [showWalletManager, setShowWalletManager] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(false)
   const history = useHistory()
 
-  const openWalletManager = () => setShowWalletManager(!showWalletManager)
+  const openWalletManager = () => setShowWalletManager(true)
+  const openSidebar = () => setShowSidebar(true)
   
   useEffect(() => {
     const { ipcRenderer } = window
@@ -61,8 +66,10 @@ const MainHeader = () => {
   return (
     <div className={styles.container}>
       <div className={styles.nav}>
+        <img onClick={openSidebar} src={MenuIcon} />
+        <MainSidebar show={showSidebar} setShow={setShowSidebar} />
         <h1>{getCurrentWalletName(walletIndex)}</h1>
-        <button onClick={openWalletManager}>Manager</button>
+        <img onClick={openWalletManager} src={ManagerIcon} />
         <WalletManager show={showWalletManager} setShow={setShowWalletManager} />
       </div>
     </div>

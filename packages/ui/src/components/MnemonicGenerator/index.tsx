@@ -38,10 +38,16 @@ const MnemonicGenerator = ({ onNext }: {onNext: (mnemonic: string) => void}) => 
         <AlertCircleIcon size={12} />
         <span>Write down your wallet seed and save it in a safe place</span>
       </div>
-      <button className={styles.regenerate} type="button" aria-label="regenerate" onClick={updateMnemonic}>Regenerate</button>
+      <button className={styles.regenerate} type="button" aria-label="regenerate" onClick={updateMnemonic}>
+        Regenerate
+      </button>
       <div className={styles.buttons}>
-        <button type="button" onClick={handleGoBack}>Cancel</button>
-        <button type="button" onClick={hadnleGoNext}>Next</button>
+        <button type="button" onClick={handleGoBack}>
+          Cancel
+        </button>
+        <button type="button" onClick={hadnleGoNext}>
+          Next
+        </button>
       </div>
     </div>
   )
