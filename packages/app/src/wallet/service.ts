@@ -3,7 +3,7 @@ import fs from 'fs'
 import type { Channel } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
 import { getDataPath } from '../utils'
-import { IncorrectPasswordException, WalletNotFoundException, CurrentWalletNotSetException, RequestPasswordRejected, SelectDirectoryRejected } from '../exception'
+import { IncorrectPasswordException, WalletNotFoundException, CurrentWalletNotSetException, RequestPasswordRejected, DirectoryNotFound } from '../exception'
 import { deleteAuthList } from '../auth'
 import PasswordWindow from './PasswordWindow'
 import { dialog } from 'electron'
@@ -77,7 +77,7 @@ export const deleteWallet = async () => {
   if (!current) {
     throw new CurrentWalletNotSetException()
   }
-  const pwdWindow = new PasswordWindow("Password", 'Input Password')
+  const pwdWindow = new PasswordWindow("Password", 'Enter password to delete wallet')
   const approve = await pwdWindow.response()
   if (!approve) {
     throw new RequestPasswordRejected()
@@ -106,13 +106,13 @@ export const exportKeystore = async() => {
     throw new CurrentWalletNotSetException()
   }
   const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
-  const pwdWindow = new PasswordWindow("Password", 'Input Password')
+  const pwdWindow = new PasswordWindow("Password", 'Enter password to export keystore')
   const approve = await pwdWindow.response()
   if (!approve) {
     throw new RequestPasswordRejected()
   }
   pwdWindow.close()
-  const {filePath, canceled} = (await dialog.showSaveDialog({
+  const {filePath} = (await dialog.showSaveDialog({
     filters: [{
         name: 'keystore',
         extensions: ['json'] 
@@ -121,8 +121,8 @@ export const exportKeystore = async() => {
     title: 'Export',
     buttonLabel: 'Export'
   }))
-  if (canceled || typeof filePath !== 'string') {
-    throw new SelectDirectoryRejected()
+  if (typeof filePath !== 'string') {
+    throw new DirectoryNotFound()
   }
   fs.writeFileSync(filePath, JSON.stringify(keystore), 'utf8')
   return true

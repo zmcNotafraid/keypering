@@ -94,9 +94,9 @@ export class RequestPasswordRejected extends Error {
   }
 }
 
-export class SelectDirectoryRejected extends Error {
+export class DirectoryNotFound extends Error {
   code = KeyperingAgency.Code.Rejected
   constructor() {
-    super(`Request of selecting directory is rejected`)
+    super(`Directory or file are not found`)
   }
 }
