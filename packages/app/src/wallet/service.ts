@@ -112,7 +112,7 @@ export const exportKeystore = async() => {
     throw new RequestPasswordRejected()
   }
   pwdWindow.close()
-  const {filePath} = (await dialog.showSaveDialog({
+  const {filePath, canceled} = (await dialog.showSaveDialog({
     filters: [{
         name: 'keystore',
         extensions: ['json'] 
@@ -121,6 +121,9 @@ export const exportKeystore = async() => {
     title: 'Export',
     buttonLabel: 'Export'
   }))
+  if (canceled) {
+    return false
+  }
   if (typeof filePath !== 'string') {
     throw new DirectoryNotFound()
   }
