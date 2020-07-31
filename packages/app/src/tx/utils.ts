@@ -1,3 +1,4 @@
+import fetch from 'node-fetch'
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { getSetting } from '../setting'
 import systemScripts from '../setting/scripts'
@@ -29,7 +30,11 @@ interface GetTxCellInfoParams extends Pick<ReturnType<typeof getSetting>, 'locks
 export const getAddrByScript = (lock: CKBComponents.Script) => {
   const ckb = new CKB()
   const { networkId } = getSetting()
-  const prefix = networkId === MAINNET_ID ? ckb.utils.AddressPrefix.Mainnet : ckb.utils.AddressPrefix.Testnet
+
+  const prefix = networkId === MAINNET_ID ?
+    ckb.utils.AddressPrefix.Mainnet :
+    ckb.utils.AddressPrefix.Testnet
+
   const secp256k1Script = systemScripts.get('secp256k1')
   const isSecp256k1Lock = lock.codeHash === secp256k1Script?.codeHash && lock.hashType === secp256k1Script?.hashType
   if (isSecp256k1Lock) {
@@ -42,7 +47,9 @@ export const getAddrByScript = (lock: CKBComponents.Script) => {
     return ckb.utils.fullPayloadToAddress({
       args: lock.args,
       prefix,
-      type: lock.hashType === 'data' ? ckb.utils.AddressType.DataCodeHash : ckb.utils.AddressType.TypeCodeHash,
+      type: lock.hashType === 'data' ?
+        ckb.utils.AddressType.DataCodeHash :
+        ckb.utils.AddressType.TypeCodeHash,
       codeHash: lock.codeHash,
     })
   }
@@ -52,24 +59,50 @@ export const getTxCellInfo = ({ cell, data, locks }: GetTxCellInfoParams): TxCel
   const { capacity, lock, type = null } = cell
   const addr = getAddrByScript(lock)
   const lockName = locks[`${lock.codeHash}:${lock.hashType}`]?.name ?? 'Unknown'
-  return { addr, lockName, type, data: data === '0x' ? null : data, amount: capacity }
+  return {
+    addr,
+    lockName,
+    type,
+    data: data === '0x'
+      ? null
+      : data,
+    amount: capacity,
+  }
 }
 
 export const getOutputsOfInputs = async ({
   inputs,
-  nodeUrl,
+  indexerUrl,
 }: {
   inputs: CKBComponents.CellInput[]
-  nodeUrl: string
+  indexerUrl: string
 }): Promise<{ outputs: CKBComponents.CellOutput[]; data: string[] }> => {
-  const ckb = new CKB(nodeUrl)
+  const rpcUrl = [...indexerUrl.split('/').slice(0, -1), 'rpc'].join('/')
+  const ckb = new CKB(rpcUrl)
   const batchRequest = ckb.rpc.createBatchRequest()
   inputs.forEach(input => {
     batchRequest.add('getTransaction', input.previousOutput!.txHash)
   })
-  const inputCellTxList: CKBComponents.Transaction[] = await batchRequest
-    .exec()
-    .then(list => list.map(({ transaction }) => transaction))
+  // axios cannot handle https
+  const payload = inputs.map((input, i) => {
+    return {
+      id: i,
+      jsonrpc: '2.0',
+      method: 'get_transaction',
+      params: [input.previousOutput!.txHash]
+    }
+  })
+
+  const inputCellTxList: CKBComponents.Transaction[] = await fetch(rpcUrl, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': "application/json"
+    }
+  })
+    .then(res => res.json())
+    .then(resList => resList.map((res: any) => res.result.transaction))
+    .then(txList => txList.map(ckb.rpc.resultFormatter.toTransaction))
   const outputs = inputCellTxList.map((tx, i) => tx.outputs[i])
   const data = inputCellTxList.map((tx, i) => tx.outputsData[i] ?? '')
   return { outputs, data }
@@ -82,8 +115,8 @@ export const getTxProfile = async (
 ): Promise<TxInfo> => {
   const meta = description
   const { locks, networks, networkId } = getSetting()
-  const nodeUrl = networks[networkId]?.url
-  const outputsOfInputs = await getOutputsOfInputs({ inputs: tx.inputs, nodeUrl })
+  const indexerUrl = networks[networkId]?.url
+  const outputsOfInputs = await getOutputsOfInputs({ inputs: tx.inputs, indexerUrl })
   const inputs = outputsOfInputs.outputs.map((output, i) =>
     getTxCellInfo({ cell: output, data: outputsOfInputs.data[i], locks })
   )

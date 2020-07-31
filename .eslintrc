@@ -70,7 +70,8 @@
     "require-atomic-updates": [0],
     "@typescript-eslint/explicit-module-boundary-types": [0],
     "@typescript-eslint/no-explicity-any": [0],
-    "@typescript-eslint/no-namespace": [0]
+    "@typescript-eslint/no-namespace": [0],
+    "multiline-ternary": [2, "always"]
   },
   "globals": {
     "BigInt": "readonly"
