@@ -1,0 +1,74 @@
+@mixin ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.container {
+  padding: 0 10px;
+  font-size: 0.875rem;
+}
+
+.item {
+  display: grid;
+  grid-template: 'originLabel originValue originValue' auto 'metaLabel metaValue metaValue' auto 'status status explorer' auto / auto 1fr auto;
+  gap: 14px 8px;
+  padding: 14px 10px;
+  border-bottom: 1px solid #ededed;
+}
+
+.originLabel {
+  grid-area: originLabel;
+  font-weight: bold;
+}
+
+.originValue {
+  @include ellipsis;
+  grid-area: originValue;
+  font-weight: bold;
+  color: var(--primary-green);
+}
+
+.metaLabel {
+  grid-area: metaLabel;
+}
+
+.metaValue {
+  @include ellipsis;
+  grid-area: metaValue;
+}
+
+.time {
+  grid-area: status;
+}
+
+.status {
+  grid-area: status;
+  font-size: 0.75rem;
+  time {
+    padding-right: 10px;
+  }
+  span {
+    color: #009afd;
+    letter-spacing: 0.2px;
+    &[data-is-approved='false'] {
+      color: #d50000;
+    }
+  }
+}
+
+.explorer {
+  grid-area: explorer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-green);
+  padding: 0;
+  margin: 0;
+  border-radius: 50%;
+  &[hidden] {
+    display: none;
+  }
+}

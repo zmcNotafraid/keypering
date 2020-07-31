@@ -1,8 +1,8 @@
 import fs from 'fs'
-import { privateToPublic } from './Keychain'
 import crypto from 'crypto'
 import { Keccak } from 'sha3'
 import { v4 as uuid } from 'uuid'
+import { privateToPublic } from './Keychain'
 
 import { UnsupportedCipherException, IncorrectPasswordException } from '../exception'
 

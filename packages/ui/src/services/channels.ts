@@ -34,3 +34,9 @@ export const getSetting = (): Promise<Channel.GetSetting.Response> => invoke(Cha
 
 export const updateSetting = (params: Channel.UpdateSetting.Params): Promise<Channel.UpdateSetting.Response> =>
   invoke(Channel.ChannelName.UpdateSetting, params)
+
+export const getTxList = (): Promise<Channel.GetTxList.Response> =>
+  invoke(Channel.ChannelName.GetTxList)
+
+export const openInBrowser = (params: Channel.OpenInBrowser.Params): Promise<Channel.OpenInBrowser.Response> =>
+  invoke(Channel.ChannelName.OpenInBrowser, params)

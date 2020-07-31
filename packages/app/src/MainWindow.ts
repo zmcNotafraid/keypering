@@ -1,5 +1,5 @@
 import path from 'path'
-import { BrowserWindow, ipcMain, dialog } from 'electron'
+import { BrowserWindow, ipcMain, dialog, shell } from 'electron'
 import { Channel } from '@keypering/specs'
 import * as walletManager from './wallet'
 import * as settingManager from './setting'
@@ -185,13 +185,21 @@ export default class MainWindow {
       }
     )
 
-    ipcMain.handle(Channel.ChannelName.GetTxList, () => {
-      // TODO:
+    ipcMain.handle(Channel.ChannelName.GetTxList, (): Channel.GetTxList.Response => {
+      try {
+        const { current } = walletManager.getWalletIndex()
+        const { networkId } = settingManager.getSetting()
+        const result = txManager.getTxList(current, networkId)
+        return { code: Channel.Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Channel.Code.Error, message: err.message }
+      }
     })
 
     ipcMain.handle(Channel.ChannelName.RequestSign, async (_e, params: Channel.RequestSign.Params) => {
       try {
-        const result = await txManager.requestSignTx({ ...params, origin: 'Keypering' })
+        const result = await txManager.requestSignTx({ ...params, referer: 'Keypering', description: '' })
         return { code: Channel.Code.Success, result }
       } catch (err) {
         return { code: err.code || Channel.Code.Error, message: err.message }
@@ -239,6 +247,14 @@ export default class MainWindow {
         dialog.showErrorBox('Error', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
+    })
+
+    ipcMain.handle(Channel.ChannelName.OpenInBrowser, (_e, params: Channel.OpenInBrowser.Params) => {
+      if (params.url) {
+        shell.openExternal(params.url)
+        return { code: Channel.Code.Success, result: true }
+      }
+      return { code: Channel.Code.Error, message: 'Url is required' }
     })
   }
 }

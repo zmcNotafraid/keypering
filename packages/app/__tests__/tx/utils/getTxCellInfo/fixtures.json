@@ -1,0 +1,98 @@
+{
+  "has lock name": {
+    "params": [
+      {
+        "cell": {
+          "capacity": "123456",
+          "lock": {
+            "hashType": "type",
+            "codeHash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+            "args": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8"
+          }
+        },
+        "data": "code data",
+        "locks": {
+          "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8:type": {
+            "name": "secp256k1",
+            "enabled": true,
+            "system": true
+          }
+        }
+      }
+    ],
+    "expected": {
+      "addr": "ckb1qyqfh4lqdulv7jlq7t7dyxyty0cmnlxg3ew5kedgvda3wu3mhk3ue6qn4xtjt",
+      "amount": "123456",
+      "data": "code data",
+      "lockName": "secp256k1",
+      "type": null
+    }
+  },
+  "has unknown lock name": {
+    "params": [
+      {
+        "cell": {
+          "capacity": "123456",
+          "lock": {
+            "hashType": "type",
+            "codeHash": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "args": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8"
+          }
+        },
+        "data": "code data",
+        "locks": {
+          "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8:type": {
+            "name": "secp256k1",
+            "enabled": true,
+            "system": true
+          }
+        }
+      }
+    ],
+    "expected": {
+      "addr": "ckb1qnhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwax7huphnan6ture0e5sc3v3lrw0uez896jm94p3hk9mj8w768n8g8m67hc",
+      "amount": "123456",
+      "data": "code data",
+      "lockName": "Unknown",
+      "type": null
+    }
+  },
+  "has type script": {
+    "params": [
+      {
+        "cell": {
+          "capacity": "123456",
+          "lock": {
+            "hashType": "type",
+            "codeHash": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "args": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8"
+          },
+          "type": {
+            "hashType": "data",
+            "codeHash": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "args": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8"
+          }
+        },
+        "data": "code data",
+        "locks": {
+          "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8:type": {
+            "name": "secp256k1",
+            "enabled": true,
+            "system": true
+          }
+        }
+      }
+    ],
+    "expected": {
+      "addr": "ckb1qnhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwax7huphnan6ture0e5sc3v3lrw0uez896jm94p3hk9mj8w768n8g8m67hc",
+      "amount": "123456",
+      "data": "code data",
+      "lockName": "Unknown",
+      "type": {
+        "codeHash": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "hashType": "data",
+        "args": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8"
+      }
+    }
+  }
+}

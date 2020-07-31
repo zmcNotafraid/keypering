@@ -1,9 +1,16 @@
 import path from 'path'
 import fs from 'fs'
-import { Channel } from '@keypering/specs'
+import { Channel, KeyperingAgency } from '@keypering/specs'
+import CKB from '@nervosnetwork/ckb-sdk-core'
 import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
 import { getDataPath } from '../utils'
-import { IncorrectPasswordException, WalletNotFoundException, CurrentWalletNotSetException, RequestPasswordRejected, DirectoryNotFound } from '../exception'
+import {
+  IncorrectPasswordException,
+  WalletNotFoundException,
+  CurrentWalletNotSetException,
+  RequestPasswordRejected,
+  DirectoryNotFound,
+} from '../exception'
 import { deleteAuthList } from '../auth'
 import PasswordWindow from './PasswordWindow'
 import { dialog } from 'electron'
@@ -26,7 +33,7 @@ const udpateWalletIndex = (current: string, wallets: Channel.WalletProfile[]) =>
   broadcast({ current, wallets })
 }
 
-export const getWalletIndex = (): { current: string, wallets: Channel.WalletProfile[] } => {
+export const getWalletIndex = (): { current: string; wallets: Channel.WalletProfile[] } => {
   if (fs.existsSync(indexPath)) {
     return JSON.parse(fs.readFileSync(indexPath, 'utf8'))
   } else {
@@ -34,7 +41,7 @@ export const getWalletIndex = (): { current: string, wallets: Channel.WalletProf
   }
 }
 
-export const addKeystore = ({ name, password, keystore }: { name: string, password: string, keystore: Keystore }) => {
+export const addKeystore = ({ name, password, keystore }: { name: string; password: string; keystore: Keystore }) => {
   const { wallets, current } = getWalletIndex()
 
   if (wallets.some(w => w.name === name)) {
@@ -67,7 +74,7 @@ export const selectWallet = (id: string) => {
   udpateWalletIndex(id, wallets)
 }
 
-export const updateWallet = ({ id, name }: { id: string, name: string }) => {
+export const updateWallet = ({ id, name }: { id: string; name: string }) => {
   const { wallets, current } = getWalletIndex()
   if (wallets.some(w => w.name === name)) {
     throw new Error(`Wallet name is used`)
@@ -86,7 +93,7 @@ export const deleteWallet = async () => {
   if (!current) {
     throw new CurrentWalletNotSetException()
   }
-  const pwdWindow = new PasswordWindow("Password", 'Enter password to delete wallet')
+  const pwdWindow = new PasswordWindow('Password', 'Enter password to delete wallet')
   const approve = await pwdWindow.response()
   if (!approve) {
     throw new RequestPasswordRejected()
@@ -111,27 +118,33 @@ export const deleteWallet = async () => {
   return newCurrent
 }
 
-export const exportKeystore = async() => {
+export const getKeystoreByWalletId = (id: string) => {
+  return JSON.parse(fs.readFileSync(getKeystorePath(id), 'utf8'))
+}
+
+export const exportKeystore = async () => {
   const { current } = getWalletIndex()
   if (!current) {
     throw new CurrentWalletNotSetException()
   }
-  const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
-  const pwdWindow = new PasswordWindow("Password", 'Enter password to export keystore')
+  const keystore = getKeystoreByWalletId(current)
+  const pwdWindow = new PasswordWindow('Password', 'Enter password to export keystore')
   const approve = await pwdWindow.response()
   if (!approve) {
     throw new RequestPasswordRejected()
   }
   pwdWindow.close()
-  const {filePath, canceled} = (await dialog.showSaveDialog({
-    filters: [{
+  const { filePath, canceled } = await dialog.showSaveDialog({
+    filters: [
+      {
         name: 'keystore',
-        extensions: ['json'] 
-    }],
+        extensions: ['json'],
+      },
+    ],
     defaultPath: 'keystore',
     title: 'Export',
-    buttonLabel: 'Export'
-  }))
+    buttonLabel: 'Export',
+  })
   if (canceled) {
     return false
   }
@@ -171,4 +184,32 @@ export const updateCurrentPassword = (currentPassword: string, newPassword: stri
     console.error(err)
   }
   return true
+}
+
+interface SignTransactionParams {
+  keystore: Keystore
+  tx: CKBComponents.RawTransactionToSign & { hash: string }
+  password: string
+  signConfig?: KeyperingAgency.SignTransaction.InputSignConfig
+}
+export const signTransaction = ({ keystore, tx, password, signConfig }: SignTransactionParams) => {
+  const ckb = new CKB()
+  const xprv = decryptKeystore(keystore, password)
+  const sk = `0x${xprv.slice(0, 64)}`
+
+  if (!signConfig) {
+    const signed = ckb.signTransaction(sk)(tx, [])
+    return signed
+  }
+
+  const witnesses =
+    signConfig.length < 0
+      ? tx.witnesses.slice(signConfig.index)
+      : tx.witnesses.slice(signConfig.index, signConfig.index + signConfig.length)
+  const signature = ckb.signWitnesses(sk)({
+    transactionHash: tx.hash,
+    witnesses,
+  })[0] as string
+  tx.witnesses[signConfig.index] = signature
+  return tx
 }

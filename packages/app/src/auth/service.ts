@@ -62,7 +62,12 @@ export const addAuth = (id: string, url: string) => {
   const newList = [...authList, { url, time, token }]
 
   fs.writeFileSync(filePath, JSON.stringify(newList))
-  broadcast(newList)
+
+  const { current } = getWalletIndex()
+  if (id === current) {
+    broadcast(newList)
+  }
+
   return token
 }
 
@@ -89,7 +94,11 @@ export const deleteAuth = async (id: string, url: string): Promise<boolean> => {
   const newList = authList.filter(auth => auth.url !== url)
   const filePath = getAuthFilePath(id)
   fs.writeFileSync(filePath, JSON.stringify(newList))
-  broadcast(newList)
+
+  const { current } = getWalletIndex()
+  if (current === id) {
+    broadcast(newList)
+  }
   return true
 }
 

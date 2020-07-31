@@ -60,6 +60,7 @@
       text-overflow: ellipsis;
       width: 280px;
       white-space: nowrap;
+      font-family: monospace;
     }
 
     table .type::after,
@@ -75,10 +76,12 @@
 
 
     table .type::after {
+      text-align: center;
       content: 'Type';
     }
 
     table .data::after {
+      text-align: center;
       content: 'Data';
     }
 
@@ -121,9 +124,9 @@
 
     table .amount {
       display: inline-block;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      overflow: auto;
       width: 100px;
+      font-family: monospace;
     }
 
     table .on::after {
@@ -201,6 +204,7 @@
     const channel = `sign:${txHash}`
 
     const requestOrigin = document.querySelector("#request-origin")
+    const metaInfo = document.querySelector('#meta-info')
     const form = document.querySelector('form')
     const submitBtn = document.querySelector('button[type=submit]')
     const declineBtn = document.querySelector('button[type=button]')
@@ -228,7 +232,7 @@
         row.append(addrTd, typeTd, dataTd, lockNameTd, amountTd)
 
         addrTd.classList.add('addr')
-        addrTd.innerText = cell.addr.length >= 33 ? `${cell.addr.substr(0, 15)}...${cell.addr.slice(-15)}` : cell.addr
+        addrTd.innerText = cell.addr.length >= 33 ? `${cell.addr.substr(0, 15)}...${cell.addr.slice(-12)}` : cell.addr
 
         amountTd.classList.add('amount')
         amountTd.innerText = cell.amount
@@ -271,10 +275,15 @@
 
     ipcRenderer?.once(channel, (_e, params) => {
       try {
-        const { tx, origin } = params
-        fillTable('inputs', tx.inputs)
-        fillTable('outputs', tx.outputs)
-        requestOrigin.innerText = origin
+        const { tx, referer, meta } = params
+        try {
+          fillTable('inputs', tx.inputs)
+          fillTable('outputs', tx.outputs)
+        } catch {
+          ipcRenderer?.send(channel, false)
+        }
+        requestOrigin.innerText = referer
+        metaInfo.innerText = meta
       } catch (err) {
         window.alert(err.message)
         window.close()

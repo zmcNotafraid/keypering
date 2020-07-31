@@ -4,22 +4,21 @@ import { MethodNotFoundException } from '../exception'
 
 interface Options {
   origin: string
-  url: string
-
+  referer: string
 }
 
 // TODO: overload types
 
-const routes = async (method: KeyperingAgency.Method, params: any, { origin, url }: Options) => {
+const routes = async (method: KeyperingAgency.Method, params: any, { origin, referer }: Options) => {
   switch (method) {
     case 'auth': {
-      return handleAuth(params, origin, url)
+      return handleAuth(params, origin, referer)
     }
     case 'query_addresses': {
       return params
     }
     case 'sign_transaction': {
-      return handleSign(params, url)
+      return handleSign(params, referer)
     }
     case 'send_transaction': {
       return params
