@@ -18,9 +18,7 @@ const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.Walle
 
 const getCurrentWalletName = (walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
   const { current, wallets } = walletIndex
-  return current && wallets.length > 0
-    ? wallets.filter(wallet => wallet.id === current)[0].name
-    : 'Unknown Wallet'
+  return current && wallets.length > 0 ? wallets.filter(wallet => wallet.id === current)[0].name : 'Unknown Wallet'
 }
 
 const MainHeader = () => {
@@ -36,7 +34,7 @@ const MainHeader = () => {
   const openWalletManager = () => setShowWalletManager(true)
   const openSidebar = () => setShowSidebar(true)
   const toggleWalletSelector = () => setShowWalletSelector(!showWalletSelector)
-  
+
   useEffect(() => {
     const { ipcRenderer } = window
     getWalletIndex()
@@ -70,14 +68,14 @@ const MainHeader = () => {
   return (
     <div className={styles.container}>
       <div className={styles.nav}>
-        <img onClick={openSidebar} src={MenuIcon} />
+        <img onClick={openSidebar} src={MenuIcon} alt="menu" />
         <MainSidebar show={showSidebar} setShow={setShowSidebar} />
         <div className={styles.title}>
           <h1>{getCurrentWalletName(walletIndex)}</h1>
-          <img src={DropdownIcon} onClick={toggleWalletSelector} />
+          <img src={DropdownIcon} onClick={toggleWalletSelector} alt="dropdown" />
           <WalletSelector show={showWalletSelector} setShow={setShowWalletSelector} />
         </div>
-        <img onClick={openWalletManager} src={ManagerIcon} />
+        <img onClick={openWalletManager} src={ManagerIcon} alt="manager" />
         <WalletManager show={showWalletManager} setShow={setShowWalletManager} />
       </div>
     </div>

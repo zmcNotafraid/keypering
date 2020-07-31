@@ -1,3 +1,4 @@
+import fetch from 'node-fetch'
 import { RICH_NODE_MAINNET_INDEXER_URL, RICH_NODE_TESTNET_INDEXER_URL } from '../utils/const'
 
 export const getCells = async (codeHash: string, lockArgs: string, network: 'ckb' | 'ckb_test') => {
@@ -8,10 +9,13 @@ export const getCells = async (codeHash: string, lockArgs: string, network: 'ckb
     params: [
       {
         script: {
+          // eslint-disable-next-line
           code_hash: codeHash,
+          // eslint-disable-next-line
           hash_type: 'type',
           args: lockArgs,
         },
+        // eslint-disable-next-line
         script_type: 'lock',
       },
       'asc',
@@ -28,7 +32,6 @@ export const getCells = async (codeHash: string, lockArgs: string, network: 'ckb
       },
     })
     res = await res.json()
-
     return (res as any).result.objects
   } catch (error) {
     console.error('error', error)
