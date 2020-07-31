@@ -117,6 +117,10 @@ export interface Address {
 }
 
 export namespace GetAddrList {
+  export interface Params {
+    id: string
+  }
+
   export type Response = SuccessResponse<Address[]> | ErrorResponse
 }
 
