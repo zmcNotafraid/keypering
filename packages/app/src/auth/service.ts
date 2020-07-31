@@ -13,6 +13,7 @@ import {
 import { getWalletIndex } from '../wallet'
 import MainWindow from '../MainWindow'
 import PasswordWindow from '../wallet/PasswordWindow'
+import simpleToken from './strategy/simple'
 
 const dataPath = getDataPath('auth')
 const getAuthFilePath = (id: string) => path.resolve(dataPath, `${id}.json`)
@@ -58,7 +59,7 @@ export const addAuth = (id: string, url: string) => {
 
   const filePath = getAuthFilePath(id)
   const time = Date.now().toString()
-  const token = `${id}:${time}`
+  const token = simpleToken(id, Date.now().toString(), Math.random().toString())
   const newList = [...authList, { url, time, token }]
 
   fs.writeFileSync(filePath, JSON.stringify(newList))
@@ -81,7 +82,7 @@ export const deleteAuth = async (id: string, url: string): Promise<boolean> => {
   }
   const { response } = await dialog.showMessageBox({
     type: 'question',
-    message: `Revoke authentication of ${url}`,
+    message: `Revoke authorization of ${url}`,
     buttons: ['Decline', 'Approve'],
     cancelId: 0,
     defaultId: 1,
@@ -109,7 +110,7 @@ export const requestAuth = async (origin: string, url: string): Promise<string> 
   }
   const { response } = await dialog.showMessageBox({
     type: 'question',
-    title: 'Authentication Request',
+    title: 'Authorization Request',
     message: `Request from: ${url}\nYou are going to share following information to ${origin}`,
     detail: '︎☑️ Addresses',
     buttons: ['Decline', 'Approve'],
@@ -121,7 +122,7 @@ export const requestAuth = async (origin: string, url: string): Promise<string> 
   }
   const requestId = `auth:${Date.now()}`
 
-  const pwdWindow = new PasswordWindow(requestId, 'Approve Authentication')
+  const pwdWindow = new PasswordWindow(requestId, 'Approve Authorization')
 
   const res = await pwdWindow.response()
   pwdWindow.win.close()
@@ -130,8 +131,16 @@ export const requestAuth = async (origin: string, url: string): Promise<string> 
     throw new AuthRejected()
   }
 
-  // TODO: add real token
   const token = addAuth(current, origin)
 
   return token
+}
+
+export const isAuthedByCurrentWallet = (token: string) => {
+  const { current } = getWalletIndex()
+  if (!current) {
+    throw new CurrentWalletNotSetException()
+  }
+  const authList = getAuthList(current)
+  return authList.some(auth => auth.token === token)
 }

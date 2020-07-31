@@ -44,7 +44,7 @@ export class ParamsRequiredException extends Error {
 
 export class AuthNotFoundException extends Error {
   constructor() {
-    super(`Authentication is not found`)
+    super(`Authorization is not found`)
   }
 }
 
@@ -64,7 +64,7 @@ export class InvalidJsonRpcRequestException extends Error {
 export class AuthRejected extends Error {
   code = KeyperingAgency.Code.Rejected
   constructor() {
-    super(`Authentication request is rejected`)
+    super(`Authorization request is rejected`)
   }
 }
 
@@ -98,5 +98,13 @@ export class DirectoryNotFound extends Error {
   code = KeyperingAgency.Code.Rejected
   constructor() {
     super(`Directory or file are not found`)
+  }
+}
+
+
+export class InvalidTokenException extends Error {
+  code = KeyperingAgency.Code.InvalidToken
+  constructor() {
+    super(`Invalid token, please check authorization`)
   }
 }
