@@ -17,12 +17,8 @@ if (!PORT) {
 http
   .createServer((req, res) => {
     setCors(res)
-    const {
-      method,
-      headers: { origin = '', referer = '' },
-    } = req
 
-    switch (method) {
+    switch (req.method) {
       case 'OPTIONS': {
         res.statusCode = 200
         res.end()
@@ -41,7 +37,7 @@ http
           try {
             parsed = JSON.parse(data)
             validateJsonRpcFields(parsed)
-            const result = await routes(parsed.method, parsed.params, { origin, referer })
+            const result = await routes(parsed.method, parsed.params, req.headers)
             res.statusCode = 200
             res.end(JSON.stringify({ id: parsed.id, jsonrpc: parsed.jsonrpc, result }))
           } catch (err) {
