@@ -12,6 +12,7 @@ export enum ChannelName {
   BackupWallet = 'backup-wallet',
   CheckCurrentPassword = 'check-current-password',
   GetMnemonic = 'get-mnemonic',
+  GetAddressList = 'get-address-list',
   GetSetting = 'get-setting',
   UpdateSetting = 'update-setting',
   GetWalletIndex = 'get-wallet-index',
@@ -105,6 +106,22 @@ export namespace SubmitPassword {
 
 export namespace GetMnemonic {
   export type Response = SuccessResponse<string> | ErrorResponse
+}
+
+// Address
+export interface Address {
+  tag: string
+  address: string
+  freeCapacity: string
+  inUseCapacity: string
+}
+
+export namespace GetAddressList {
+  export interface Params {
+    id: string
+  }
+
+  export type Response = SuccessResponse<Address[]> | ErrorResponse
 }
 
 // Setting

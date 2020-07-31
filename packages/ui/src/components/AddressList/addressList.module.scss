@@ -1,0 +1,35 @@
+.container {
+  padding: 0 10px;
+  font-size: 0.875rem;
+}
+
+.item {
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tag {
+  border-radius: 3px;
+  background: #d8d8d8;
+  color: #000000;
+  padding: 3px 6px;
+}
+
+
+.address {
+  color: #000000;
+  font-weight: 600;
+}
+
+.capacity {
+  display: flex;
+
+  > div {
+    flex: 1;
+  }
+}
+
+.separate {
+  background: #e2e2e2;
+}
