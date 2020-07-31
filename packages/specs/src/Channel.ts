@@ -12,7 +12,6 @@ export enum ChannelName {
   BackupWallet = 'backup-wallet',
   CheckCurrentPassword = 'check-current-password',
   GetMnemonic = 'get-mnemonic',
-  GetAddressList = 'get-address-list',
   GetSetting = 'get-setting',
   UpdateSetting = 'update-setting',
   GetWalletIndex = 'get-wallet-index',
@@ -22,7 +21,7 @@ export enum ChannelName {
   GetAuthList = 'get-auth-list',
   DeleteAuth = 'delete-auth',
   SubmitPassword = 'submit-password',
-  OpenInBrowser = 'open-in-browser'
+  OpenInBrowser = 'open-in-browser',
 }
 
 export type SuccessResponse<T = any> = {
@@ -112,15 +111,11 @@ export namespace GetMnemonic {
 export interface Address {
   tag: string
   address: string
-  freeCapacity: string
-  inUseCapacity: string
+  free: number
+  inUse: number
 }
 
-export namespace GetAddressList {
-  export interface Params {
-    id: string
-  }
-
+export namespace GetAddrList {
   export type Response = SuccessResponse<Address[]> | ErrorResponse
 }
 
@@ -192,7 +187,7 @@ export namespace RequestSign {
   export interface Params {
     tx: any
   }
-  export type Response = SuccessResponse<{ tx: any, token?: string }> | ErrorResponse
+  export type Response = SuccessResponse<{ tx: any; token?: string }> | ErrorResponse
 }
 
 export namespace OpenInBrowser {
