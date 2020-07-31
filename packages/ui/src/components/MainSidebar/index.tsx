@@ -22,13 +22,10 @@ const MainSidebar = ({ show, setShow }: { show?: boolean; setShow: Function }) =
 
   return show
     ? createPortal(
-        <div
-          className={styles.container}
-          onClick={() => setShow(false)}
-        >
+        <div className={styles.container} onClick={() => setShow(false)}>
           <div className={styles.header}>
             <span>Keypering</span>
-            <img src={CloseIcon} onClick={closeSidebar} />
+            <img src={CloseIcon} onClick={closeSidebar} alt="close" />
           </div>
           <div className={styles.navs}>
             <div>Wallet</div>
