@@ -5,7 +5,9 @@ import * as walletManager from './wallet'
 import * as settingManager from './setting'
 import * as authManager from './auth'
 import * as txManager from './tx'
+import {getAddrList} from './address'
 import { getWalletIndex } from './wallet'
+import {TESTNET_ID} from './utils/const'
 
 export default class MainWindow {
   static id: number | undefined
@@ -216,8 +218,17 @@ export default class MainWindow {
       }
     })
 
-    ipcMain.handle(Channel.ChannelName.GetAddrList, () => {
-      // TODO:
+    ipcMain.handle(Channel.ChannelName.GetAddrList, async () => {
+      try {
+        const list = await getAddrList(TESTNET_ID)
+        return {
+          code: Channel.Code.Success,
+          result: list,
+        }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Channel.Code.Error, message: err.message }
+      }
     })
 
     ipcMain.handle(Channel.ChannelName.GetAuthList, () => {
