@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Channel } from '@keypering/specs'
 import { blake160 } from '@nervosnetwork/ckb-sdk-utils'
+import SendCkbDialog from '../SendCkbDialog'
 import { getWalletIndex, getSetting } from '../../services/channels'
 import { getCapacityByArgs } from '../../services/rpc'
 import styles from './sendCkb.module.scss'
@@ -70,6 +71,7 @@ const SendCkb = () => {
         {`${typeof balance === 'bigint' ? shannonToCkb(balance.toString()) : balance} CKB`}
       </div>
       <button type="button">Send</button>
+      <SendCkbDialog onSubmit={console.log} onCancel={console.log} />
     </div>
   )
 }

@@ -7,13 +7,6 @@ import Mnemonic from './containers/Mnemonic'
 import Keystore from './containers/Keystore'
 import ChangeWalletName from './containers/ChangeWalletName'
 import Setting from './containers/Setting'
-import HomePage from './pages/home_page'
-import ChangePasswordPage from './pages/change_password_page'
-import DeleteWalletPage from './pages/delete_wallet_page'
-import AuthorizationRequestPage from './pages/authorization_request_page'
-import TransactionRequestPage from './pages/transaction_request_page'
-import ImportWalletPage from './pages/import_wallet_page'
-import TransferCapacityPage from './pages/transfer_capacity_page'
 import { Routes } from './utils'
 
 require('typeface-source-code-pro')
@@ -40,27 +33,6 @@ function App() {
         </Route>
         <Route path={Routes.ChangeWalletName}>
           <ChangeWalletName />
-        </Route>
-        <Route path="/import_wallet">
-          <ImportWalletPage />
-        </Route>
-        <Route path="/change_password">
-          <ChangePasswordPage />
-        </Route>
-        <Route path="/delete_wallet">
-          <DeleteWalletPage />
-        </Route>
-        <Route path="/authorization_request">
-          <AuthorizationRequestPage />
-        </Route>
-        <Route path="/transaction_request">
-          <TransactionRequestPage />
-        </Route>
-        <Route path="/transfer_capacity">
-          <TransferCapacityPage />
-        </Route>
-        <Route path={Routes.HomePage}>
-          <HomePage />
         </Route>
       </Switch>
     </Router>

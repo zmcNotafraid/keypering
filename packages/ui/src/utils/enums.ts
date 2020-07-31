@@ -5,7 +5,7 @@ export enum Routes {
   ImportKeystore = '/import_keystore',
   ChangeWalletName = '/change_wallet_name',
   Main = '/main',
-  HomePage = '/',
+  // HomePage = '/',
 }
 
 export default undefined
