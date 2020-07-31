@@ -14,6 +14,7 @@ export enum ChannelName {
   GetMnemonic = 'get-mnemonic',
   GetSetting = 'get-setting',
   UpdateSetting = 'update-setting',
+  UpdateScriptsDir = 'update-scripts-dir',
   GetWalletIndex = 'get-wallet-index',
   GetTxList = 'get-tx-list',
   RequestSign = 'request-sign',

@@ -72,7 +72,7 @@ export const deleteTxFilesByWalletId = (id: string) => {
   const files = fs.readdirSync(dataPath, 'utf8')
   const targets = files.filter(file => file.startsWith(`${id}:`))
   targets.forEach(file => {
-    fs.unlinkSync(file)
+    fs.unlinkSync(path.resolve(dataPath, file))
   })
 
   const { current } = getWalletIndex()

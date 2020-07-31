@@ -37,7 +37,7 @@ const MainSidebar = ({ show, setShow }: { show?: boolean; setShow: Function }) =
             <Link to="/create_wallet/import">Import Wallet Seed</Link>
             <Link to="/import_keystore">Import from Keystore</Link>
 
-            <div>Settings</div>
+            <Link to="/setting">Settings</Link>
             <span className={styles.separate} />
           </div>
         </div>,

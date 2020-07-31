@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Channel } from '@keypering/specs'
-import { getSetting, updateSetting } from '../../services/channels'
+import { Settings, ChevronLeft } from 'react-feather'
+import { getSetting, updateSetting, updateScriptDir } from '../../services/channels'
 import { isSuccessResponse } from '../../utils'
 import styles from './setting.module.scss'
 
@@ -79,12 +80,15 @@ const Setting = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.back} role="presentation" onClick={history.goBack} />
+        <ChevronLeft size={15} className={styles.back} onClick={history.goBack} />
         <h1>Setting</h1>
       </div>
       <div role="presentation" className={styles.body} onClick={handleClick}>
         <div className={styles.locks}>
-          <h2>Lock plug-ins</h2>
+          <h2>
+            Lock plug-ins
+            <Settings size={12} onClick={updateScriptDir} />
+          </h2>
           <ul>
             {sortedLocks.map(([id, lock]) => (
               <li key={id} data-checked={lock.enabled} data-type="lock" data-id={id}>

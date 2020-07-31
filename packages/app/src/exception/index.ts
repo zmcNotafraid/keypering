@@ -101,10 +101,15 @@ export class DirectoryNotFound extends Error {
   }
 }
 
-
 export class InvalidTokenException extends Error {
   code = KeyperingAgency.Code.InvalidToken
   constructor() {
     super(`Invalid token, please check authorization`)
+  }
+}
+
+export class InvalidDirectoryException extends Error {
+  constructor(name: string) {
+    super(`${name} is not a directory`)
   }
 }
