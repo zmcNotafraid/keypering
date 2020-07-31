@@ -218,9 +218,10 @@ export default class MainWindow {
       }
     })
 
-    ipcMain.handle(Channel.ChannelName.GetAddrList, async () => {
+    ipcMain.handle(Channel.ChannelName.GetAddrList, async (_e, params: Channel.GetAddrList.Params) => {
+      const { id } = params
       try {
-        const list = await getAddrList(TESTNET_ID)
+        const list = await getAddrList(id, TESTNET_ID)
         return {
           code: Channel.Code.Success,
           result: list,

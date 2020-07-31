@@ -25,8 +25,8 @@ export const deleteWallet = (): Promise<Channel.DeleteWallet.Response> => invoke
 export const updatePassword = (params: Channel.SubmitPassword.Params): Promise<Channel.SubmitPassword.Response> =>
   invoke(Channel.ChannelName.SubmitPassword, params)
 
-export const getAddressList = (): Promise<Channel.GetAddrList.Response> =>
-  invoke(Channel.ChannelName.GetAddrList)
+export const getAddressList = (params: Channel.GetAddrList.Params): Promise<Channel.GetAddrList.Response> =>
+  invoke(Channel.ChannelName.GetAddrList, params)
 
 export const getAuthList = (): Promise<Channel.GetAuthList.Response> => invoke(Channel.ChannelName.GetAuthList)
 
@@ -38,8 +38,7 @@ export const getSetting = (): Promise<Channel.GetSetting.Response> => invoke(Cha
 export const updateSetting = (params: Channel.UpdateSetting.Params): Promise<Channel.UpdateSetting.Response> =>
   invoke(Channel.ChannelName.UpdateSetting, params)
 
-export const getTxList = (): Promise<Channel.GetTxList.Response> =>
-  invoke(Channel.ChannelName.GetTxList)
+export const getTxList = (): Promise<Channel.GetTxList.Response> => invoke(Channel.ChannelName.GetTxList)
 
 export const openInBrowser = (params: Channel.OpenInBrowser.Params): Promise<Channel.OpenInBrowser.Response> =>
   invoke(Channel.ChannelName.OpenInBrowser, params)

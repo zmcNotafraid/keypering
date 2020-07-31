@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Channel } from '@keypering/specs'
-import { getAddressList } from '../../services/channels'
+import { getAddressList, getWalletIndex } from '../../services/channels'
 import { isSuccessResponse } from '../../utils'
 import styles from './addressList.module.scss'
 
@@ -20,15 +20,39 @@ const copyAddress = (address: string) => {
   alert('Copied')
 }
 
+const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
+  const { current, wallets } = walletIndex
+  return current && wallets.length > 0
+}
+
 const AddressList = () => {
   const [list, setList] = useState<Channel.Address[]>([])
-  useEffect(() => {
-    getAddressList().then(res => {
+
+  const fetchAddressList = (id: string) => {
+    getAddressList({ id }).then(res => {
       if (isSuccessResponse(res)) {
         setList(res.result)
       }
     })
-  }, [setList])
+  }
+
+  useEffect(() => {
+    const { ipcRenderer } = window
+    getWalletIndex().then(res => {
+      if (isSuccessResponse(res) && checkWalletIndex(res.result)) {
+        fetchAddressList(res.result.current)
+      }
+    })
+    const listener = (_e: any, p: { current: string; wallets: Channel.WalletProfile[] }) => {
+      if (checkWalletIndex(p)) {
+        fetchAddressList(p.current)
+      }
+    }
+    ipcRenderer.on(Channel.ChannelName.GetWalletIndex, listener)
+    return () => {
+      ipcRenderer.removeListener(Channel.ChannelName.GetWalletIndex, listener)
+    }
+  }, [])
 
   return (
     <div className={styles.container}>

@@ -21,9 +21,9 @@ const parseCells = (cells = [] as any[]) => {
   }
 }
 
-export const getAddrList = async (network: 'ckb' | 'ckb_test'): Promise<Channel.Address[]> => {
-  const { current, wallets } = getWalletIndex()
-  const currentWallets = wallets.filter(wallet => wallet.id === current)
+export const getAddrList = async (id: string, network: 'ckb' | 'ckb_test'): Promise<Channel.Address[]> => {
+  const { wallets } = getWalletIndex()
+  const currentWallets = wallets.filter(wallet => wallet.id === id)
   if (!currentWallets) {
     return []
   }
