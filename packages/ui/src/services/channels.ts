@@ -25,6 +25,9 @@ export const deleteWallet = (): Promise<Channel.DeleteWallet.Response> => invoke
 export const updatePassword = (params: Channel.SubmitPassword.Params): Promise<Channel.SubmitPassword.Response> =>
   invoke(Channel.ChannelName.SubmitPassword, params)
 
+export const getAddressList = (): Promise<Channel.GetAddrList.Response> =>
+  invoke(Channel.ChannelName.GetAddrList)
+
 export const getAuthList = (): Promise<Channel.GetAuthList.Response> => invoke(Channel.ChannelName.GetAuthList)
 
 export const revokeAuth = (params: Channel.DeleteAuth.Params): Promise<Channel.DeleteAuth.Response> =>
