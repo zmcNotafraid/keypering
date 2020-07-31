@@ -16,7 +16,9 @@ export default class RequestWindow {
     title: 'Signing',
     show: false,
     frame: false,
-    parent: MainWindow.id ? BrowserWindow.fromId(MainWindow.id) : undefined,
+    parent: MainWindow.id
+      ? BrowserWindow.fromId(MainWindow.id)
+      : undefined,
     modal: true,
     backgroundColor: '#fff',
     webPreferences: {

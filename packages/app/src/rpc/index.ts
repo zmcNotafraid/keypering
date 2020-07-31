@@ -1,7 +1,14 @@
 import fetch from 'node-fetch'
-import { RICH_NODE_MAINNET_INDEXER_URL, RICH_NODE_TESTNET_INDEXER_URL } from '../utils/const'
+import { getSetting } from '../setting'
+import { NetworkNotFoundException } from '../exception'
 
-export const getCells = async (codeHash: string, lockArgs: string, network: 'ckb' | 'ckb_test') => {
+export const getCells = async (codeHash: string, lockArgs: string, networkId: string) => {
+  const { networks } = getSetting()
+  const indexerUrl = networks[networkId]?.url
+  if (!indexerUrl) {
+    throw new NetworkNotFoundException()
+  }
+
   const payload = {
     id: 3,
     jsonrpc: '2.0',
@@ -22,9 +29,9 @@ export const getCells = async (codeHash: string, lockArgs: string, network: 'ckb
       '0x3e8',
     ],
   }
-  const body = JSON.stringify(payload, null, '  ')
+  const body = JSON.stringify(payload)
   try {
-    let res = await fetch(network === 'ckb' ? RICH_NODE_MAINNET_INDEXER_URL : RICH_NODE_TESTNET_INDEXER_URL, {
+    let res = await fetch(indexerUrl, {
       method: 'POST',
       body,
       headers: {

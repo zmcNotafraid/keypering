@@ -19,7 +19,7 @@
   "dependencies": {
     "@keyper/container": "0.1.0",
     "@keyper/specs": "0.1.0",
-    "@nervosnetwork/ckb-sdk-utils": "0.32.0",
+    "@nervosnetwork/ckb-sdk-utils": "0.34.0",
     "antd-mobile": "2.3.3",
     "bip39": "3.0.2",
     "bn.js": "5.1.2",

@@ -2178,16 +2178,6 @@
     elliptic "6.5.2"
     jsbi "3.1.1"
 
-"@nervosnetwork/ckb-sdk-utils@0.32.0":
-  version "0.32.0"
-  resolved "https://registry.npmjs.org/@nervosnetwork/ckb-sdk-utils/-/ckb-sdk-utils-0.32.0.tgz#a9e1768b6dcf22b7428e8bac7b06e2a64b83a23c"
-  integrity sha512-7rX3mSEbeMUwXT5ssu9L2nCLlJ+LetQx5UinVBhh2ABz+46ugHIIG78b/WaxKCTRnpFAXsch+PXEcc6eFeJJJQ==
-  dependencies:
-    "@nervosnetwork/ckb-types" "0.32.0"
-    blake2b-wasm "2.1.0"
-    elliptic "6.5.2"
-    jsbi "3.1.2"
-
 "@nervosnetwork/ckb-sdk-utils@0.34.0":
   version "0.34.0"
   resolved "https://registry.npmjs.org/@nervosnetwork/ckb-sdk-utils/-/ckb-sdk-utils-0.34.0.tgz#12e1b8c053d5bfa0a5ea0b542272faa44e275cbd"
@@ -9777,11 +9767,6 @@ jsbi@3.1.1:
   version "3.1.1"
   resolved "https://registry.npmjs.org/jsbi/-/jsbi-3.1.1.tgz#8ea18b3e08d102c6cc09acaa9a099921d775f4fa"
   integrity sha512-+HQESPaV0mRiH614z4JPVPAftcRC2p53x92lySPzUzFwJbJTMpzHz8OYUkcXPN3fOcHUe0NdVcHnCtX/1+eCrA==
-
-jsbi@3.1.2:
-  version "3.1.2"
-  resolved "https://registry.npmjs.org/jsbi/-/jsbi-3.1.2.tgz#7502ed36fb2b32bb37efb3d2d0b3806a0d771780"
-  integrity sha512-5nDXo1X9QVaXK/Cpb5VECV9ss1QPbjUuk1qSruHB1PK/g39Sd414K4nci99ElFDZv0vzxDEnKn3o49/Tn9Yagw==
 
 jsbi@3.1.3:
   version "3.1.3"

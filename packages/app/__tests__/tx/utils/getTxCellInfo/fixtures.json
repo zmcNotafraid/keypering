@@ -22,7 +22,7 @@
     ],
     "expected": {
       "addr": "ckb1qyqfh4lqdulv7jlq7t7dyxyty0cmnlxg3ew5kedgvda3wu3mhk3ue6qn4xtjt",
-      "amount": "123456",
+      "amount": "0.00123456 CKB",
       "data": "code data",
       "lockName": "secp256k1",
       "type": null
@@ -51,7 +51,7 @@
     ],
     "expected": {
       "addr": "ckb1qnhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwax7huphnan6ture0e5sc3v3lrw0uez896jm94p3hk9mj8w768n8g8m67hc",
-      "amount": "123456",
+      "amount": "0.00123456 CKB",
       "data": "code data",
       "lockName": "Unknown",
       "type": null
@@ -85,7 +85,7 @@
     ],
     "expected": {
       "addr": "ckb1qnhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwamhwax7huphnan6ture0e5sc3v3lrw0uez896jm94p3hk9mj8w768n8g8m67hc",
-      "amount": "123456",
+      "amount": "0.00123456 CKB",
       "data": "code data",
       "lockName": "Unknown",
       "type": {

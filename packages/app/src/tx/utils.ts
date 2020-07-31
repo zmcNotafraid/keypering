@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import { getSetting } from '../setting'
 import systemScripts from '../setting/scripts'
-import { MAINNET_ID } from '../utils'
+import { MAINNET_ID, shannonToCkb } from '../utils'
 
 interface TxCell {
   addr: string
@@ -66,7 +66,7 @@ export const getTxCellInfo = ({ cell, data, locks }: GetTxCellInfoParams): TxCel
     data: data === '0x'
       ? null
       : data,
-    amount: capacity,
+    amount: `${shannonToCkb(BigInt(capacity).toString())} CKB`,
   }
 }
 

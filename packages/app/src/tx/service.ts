@@ -39,7 +39,9 @@ export const addTx = ({ id, networkId, tx }: { id: string; networkId: string; tx
   }
 
   const filePath = getTxDataPath(id, networkId)
-  const list = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath, 'utf8')) : []
+  const list = fs.existsSync(filePath)
+    ? JSON.parse(fs.readFileSync(filePath, 'utf8'))
+    : []
   // TODO: validate tx
   const newList = [...list, tx]
   fs.writeFileSync(filePath, JSON.stringify(newList))

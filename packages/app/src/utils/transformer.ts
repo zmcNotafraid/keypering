@@ -1,13 +1,3 @@
-export const datetime = (time: Date) => {
-  const YYYY = time.getFullYear()
-  const MM = (time.getMonth() + 1).toString().padStart(2, '0')
-  const DD = time.getDate().toString().padStart(2, '0')
-  const hh = time.getHours().toString().padStart(2, '0')
-  const mm = time.getMinutes().toString().padStart(2, '0')
-  const ss = time.getSeconds().toString().padStart(2, '0')
-  return `${YYYY}-${MM}-${DD} ${hh}:${mm}:${ss}`
-}
-
 export const shannonToCkb = (shannon = '0', showPositiveSign?: boolean, delimiter = ',') => {
   if (Number.isNaN(+shannon)) {
     console.warn('Shannon is not a valid number')
@@ -41,7 +31,9 @@ export const shannonToCkb = (shannon = '0', showPositiveSign?: boolean, delimite
       .reverse()
       .join('')}${decimal}`
   }
-  return +unsignedCKB === 0 ? '0' : `${sign}${unsignedCKB}`
+  return +unsignedCKB === 0
+    ? '0'
+    : `${sign}${unsignedCKB}`
 }
 
-export default { datetime, shannonToCkb }
+export default { shannonToCkb }
