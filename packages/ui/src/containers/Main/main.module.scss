@@ -52,12 +52,11 @@
     font-size: 0.875rem;
     color: #000;
     letter-spacing: 0.2px;
+    &[data-is-active] {
+      border-bottom: 2px solid var(--primary-green);
+      font-weight: bold;
+    }
   }
-}
-
-.activeTab {
-  border-bottom: 2px solid var(--primary-green);
-  font-weight: bold;
 }
 
 .listBody {

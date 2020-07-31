@@ -41,7 +41,7 @@ const Main = () => {
       <div className={styles.listContainer}>
         <div className={styles.listTabs}>
           {[Tab.Address, Tab.Transaction, Tab.Authorization].map(tab => (
-            <NavLink to={`${Routes.Main}/${tab}`} key={tab} activeClassName={styles.activeTab}>
+            <NavLink to={`${Routes.Main}/${tab}`} key={tab} data-is-active={tab === active ? true : null}>
               {tab}
             </NavLink>
           ))}
