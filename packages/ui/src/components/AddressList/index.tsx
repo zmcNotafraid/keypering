@@ -10,6 +10,10 @@ const adaptAddress = (value: string) => {
   return `${value.substr(0, 20)}...${value.substr(value.length - 20, 20)}`
 }
 
+const formatCapacity = (capacity: number) => {
+  return (capacity / 10 ** 8).toFixed(8)
+}
+
 const copyAddress = (address: string) => {
   const element = document.createElement('textarea')
   element.value = address
@@ -65,12 +69,12 @@ const AddressList = () => {
           <div className={styles.capacity}>
             <div>
               <span>Free</span>
-              <span>{(address.free / 10 ** 8).toFixed(8)}</span>
+              <span>{formatCapacity(address.free)}</span>
             </div>
             <span className={styles.separate} />
             <div>
               <span>In Use</span>
-              <span>{(address.inUse / 10 ** 8).toFixed(8)}</span>
+              <span>{formatCapacity(address.inUse)}</span>
             </div>
           </div>
         </div>
