@@ -43,3 +43,5 @@ export const getTxList = (): Promise<Channel.GetTxList.Response> =>
 
 export const openInBrowser = (params: Channel.OpenInBrowser.Params): Promise<Channel.OpenInBrowser.Response> =>
   invoke(Channel.ChannelName.OpenInBrowser, params)
+
+export const updateScriptDir = () => invoke(Channel.ChannelName.UpdateScriptsDir)

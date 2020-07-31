@@ -32,7 +32,7 @@ export default class MainWindow {
 
   #firstRouter = () => {
     try {
-      const {current }= getWalletIndex()
+      const { current } = getWalletIndex()
       return current ? 'main' : 'welcome'
     } catch (error) {
       console.error(error)
@@ -44,7 +44,7 @@ export default class MainWindow {
     process.env.NODE_ENV === 'development'
       ? `http://localhost:3000/#${this.#firstRouter()}`
       : path.join('file://', __dirname, '..', 'public', 'ui', `index.html#${this.#firstRouter()}`)
-      
+
   public static broadcast = <P = any>(channel: Channel.ChannelName, params: P) => {
     if (MainWindow.id === undefined) {
       return
@@ -186,6 +186,16 @@ export default class MainWindow {
         }
       }
     )
+
+    ipcMain.handle(Channel.ChannelName.UpdateScriptsDir, async () => {
+      try {
+        const result = await settingManager.setScriptsPath()
+        return { code: Channel.Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Channel.Code.Error, message: err.message }
+      }
+    })
 
     ipcMain.handle(Channel.ChannelName.GetTxList, (): Channel.GetTxList.Response => {
       try {
