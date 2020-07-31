@@ -11,7 +11,7 @@
             "since": "0x0"
           }
         ],
-        "nodeUrl": "http://localhost:8114"
+        "indexerUrl": "http://localhost:8114"
       }
     ],
     "expected": {
