@@ -29,8 +29,10 @@ export const getAddrList = async (id: string, network: 'ckb' | 'ckb_test'): Prom
   }
   const ckb = new CKB()
   const { AddressPrefix, AddressType } = ckb.utils
-  const prefix = network === 'ckb' ? AddressPrefix.Mainnet : AddressPrefix.Testnet
-  const publicKey = '0x' + currentWallets[0].xpub.slice(0, 64)
+  const prefix = network === 'ckb'
+    ? AddressPrefix.Mainnet
+    : AddressPrefix.Testnet
+  const publicKey = '0x' + currentWallets[0].xpub.slice(0, 66)
   const args = '0x' + ckb.utils.blake160(publicKey, 'hex')
   const secp256k1Cells = parseCells(await getCells(SECP256K1_BLAKE160_CODE_HASH, args, network))
   const anyoneCanPayCells = parseCells(await getCells(ANYONE_CAN_PAY_CODE_HASH, args, network))

@@ -5,9 +5,9 @@ import * as walletManager from './wallet'
 import * as settingManager from './setting'
 import * as authManager from './auth'
 import * as txManager from './tx'
-import {getAddrList} from './address'
+import { getAddrList } from './address'
 import { getWalletIndex } from './wallet'
-import {TESTNET_ID} from './utils/const'
+import { TESTNET_ID } from './utils/const'
 
 export default class MainWindow {
   static id: number | undefined
@@ -33,7 +33,9 @@ export default class MainWindow {
   #firstRouter = () => {
     try {
       const { current } = getWalletIndex()
-      return current ? 'main' : 'welcome'
+      return current
+        ? 'main'
+        : 'welcome'
     } catch (error) {
       console.error(error)
     }
@@ -211,8 +213,8 @@ export default class MainWindow {
 
     ipcMain.handle(Channel.ChannelName.RequestSign, async (_e, params: Channel.RequestSign.Params) => {
       try {
-        const result = await txManager.requestSignTx({ ...params, referer: 'Keypering', description: '' })
-        return { code: Channel.Code.Success, result }
+        const tx = await txManager.requestSignTx({ ...params, referer: 'Keypering', description: '' })
+        return { code: Channel.Code.Success, result: { tx } }
       } catch (err) {
         return { code: err.code || Channel.Code.Error, message: err.message }
       }
