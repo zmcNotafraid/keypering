@@ -1,41 +1,83 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useRef, useEffect } from 'react'
 import TextField from '../TextField'
 import styles from './sendCkbDialog.module.scss'
 
-interface FormState {
+export interface FormState {
+  address: string
   amount: string
-  password: string
 }
 
 const formState: FormState = {
+  address: '',
   amount: '',
-  password: '',
 }
 
-const reducer: React.Reducer<FormState, { type: keyof FormState; payload: string }> = (state, action) => {
+const reducer: React.Reducer<FormState, { type: keyof FormState | 'reset'; payload: string }> = (state, action) => {
   switch (action.type) {
     case 'amount':
-    case 'password': {
+    case 'address': {
       return { ...state, [action.type]: action.payload }
+    }
+    case 'reset': {
+      return formState
     }
     default: {
       return state
     }
   }
 }
+interface SendCkbDialogProps {
+  onSubmit: (params: FormState) => Promise<boolean>
+  onCancel: () => void
+  show: boolean
+}
 
-const SendCkbDialog = ({ onSubmit, onCancel }: any) => {
+const SendCkbDialog = ({ onSubmit, onCancel, show }: SendCkbDialogProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [form, dispatch] = useReducer(reducer, formState)
+  const dialogRef = useRef<HTMLDialogElement>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const disabled = isSubmitting
+
+  useEffect(() => {
+    const ref = dialogRef.current
+    if (ref) {
+      ref.addEventListener('close', onCancel)
+    }
+    return () => {
+      if (ref) {
+        ref.removeEventListener('close', onCancel)
+      }
+    }
+  }, [dialogRef, onCancel])
+
+  useEffect(() => {
+    if (show) {
+      if (!dialogRef.current?.open) {
+        // eslint-disable-next-line
+        dialogRef.current?.showModal()
+      }
+    } else {
+      setIsSubmitting(false)
+      dispatch({ type: 'reset', payload: '' })
+      // eslint-disable-next-line
+      dialogRef.current?.close()
+    }
+  }, [show, dialogRef, dispatch, setIsSubmitting])
+
+  const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault()
-    if (isSubmitting) {
+    if (disabled) {
       return
     }
     setIsSubmitting(true)
-    onSubmit()
-    setIsSubmitting(false)
+    try {
+      await onSubmit(form)
+    } catch (err) {
+      window.alert(err.message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,20 +89,23 @@ const SendCkbDialog = ({ onSubmit, onCancel }: any) => {
   }
 
   return (
-    <dialog>
-      <form onSubmit={handleSubmit} />
-      <h1>send ckb dialog</h1>
-      <div className={styles.fields}>
-        <TextField key="amount" fieldName="Amount" onChange={handleInput} />
-        <TextField key="amount" fieldName="Password" type="password" onChange={handleInput} />
-      </div>
+    <dialog ref={dialogRef} className={styles.container}>
+      <form onSubmit={handleSubmit}>
+        <h1>Send CKBytes</h1>
+        <div className={styles.fields}>
+          <TextField fieldName="address" label="Send to" value={form.address} onChange={handleInput} autoFocus />
+          <TextField fieldName="amount" label="Amount" value={form.amount} onChange={handleInput} />
+        </div>
 
-      <div className={styles.footer}>
-        <button type="button" onClick={onCancel}>
-          Cancel
-        </button>
-        <button type="submit">Confirm</button>
-      </div>
+        <div className={styles.footer}>
+          <button type="button" onClick={onCancel} disabled={disabled}>
+            Cancel
+          </button>
+          <button type="submit" disabled={disabled} onClick={handleSubmit} data-is-submitting={isSubmitting}>
+            Confirm
+          </button>
+        </div>
+      </form>
     </dialog>
   )
 }

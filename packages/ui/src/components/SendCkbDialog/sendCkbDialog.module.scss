@@ -1,2 +1,39 @@
 .container {
+  width: calc(100% - 20px);
+  border: none;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  &::backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(1px);
+  }
+
+  h1 {
+    text-align: left !important;
+    margin-bottom: 20px !important;
+  }
+
+  .fields {
+    label {
+      min-width: 60px;
+    }
+  }
+
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    button {
+      margin: 0 0 0 10px;
+      color: #fff;
+      &:first-of-type {
+        background: var(--cancel);
+        color: #000;
+      }
+      &[data-is-submitting='true'] {
+        &::after {
+          content: '...';
+        }
+      }
+    }
+  }
 }

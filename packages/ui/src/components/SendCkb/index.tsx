@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Channel } from '@keypering/specs'
-import { blake160 } from '@nervosnetwork/ckb-sdk-utils'
-import SendCkbDialog from '../SendCkbDialog'
+import Core from '@nervosnetwork/ckb-sdk-core'
+import { blake160, bech32Address } from '@nervosnetwork/ckb-sdk-utils'
+import SendCkbDialog, { FormState } from '../SendCkbDialog'
 import { getWalletIndex, getSetting } from '../../services/channels'
-import { getCapacityByArgs } from '../../services/rpc'
+import { getCapacityByArgs, getEnoughCellsByAddress } from '../../services/rpc'
+import { isSuccessResponse, shannonToCkb, SECP256K1_SCRIPT_DEPS } from '../../utils'
 import styles from './sendCkb.module.scss'
-import { isSuccessResponse, shannonToCkb } from '../../utils'
 
 const getArgs = (params: { current: string; wallets: Channel.WalletProfile[] }) => {
   const wallet = params.wallets.find(w => w.id === params.current)
@@ -19,8 +20,9 @@ const getArgs = (params: { current: string; wallets: Channel.WalletProfile[] }) 
 
 const SendCkb = () => {
   const [args, setArgs] = useState('')
-  const [indexerUrl, setIndexerUrl] = useState('')
+  const [network, setNetwork] = useState<{ id: string; url: string } | null>(null)
   const [balance, setBalance] = useState<bigint | string>('-')
+  const [dialogShow, setDialogShow] = useState(false)
 
   useEffect(() => {
     const { ipcRenderer } = window
@@ -33,16 +35,16 @@ const SendCkb = () => {
     })
     getSetting().then(res => {
       if (isSuccessResponse(res)) {
-        const url = res.result.networks[res.result.networkId]?.url ?? ''
-        setIndexerUrl(url)
+        const currentNetwork = res.result.networks[res.result.networkId]
+        setNetwork(currentNetwork ? { id: res.result.networkId, url: currentNetwork.url } : null)
       }
     })
     const walletListener = (_e: Event, walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
       setArgs(getArgs(walletIndex))
     }
-    const settingListener = (_e: Event, settings: Channel.Setting) => {
-      const url = settings.networks[settings.networkId]?.url ?? ''
-      setIndexerUrl(url)
+    const settingListener = (_e: Event, setting: Channel.Setting) => {
+      const currentNetwork = setting.networks[setting.networkId]
+      setNetwork(currentNetwork ? { id: setting.networkId, url: currentNetwork.url } : null)
     }
     ipcRenderer.on(Channel.ChannelName.GetWalletIndex, walletListener)
     ipcRenderer.on(Channel.ChannelName.GetSetting, settingListener)
@@ -51,18 +53,74 @@ const SendCkb = () => {
       ipcRenderer.removeListener(Channel.ChannelName.GetWalletIndex, walletListener)
       ipcRenderer.removeListener(Channel.ChannelName.GetSetting, settingListener)
     }
-  }, [setArgs, setIndexerUrl])
+  }, [setArgs, setNetwork])
 
   useEffect(() => {
     setBalance('-')
-    if (args && indexerUrl) {
-      getCapacityByArgs({ args, indexerUrl }).then(capacity => {
+    if (args && network) {
+      getCapacityByArgs({ args, indexerUrl: network.url }).then(capacity => {
         if (typeof capacity === 'bigint') {
           setBalance(capacity)
         }
       })
     }
-  }, [args, indexerUrl, setBalance])
+  }, [args, network, setBalance])
+
+  const handleOpenDialog = useCallback(() => setDialogShow(true), [setDialogShow])
+  const handleCloseDialog = useCallback(() => setDialogShow(false), [setDialogShow])
+  const handleSubmitSend: (form: FormState) => Promise<boolean> = useCallback(
+    async form => {
+      if (!form.address || !form.amount) {
+        throw new Error('Address and amount are required')
+      }
+      if (!network) {
+        throw new Error('Network is not set')
+      }
+      if (!args) {
+        throw new Error('Wallet is not set')
+      }
+      const rpcUrl = [...network.url.split('/').slice(0, -1), 'rpc'].join('/')
+      const core = new Core(rpcUrl)
+      const deps = SECP256K1_SCRIPT_DEPS[network.id as keyof typeof SECP256K1_SCRIPT_DEPS]
+        || await core.loadDeps().then(config => config.secp256k1Dep!)
+      try {
+        const cells = await getEnoughCellsByAddress(form.address, BigInt(form.amount), network.url)
+
+        const fromAddress = bech32Address(
+          args,
+          {
+            prefix: network.id === 'ckb' ? core.utils.AddressPrefix.Mainnet : core.utils.AddressPrefix.Testnet,
+            type: core.utils.AddressType.HashIdx,
+            codeHashOrCodeHashIndex: '0x00',
+          }
+        )
+
+        const params = {
+          fromAddress,
+          toAddress: form.address,
+          fee: '0x0',
+          capacity: `0x${BigInt(form.amount).toString(16)}`,
+          cells,
+          safeMode: true,
+          deps,
+        }
+        const txTemp = core.generateRawTransaction(params)
+        const EXTRA_TX_SIZE = 4
+        const txSize = core.utils.serializeRawTransaction(txTemp).length / 2 + EXTRA_TX_SIZE
+        const feeRate = 1500 // this is roughly estimated
+        const fee = BigInt(txSize * feeRate)
+        const tx = core.generateRawTransaction({ ...params, fee })
+
+        console.info(tx)
+        setDialogShow(false)
+        return true
+      } catch (err) {
+        window.alert(err.message)
+        return false
+      }
+    },
+    [args, network, setDialogShow]
+  )
 
   return (
     <div className={styles.container}>
@@ -70,8 +128,10 @@ const SendCkb = () => {
       <div className={styles.balance}>
         {`${typeof balance === 'bigint' ? shannonToCkb(balance.toString()) : balance} CKB`}
       </div>
-      <button type="button">Send</button>
-      <SendCkbDialog onSubmit={console.log} onCancel={console.log} />
+      <button type="button" onClick={handleOpenDialog}>
+        Send
+      </button>
+      <SendCkbDialog onSubmit={handleSubmitSend} onCancel={handleCloseDialog} show={dialogShow} />
     </div>
   )
 }

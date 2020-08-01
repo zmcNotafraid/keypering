@@ -1,5 +1,4 @@
-const CODE_HASH = '0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8'
-const HASH_TYPE = 'type'
+import { SECP256K1_SCRIPT } from '../../utils'
 
 export const getCapacityByArgs = ({ args, indexerUrl }: { args: string; indexerUrl: string }) =>
   fetch(indexerUrl, {
@@ -11,7 +10,11 @@ export const getCapacityByArgs = ({ args, indexerUrl }: { args: string; indexerU
       method: 'get_cells_capacity',
       params: [
         {
-          script: { code_hash: CODE_HASH, hash_type: HASH_TYPE, args },
+          script: {
+            code_hash: SECP256K1_SCRIPT.CODE_HASH,
+            hash_type: SECP256K1_SCRIPT.HASH_TYPE,
+            args,
+          },
           script_type: 'lock',
         },
       ],
