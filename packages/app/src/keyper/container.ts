@@ -13,7 +13,9 @@ const container = new Container([
         if (typeof value !== 'string') {
           throw new Error(`Expect value to be string, but ${typeof value} received`)
         }
-        return value.length % 2 ? `0${value}` : value
+        return value.length % 2 
+          ? `0${value}` 
+          : value
       },
     }
   }

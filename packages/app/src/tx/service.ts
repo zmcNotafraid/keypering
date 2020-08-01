@@ -5,8 +5,9 @@ import CKB from '@nervosnetwork/ckb-sdk-core'
 import MainWindow from '../MainWindow'
 import RequestWindow from './RequestWindow'
 import PasswordWindow from '../wallet/PasswordWindow'
-import { getDataPath } from '../utils'
+import { getDataPath, networksToRpcUrl } from '../utils'
 import { getTxProfile } from './utils'
+import sendTx from '../rpc/sendTx'
 import { getWalletIndex, signTransaction, getKeystoreByWalletId } from '../wallet'
 import { getSetting } from '../setting'
 import {
@@ -14,6 +15,7 @@ import {
   FileNotFoundException,
   RequestRejected,
   CurrentWalletNotSetException,
+  NetworkNotFoundException,
 } from '../exception'
 
 const dataPath = getDataPath('tx')
@@ -90,10 +92,10 @@ export const requestSignTx = async (params: {
   signConfig?: KeyperingAgency.SignTransaction.InputSignConfig
 }) => {
   if (!params.tx.hash) {
-    const core = new CKB()
-    params.tx.hash = core.utils.rawTransactionToHash(params.tx)
+    const ckb = new CKB()
+    params.tx.hash = ckb.utils.rawTransactionToHash(params.tx)
   }
-  const data = await getTxProfile(params.tx, params.referer, params.description)
+  const dataToConfirm = await getTxProfile(params.tx, params.referer, params.description)
   const { current } = getWalletIndex()
   if (!current) {
     throw new CurrentWalletNotSetException()
@@ -106,7 +108,7 @@ export const requestSignTx = async (params: {
   }
 
   try {
-    const requestWindow = new RequestWindow(data)
+    const requestWindow = new RequestWindow(dataToConfirm)
     const approve = await requestWindow.response()
     if (!approve) {
       throw new RequestRejected()
@@ -148,3 +150,57 @@ export const requestSignTx = async (params: {
     throw err
   }
 }
+
+export const requestSendTx = async (params: {
+  tx: CKBComponents.Transaction,
+  description: string
+  referer: string
+}) => {
+
+  const { current } = getWalletIndex()
+  if (!current) {
+    throw new CurrentWalletNotSetException()
+  }
+
+  const { networkId, networks } = getSetting()
+  const indexerUrl = networks[networkId]?.url
+  if (!indexerUrl) {
+    throw new NetworkNotFoundException()
+  }
+  const rpcUrl = networksToRpcUrl({ networkId, networks })
+
+  const ckb = new CKB(rpcUrl)
+  if (!params.tx.hash) {
+    params.tx.hash = ckb.utils.rawTransactionToHash(params.tx)
+  }
+  const dataToConfirm = await getTxProfile(params.tx, params.referer, params.description)
+  const txProfile = {
+    hash: params.tx.hash,
+    referer: params.referer,
+    meta: params.description,
+  }
+  try {
+    const requestWindow = new RequestWindow(dataToConfirm)
+    const approve = await requestWindow.response()
+    requestWindow.close()
+    if (!approve) {
+      throw new RequestRejected()
+    }
+
+    delete params.tx.hash
+    return sendTx(ckb.node.url, params.tx)
+    // FIXME: axios has error on handling https
+    // return ckb.rpc.sendTransaction(params.tx)
+  } catch (err) {
+    if (err instanceof RequestRejected) {
+      addTx({
+        id: current,
+        networkId,
+        tx: { ...txProfile, isApproved: false, time: Date.now().toString() }
+      })
+    }
+    console.error(err)
+    throw err
+  }
+}
+

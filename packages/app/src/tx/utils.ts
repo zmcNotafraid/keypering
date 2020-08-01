@@ -79,10 +79,6 @@ export const getOutputsOfInputs = async ({
 }): Promise<{ outputs: CKBComponents.CellOutput[]; data: string[] }> => {
   const rpcUrl = [...indexerUrl.split('/').slice(0, -1), 'rpc'].join('/')
   const ckb = new CKB(rpcUrl)
-  const batchRequest = ckb.rpc.createBatchRequest()
-  inputs.forEach(input => {
-    batchRequest.add('getTransaction', input.previousOutput!.txHash)
-  })
   // axios cannot handle https
   const payload = inputs.map((input, i) => {
     return {
@@ -101,10 +97,16 @@ export const getOutputsOfInputs = async ({
     }
   })
     .then(res => res.json())
+    .then(res => {
+      if (res?.length === undefined) {
+        throw new Error('Fail to fetch cells by input previous output')
+      }
+      return res
+    })
     .then(resList => resList.map((res: any) => res.result.transaction))
     .then(txList => txList.map(ckb.rpc.resultFormatter.toTransaction))
-  const outputs = inputCellTxList.map((tx, i) => tx.outputs[i])
-  const data = inputCellTxList.map((tx, i) => tx.outputsData[i] ?? '')
+  const outputs = inputCellTxList.map((tx, i) => tx.outputs[+inputs[i].previousOutput!.index])
+  const data = inputCellTxList.map((tx, i) => tx.outputsData[+inputs[i].previousOutput!.index] ?? '')
   return { outputs, data }
 }
 

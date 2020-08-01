@@ -36,4 +36,12 @@ export const shannonToCkb = (shannon = '0', showPositiveSign?: boolean, delimite
     : `${sign}${unsignedCKB}`
 }
 
-export default { shannonToCkb }
+export const networksToRpcUrl = (params: { networkId: string, networks: Record<string, { url: string }> }) => {
+  const indexerUrl = params.networks[params.networkId]?.url
+  if (indexerUrl) {
+    return [...indexerUrl.split('/').slice(0, -1), 'rpc'].join('/')
+  }
+  throw new Error('Url is empty')
+}
+
+export default { shannonToCkb, networksToRpcUrl }
