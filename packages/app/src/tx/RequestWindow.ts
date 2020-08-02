@@ -5,10 +5,10 @@ import type { TxInfo } from './utils'
 
 export default class RequestWindow {
   #win = new BrowserWindow({
-    width: 600,
+    width: 750,
     height: 600,
-    minWidth: 600,
-    maxWidth: 600,
+    minWidth: 750,
+    maxWidth: 750,
     maximizable: false,
     fullscreenable: false,
     autoHideMenuBar: true,
