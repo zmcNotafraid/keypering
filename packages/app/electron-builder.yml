@@ -12,9 +12,14 @@ files:
   - package.json
   - build
   - public
+  - from: '../specs'
+    to: './node_modules/@keypering/specs'
+    filter: ['!src']
   - '!**/*.map'
   - '!**/src/'
   - '!**/*.d.ts'
+  - '!__mock__'
+  - '!__tests__'
 
 nsis:
   oneClick: false
