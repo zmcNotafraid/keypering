@@ -1,6 +1,6 @@
 import type { IncomingHttpHeaders } from 'http'
 import { KeyperingAgency } from '@keypering/specs'
-import { handleAuth, handleSign, handleSend } from './controller'
+import { handleAuth, handleSign, handleSend, handleSignAndSend, handleQueryAddresses } from './controller'
 import { MethodNotFoundException } from '../exception'
 import useGuard from './useGuard'
 
@@ -15,7 +15,7 @@ const routes = async (method: KeyperingAgency.Method, params: any, headers: Inco
       return handleAuth(params, headers.origin ?? '', headers.referer ?? '')
     }
     case 'query_addresses': {
-      return params
+      return handleQueryAddresses()
     }
     case 'sign_transaction': {
       return handleSign(params, headers.referer ?? '')
@@ -24,7 +24,7 @@ const routes = async (method: KeyperingAgency.Method, params: any, headers: Inco
       return handleSend(params, headers.referer ?? '')
     }
     case 'sign_and_send_transaction': {
-      return params
+      return handleSignAndSend(params, headers.referer ?? '')
     }
     default: {
       throw new MethodNotFoundException(method || 'undefined')

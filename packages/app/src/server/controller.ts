@@ -1,6 +1,7 @@
 import type { KeyperingAgency } from '@keypering/specs'
-// import CKB from '@nervosnetwork/ckb-sdk-core'
 import { requestAuth } from '../auth'
+import { getWalletIndex } from '../wallet'
+import { getAddrList } from '../address'
 import { requestSignTx, requestSendTx } from '../tx'
 import { getSetting } from '../setting'
 import { networksToRpcUrl } from '../utils/transformer'
@@ -45,4 +46,13 @@ export const handleSignAndSend = async (params: KeyperingAgency.SignAndSendTrans
     return { txHash }
   }
   return tx
+}
+
+export const handleQueryAddresses = async () => {
+  const { current } = getWalletIndex()
+  const addrList = await getAddrList(current, 'ckb')
+  return {
+    userId: current,
+    addresses: addrList
+  }
 }
