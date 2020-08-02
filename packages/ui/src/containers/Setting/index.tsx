@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Channel } from '@keypering/specs'
 import { Settings, ChevronLeft } from 'react-feather'
-import { getSetting, updateSetting, updateScriptDir } from '../../services/channels'
+import { getSetting, updateSetting, updateScriptDir, openDevnetSetting } from '../../services/channels'
 import { isSuccessResponse } from '../../utils'
 import styles from './setting.module.scss'
 
 const Setting = () => {
-  const [setting, setSetting] = useState<Channel.Setting>({ locks: {}, networks: {}, networkId: 'ckb' })
+  const [setting, setSetting] = useState<Channel.Setting>({
+    locks: {},
+    networks: {} as Channel.Setting['networks'],
+    networkId: 'ckb',
+  })
   const [submitting, setSubmitting] = useState(false)
   const history = useHistory()
 
@@ -34,7 +38,9 @@ const Setting = () => {
     if (submitting || !li) {
       return
     }
-    const { dataset: { type, id } } = li
+    const {
+      dataset: { type, id },
+    } = li
     if (!id) {
       return
     }
@@ -99,7 +105,10 @@ const Setting = () => {
           </ul>
         </div>
         <div className={styles.networks}>
-          <h2>Rich Node RPC</h2>
+          <h2>
+            Rich Node RPC
+            <Settings size={12} onClick={openDevnetSetting} />
+          </h2>
           <ul>
             {sortedNetworks.map(([id, network]) => (
               <li key={id} data-checked={id === setting.networkId} data-type="network" data-id={id}>

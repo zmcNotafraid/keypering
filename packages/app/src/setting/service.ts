@@ -3,9 +3,10 @@ import fs from 'fs'
 import { dialog } from 'electron'
 import { Channel } from '@keypering/specs'
 import MainWindow from '../MainWindow'
-import { getDataPath, MAINNET_ID } from '../utils'
+import { getDataPath, MAINNET_ID, DEVNET_ID } from '../utils'
 import systemScripts from './scripts'
 import systemNetworks from './networks'
+import DevnetWindow from './DevnetWindow'
 import { NetworkNotFoundException, InvalidDirectoryException } from '../exception'
 
 const dataPath = getDataPath('setting')
@@ -51,7 +52,7 @@ export const getCustomScripts = () => {
 }
 
 export const getSetting = (): Channel.Setting => {
-  let setting: Channel.Setting = { locks: {}, networks: {}, networkId: MAINNET_ID }
+  let setting: Channel.Setting = { locks: {}, networks: {} as Channel.Setting['networks'], networkId: MAINNET_ID }
   if (fs.existsSync(filePath)) {
     setting = JSON.parse(fs.readFileSync(filePath, 'utf8')) as Channel.Setting
   }
@@ -75,7 +76,11 @@ export const getSetting = (): Channel.Setting => {
   })
 
   systemNetworks.forEach((network, id) => {
-    setting.networks[id] = network
+    if (id === DEVNET_ID) {
+      setting.networks[id] = setting.networks[id] ?? network
+    } else {
+      setting.networks[id] = network
+    }
   })
   setting.networkId = setting.networkId || MAINNET_ID
   return { ...setting, locks }
@@ -91,10 +96,25 @@ export const updateSetting = (params: Channel.UpdateSetting.Params) => {
     if (!Object.keys(setting.networks).includes(params.networkId)) {
       throw new NetworkNotFoundException()
     }
-    setting.networkId = params.networkId
+    setting.networkId = params.networkId as Channel.NetworkId
   } else {
     return false
   }
+  fs.writeFileSync(filePath, JSON.stringify(setting))
+  broadcast(setting)
+  return true
+}
+
+export const updateDevnetUrl = async () => {
+  const setting = getSetting()
+  const currentUrl = setting.networks[DEVNET_ID].url ?? ''
+  const devnetWindow = new DevnetWindow(currentUrl)
+  const newUrl = await devnetWindow.response()
+  devnetWindow.close()
+  if (typeof newUrl === 'boolean') {
+    return false
+  }
+  setting.networks[DEVNET_ID].url = newUrl
   fs.writeFileSync(filePath, JSON.stringify(setting))
   broadcast(setting)
   return true

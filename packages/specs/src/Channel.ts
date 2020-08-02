@@ -23,6 +23,7 @@ export enum ChannelName {
   DeleteAuth = 'delete-auth',
   SubmitPassword = 'submit-password',
   OpenInBrowser = 'open-in-browser',
+  OpenDevnetSetting = 'open-devnet-setting'
 }
 
 export type SuccessResponse<T = any> = {
@@ -125,6 +126,7 @@ export namespace GetAddrList {
 }
 
 // Setting
+export type NetworkId = 'ckb' | 'ckb_test' | 'ckb_dev'
 export interface Setting {
   locks: {
     // id: code hash : hash type
@@ -135,13 +137,8 @@ export interface Setting {
     }
   }
 
-  networks: {
-    [id: string]: {
-      name: string
-      url: string
-    }
-  }
-  networkId: string
+  networks: Record<NetworkId, { name: string; url: string }>
+  networkId: NetworkId
 }
 
 export namespace GetSetting {
@@ -199,5 +196,9 @@ export namespace OpenInBrowser {
   export interface Params {
     url: string
   }
+  export type Response = SuccessResponse<boolean> | ErrorResponse
+}
+
+export namespace OpenDevnetSetting {
   export type Response = SuccessResponse<boolean> | ErrorResponse
 }

@@ -47,3 +47,5 @@ export const updateScriptDir = () => invoke(Channel.ChannelName.UpdateScriptsDir
 
 export const requestSign = (params: Channel.RequestSign.Params): Promise<Channel.RequestSign.Response> =>
   invoke(Channel.ChannelName.RequestSign, params)
+
+export const openDevnetSetting = () => invoke(Channel.ChannelName.OpenDevnetSetting)

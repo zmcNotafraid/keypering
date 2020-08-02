@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Devnet</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        --primary-green: #3cc68a;
+        margin: 0;
+        padding: 20px;
+        font-size: 14px;
+        letter-spacing: 0.23px;
+        user-select: none;
+        line-height: 1.2;
+        font-weight: 400;
+        background: #fff;
+      }
+
+      input {
+        outline: none;
+      }
+
+      .form {
+        display: grid;
+        grid-template: 'title title' auto 'label input' auto 'footer footer' auto/ auto 1fr;
+      }
+
+      h1 {
+        grid-area: title;
+        font-size: 16px;
+        letter-spacing: 0.2px;
+        color: #000;
+        margin-bottom: 20px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      label {
+        grid-area: label;
+        margin-right: 5px;
+        align-self: center;
+      }
+
+      input {
+        grid-area: input;
+        border: 1px solid #000;
+        padding: 2px 5px;
+      }
+
+      .footer {
+        grid-area: footer;
+        justify-self: flex-end;
+        margin-top: 20px;
+      }
+
+      button {
+        width: 80px;
+        height: 30px;
+        border-radius: 2px;
+        outline: none;
+        border: none;
+        text-transform: capitalize;
+        margin-left: 10px;
+      }
+
+      button:hover {
+        filter: brightness(0.9);
+      }
+
+      button[type='submit'] {
+        background-color: var(--primary-green);
+        color: #fff;
+      }
+
+      button:disabled {
+        filter: grayscale(0) !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <form id="form" class="form">
+      <h1></h1>
+      <label for="url">Devnet:</label>
+      <input type="text" id="url" />
+      <div role="footer" class="footer">
+        <button type="button">Cancel</button>
+        <button type="submit">Confirm</button>
+      </div>
+    </form>
+
+    <script>
+      const form = document.querySelector('#form')
+      const cancelBtn = document.querySelector(`button[type=button]`)
+
+      const search = new URLSearchParams(location.search)
+      const currentUrl = search.get('url')
+      form.url.value = currentUrl
+
+      const channel = `update-devnet-url`
+
+      const handleCancel = () => {
+        ipcRenderer?.send(channel, false)
+      }
+
+      const handleSubmit = () => {
+        if (form.url.value) {
+          ipcRenderer?.send(channel, form.url.value)
+        }
+      }
+
+      cancelBtn?.addEventListener('click', handleCancel)
+
+      window.addEventListener('keyup', (e) => {
+        if (e.key === 'Escape') {
+          handleCancel()
+        }
+      })
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        handleSubmit()
+      })
+      form.url.focus()
+    </script>
+  </body>
+</html>

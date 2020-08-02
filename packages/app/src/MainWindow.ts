@@ -280,5 +280,15 @@ export default class MainWindow {
       }
       return { code: Channel.Code.Error, message: 'Url is required' }
     })
+
+    ipcMain.handle(Channel.ChannelName.OpenDevnetSetting, async () => {
+      try {
+        const result = await settingManager.updateDevnetUrl()
+        return { code: Channel.Code.Success, result }
+      } catch (err) {
+        dialog.showErrorBox('Error', err.message)
+        return { code: Channel.Code.Error, message: err.message }
+      }
+    })
   }
 }
