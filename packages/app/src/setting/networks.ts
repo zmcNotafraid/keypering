@@ -19,7 +19,7 @@ const networks = new Map<Channel.NetworkId, { name: string, url: string }>([
     DEVNET_ID,
     {
       name: 'devnet',
-      url: RICH_NODE_MAINNET_INDEXER_URL,
+      url: RICH_NODE_TESTNET_INDEXER_URL,
     }
   ]
 ])
