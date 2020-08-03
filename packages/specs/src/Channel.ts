@@ -120,6 +120,7 @@ export interface Address {
 export namespace GetAddrList {
   export interface Params {
     id: string
+    networkId: NetworkId
   }
 
   export type Response = SuccessResponse<Address[]> | ErrorResponse

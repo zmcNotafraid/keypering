@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Channel } from '@keypering/specs'
-import { getAddressList, getWalletIndex } from '../../services/channels'
+import { getAddressList, getWalletIndex, getSetting } from '../../services/channels'
 import { isSuccessResponse, shannonToCkb, formatAddress } from '../../utils'
 import styles from './addressList.module.scss'
 
@@ -21,32 +21,50 @@ const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.Walle
 
 const AddressList = () => {
   const [list, setList] = useState<Channel.Address[]>([])
-
-  const fetchAddressList = (id: string) => {
-    getAddressList({ id }).then(res => {
-      if (isSuccessResponse(res)) {
-        setList(res.result)
-      }
-    })
-  }
+  const [walletId, setWalletId] = useState('')
+  const [network, setNetwork] = useState<{ id: Channel.NetworkId; url: string } | null>(null)
 
   useEffect(() => {
     const { ipcRenderer } = window
     getWalletIndex().then(res => {
       if (isSuccessResponse(res) && checkWalletIndex(res.result)) {
-        fetchAddressList(res.result.current)
+        setWalletId(res.result.current)
       }
     })
-    const listener = (_e: any, p: { current: string; wallets: Channel.WalletProfile[] }) => {
+    const walletListener = (_e: any, p: { current: string; wallets: Channel.WalletProfile[] }) => {
       if (checkWalletIndex(p)) {
-        fetchAddressList(p.current)
+        setWalletId(p.current)
       }
     }
-    ipcRenderer.on(Channel.ChannelName.GetWalletIndex, listener)
-    return () => {
-      ipcRenderer.removeListener(Channel.ChannelName.GetWalletIndex, listener)
+
+    getSetting().then(res => {
+      if (isSuccessResponse(res)) {
+        const currentNetwork = res.result.networks[res.result.networkId]
+        setNetwork(currentNetwork ? { id: res.result.networkId, url: currentNetwork.url } : null)
+      }
+    })
+    const settingListener = (_e: Event, setting: Channel.Setting) => {
+      const currentNetwork = setting.networks[setting.networkId]
+      setNetwork(currentNetwork ? { id: setting.networkId, url: currentNetwork.url } : null)
     }
-  }, [])
+
+    ipcRenderer.on(Channel.ChannelName.GetWalletIndex, walletListener)
+    ipcRenderer.on(Channel.ChannelName.GetSetting, settingListener)
+    return () => {
+      ipcRenderer.removeListener(Channel.ChannelName.GetWalletIndex, walletListener)
+      ipcRenderer.removeListener(Channel.ChannelName.GetSetting, settingListener)
+    }
+  }, [setWalletId, setNetwork])
+
+  useEffect(() => {
+    if (walletId && network) {
+      getAddressList({ id: walletId, networkId: network.id }).then(res => {
+        if (isSuccessResponse(res)) {
+          setList(res.result)
+        }
+      })
+    }
+  }, [setList, walletId, network])
 
   return (
     <div className={styles.container}>

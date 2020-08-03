@@ -7,7 +7,6 @@ import * as authManager from './auth'
 import * as txManager from './tx'
 import { getAddrList } from './address'
 import { getWalletIndex } from './wallet'
-import { TESTNET_ID } from './utils/const'
 
 export default class MainWindow {
   static id: number | undefined
@@ -221,9 +220,9 @@ export default class MainWindow {
     })
 
     ipcMain.handle(Channel.ChannelName.GetAddrList, async (_e, params: Channel.GetAddrList.Params) => {
-      const { id } = params
+      const { id, networkId } = params
       try {
-        const list = await getAddrList(id, TESTNET_ID)
+        const list = await getAddrList(id, networkId)
         return {
           code: Channel.Code.Success,
           result: list,
