@@ -113,8 +113,8 @@ export namespace GetMnemonic {
 export interface Address {
   tag: string
   address: string
-  free: number
-  inUse: number
+  free: string
+  inUse: string
 }
 
 export namespace GetAddrList {
