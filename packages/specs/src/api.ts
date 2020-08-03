@@ -75,6 +75,7 @@ export declare namespace API {
   interface AddressInfo {
     address: string
     lockHash: string
+    publicKey: string
     lockScriptMeta: LockScriptMeta
     lockScript: Script
   }
@@ -159,4 +160,3 @@ export declare namespace API {
   type SignSendResponse = JsonRpcResponse<SignSendRequest, SignSendError>
   type FnSignSend = (request: SignSendRequest) => Promise<SignSendResponse>
 }
-

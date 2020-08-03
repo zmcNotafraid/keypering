@@ -1,7 +1,7 @@
 import type { KeyperingAgency } from '@keypering/specs'
 import { requestAuth } from '../auth'
 import { getWalletIndex } from '../wallet'
-import { getAddrList } from '../address'
+import { getAddresses } from '../address'
 import { requestSignTx, requestSendTx } from '../tx'
 import { getSetting } from '../setting'
 import { networksToRpcUrl } from '../utils/transformer'
@@ -52,9 +52,10 @@ export const handleSignAndSend = async (params: KeyperingAgency.SignAndSendTrans
 
 export const handleQueryAddresses = async () => {
   const { current } = getWalletIndex()
-  const addrList = await getAddrList(current, 'ckb')
+  const setting = getSetting()
+  const addresses = await getAddresses(current, setting.networkId)
   return {
     userId: current,
-    addresses: addrList
+    addresses
   }
 }
