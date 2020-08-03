@@ -51,4 +51,17 @@ export const formatAddress = (value: string, length = 40) => {
   return `${value.substr(0, half)}...${value.substr(value.length - half, half)}`
 }
 
-export default { datetime, shannonToCkb, formatAddress }
+export const CkbToShannon = (amount = '0') => {
+  if (Number.isNaN(+amount)) {
+    throw new Error('Amount is not a valid number')
+  }
+  const [integer = '0', decimal = ''] = amount.split('.')
+  if (decimal.length > 8) {
+    throw new Error(`Expect decimal to be 8, but ${decimal.length} received`)
+  }
+  const decimalLength = 10 ** decimal.length
+  const num = integer + decimal
+  return BigInt(num) * BigInt(1e8 / decimalLength)
+}
+
+export default { datetime, shannonToCkb, CkbToShannon, formatAddress }
