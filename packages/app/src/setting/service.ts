@@ -4,7 +4,7 @@ import { dialog } from 'electron'
 import { Channel } from '@keypering/specs'
 import MainWindow from '../MainWindow'
 import { getDataPath, MAINNET_ID, DEVNET_ID } from '../utils'
-import systemScripts from './scripts'
+import systemScripts, { Script } from './scripts'
 import systemNetworks from './networks'
 import DevnetWindow from './DevnetWindow'
 import { NetworkNotFoundException, InvalidDirectoryException } from '../exception'
@@ -31,7 +31,7 @@ export const getCustomScripts = () => {
   } catch (err) {
     console.error(err)
   }
-  const scripts = new Map<string, { codeHash: string; hashType: 'data' | 'type' }>()
+  const scripts = new Map<string, Script>()
   if (!scriptsDir || !fs.statSync(scriptsDir).isDirectory()) {
     return scripts
   }
@@ -42,7 +42,7 @@ export const getCustomScripts = () => {
       const info = JSON.parse(fs.readFileSync(path.resolve(scriptsDir, filename), 'utf8'))
       if (typeof info.codeHash === 'string' && ['type', 'data'].includes(info.hashType)) {
         const name = path.basename(filename, '.json')
-        scripts.set(name, { codeHash: info.codeHash, hashType: info.hashType })
+        scripts.set(name, { codeHash: info.codeHash, hashType: info.hashType, algorithm: info.algorithm })
       }
     } catch (err) {
       console.error(err)
@@ -59,11 +59,12 @@ export const getSetting = (): Channel.Setting => {
   const customScripts = getCustomScripts()
   const locks: typeof setting.locks = {}
 
-  customScripts?.forEach((_, name) => {
+  customScripts?.forEach((script, name) => {
     locks[name] = {
       name,
       enabled: setting.locks[name]?.enabled,
       system: false,
+      algorithm: script.algorithm,
     }
   })
 
@@ -72,6 +73,7 @@ export const getSetting = (): Channel.Setting => {
       name,
       enabled: setting.locks[`${script.codeHash}:${script.hashType}`]?.enabled ?? true,
       system: true,
+      algorithm: script.algorithm,
     }
   })
 

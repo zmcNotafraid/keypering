@@ -128,6 +128,7 @@ export namespace GetAddrList {
 
 // Setting
 export type NetworkId = 'ckb' | 'ckb_test' | 'ckb_dev'
+export type LockAlgorithm = 'secp256k1' | 'secp256r1' | 'schnorr'
 export interface Setting {
   locks: {
     // id: code hash : hash type
@@ -135,6 +136,7 @@ export interface Setting {
       name: string
       enabled: boolean
       system: boolean
+      algorithm: LockAlgorithm
     }
   }
 
