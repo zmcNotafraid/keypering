@@ -6,7 +6,7 @@ import { EMPTY_WITNESS_ARGS } from '@nervosnetwork/ckb-sdk-utils/lib/const'
 import SendCkbDialog, { FormState } from '../SendCkbDialog'
 import { getWalletIndex, getSetting, requestSign } from '../../services/channels'
 import { getCapacityByArgs, getEnoughCellsByAddress } from '../../services/rpc'
-import { isSuccessResponse, shannonToCkb, SECP256K1_SCRIPT_DEPS } from '../../utils'
+import { isSuccessResponse, shannonToCkb, CkbToShannon, SECP256K1_SCRIPT_DEPS } from '../../utils'
 import styles from './sendCkb.module.scss'
 
 const getArgs = (params: { current: string; wallets: Channel.WalletProfile[] }) => {
@@ -85,7 +85,8 @@ const SendCkb = () => {
       const deps = SECP256K1_SCRIPT_DEPS[network.id as keyof typeof SECP256K1_SCRIPT_DEPS]
         || (await core.loadDeps().then(config => config.secp256k1Dep!))
       try {
-        const cells = await getEnoughCellsByAddress(form.address, BigInt(form.amount), network.url)
+        const requiredShannon = CkbToShannon(form.amount)
+        const cells = await getEnoughCellsByAddress(form.address, requiredShannon, network.url)
 
         const fromAddress = bech32Address(args, {
           prefix: network.id === 'ckb' ? core.utils.AddressPrefix.Mainnet : core.utils.AddressPrefix.Testnet,
@@ -97,7 +98,7 @@ const SendCkb = () => {
           fromAddress,
           toAddress: form.address,
           fee: '0x0',
-          capacity: `0x${(BigInt(form.amount) * BigInt(10 ** 8)).toString(16)}`,
+          capacity: `0x${requiredShannon.toString(16)}`,
           cells,
           safeMode: true,
           deps,
