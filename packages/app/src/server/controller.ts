@@ -44,7 +44,7 @@ export const handleSignAndSend = async (params: KeyperingAgency.SignAndSendTrans
   const rpcUrl = networksToRpcUrl(getSetting())
   if (tx) {
     delete tx.hash
-    const txHash = sendTx(rpcUrl, tx as CKBComponents.Transaction)
+    const txHash = await sendTx(rpcUrl, tx as CKBComponents.Transaction)
     return { txHash }
   }
   return tx
