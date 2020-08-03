@@ -15,6 +15,7 @@ export const handleAuth = async (_params: KeyperingAgency.Auth.Params['params'],
 export const handleSign = async (params: KeyperingAgency.SignTransaction.Params['params'], url: string) => {
   const tx = await requestSignTx({
     tx: params.tx as CKBComponents.Transaction,
+    lockHash: params.lockHash,
     description: params.description as string,
     referer: url,
     signConfig: params.inputSignConfig,
@@ -34,6 +35,7 @@ export const handleSend = async (params: KeyperingAgency.SendTransaction.Params[
 
 export const handleSignAndSend = async (params: KeyperingAgency.SignAndSendTransaction.Params['params'], url: string) => {
   const tx: any = await requestSignTx({
+    lockHash: params.lockHash,
     tx: params.tx as CKBComponents.Transaction,
     description: params.description as string,
     referer: url,

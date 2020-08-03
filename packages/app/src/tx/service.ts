@@ -87,6 +87,7 @@ export const deleteTxFilesByWalletId = (id: string) => {
 
 export const requestSignTx = async (params: {
   tx: CKBComponents.Transaction
+  lockHash: string,
   description: string
   referer: string
   signConfig?: KeyperingAgency.SignTransaction.InputSignConfig
@@ -120,8 +121,9 @@ export const requestSignTx = async (params: {
 
     if (typeof passwordRes === 'string') {
       const keystore = getKeystoreByWalletId(current)
-      const signedTx = signTransaction({
+      const signedTx = await signTransaction({
         keystore,
+        lockHash: params.lockHash,
         tx: params.tx,
         password: passwordRes,
         signConfig: params.signConfig,

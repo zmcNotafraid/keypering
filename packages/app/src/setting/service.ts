@@ -2,9 +2,10 @@ import path from 'path'
 import fs from 'fs'
 import { dialog } from 'electron'
 import { Channel } from '@keypering/specs'
+import { LockScript } from '@keyper/specs'
 import MainWindow from '../MainWindow'
-import { getDataPath, MAINNET_ID, DEVNET_ID } from '../utils'
-import systemScripts, { Script } from './scripts'
+import { getDataPath, MAINNET_ID, TESTNET_ID, DEVNET_ID } from '../utils'
+import systemScripts from './scripts'
 import systemNetworks from './networks'
 import DevnetWindow from './DevnetWindow'
 import { NetworkNotFoundException, InvalidDirectoryException } from '../exception'
@@ -17,10 +18,6 @@ if (!fs.existsSync(metaInfoPath)) {
   fs.writeFileSync(metaInfoPath, JSON.stringify({ scriptsDir: '' }))
 }
 
-const broadcast = (setting: Channel.Setting) => {
-  MainWindow.broadcast(Channel.ChannelName.GetSetting, setting)
-}
-
 export const getCustomScripts = () => {
   let scriptsDir = ''
   try {
@@ -31,51 +28,37 @@ export const getCustomScripts = () => {
   } catch (err) {
     console.error(err)
   }
-  const scripts = new Map<string, Script>()
+  const scripts = new Map<string, LockScript>()
   if (!scriptsDir || !fs.statSync(scriptsDir).isDirectory()) {
     return scripts
   }
 
-  const files = fs.readdirSync(scriptsDir).filter(filename => filename.endsWith('.json'))
+  const files = fs.readdirSync(scriptsDir).filter(filename => filename.endsWith('.js'))
   files.forEach(filename => {
     try {
-      const info = JSON.parse(fs.readFileSync(path.resolve(scriptsDir, filename), 'utf8'))
-      if (typeof info.codeHash === 'string' && ['type', 'data'].includes(info.hashType)) {
-        const name = path.basename(filename, '.json')
-        scripts.set(name, { codeHash: info.codeHash, hashType: info.hashType, algorithm: info.algorithm })
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const script: LockScript = require(path.resolve(scriptsDir, filename))
+      if (script.name && script.codeHash && script.hashType && script.sign) {
+        scripts.set(script.name, script)
       }
     } catch (err) {
       console.error(err)
     }
   })
+
   return scripts
 }
 
-export const getSetting = (): Channel.Setting => {
-  let setting: Channel.Setting = { locks: {}, networks: {} as Channel.Setting['networks'], networkId: MAINNET_ID }
+export const getSetting = () => {
+  let setting: {
+    locks: Record<string, { name: string, enabled: boolean, system: boolean, ins: LockScript }>,
+    networks: Channel.Setting['networks'],
+    networkId: Channel.NetworkId,
+  } = { locks: {}, networks: {} as Channel.Setting['networks'], networkId: MAINNET_ID }
   if (fs.existsSync(filePath)) {
-    setting = JSON.parse(fs.readFileSync(filePath, 'utf8')) as Channel.Setting
+    setting = JSON.parse(fs.readFileSync(filePath, 'utf8'))
   }
-  const customScripts = getCustomScripts()
-  const locks: typeof setting.locks = {}
-
-  customScripts?.forEach((script, name) => {
-    locks[name] = {
-      name,
-      enabled: setting.locks[name]?.enabled,
-      system: false,
-      algorithm: script.algorithm,
-    }
-  })
-
-  systemScripts.forEach((script, name) => {
-    locks[`${script.codeHash}:${script.hashType}`] = {
-      name,
-      enabled: setting.locks[`${script.codeHash}:${script.hashType}`]?.enabled ?? true,
-      system: true,
-      algorithm: script.algorithm,
-    }
-  })
+  setting.networkId = setting.networkId || MAINNET_ID
 
   systemNetworks.forEach((network, id) => {
     if (id === DEVNET_ID) {
@@ -84,8 +67,41 @@ export const getSetting = (): Channel.Setting => {
       setting.networks[id] = network
     }
   })
-  setting.networkId = setting.networkId || MAINNET_ID
+
+  const customScripts = getCustomScripts()
+  const locks: Record<string, { name: string, enabled: boolean, system: boolean, ins: LockScript }> = {}
+
+  customScripts.forEach((script, name) => {
+    locks[`${script.codeHash}:${script.hashType}`] = {
+      name,
+      enabled: setting.locks[name]?.enabled,
+      system: false,
+      ins: script
+    }
+  })
+
+
+  const scriptsToShow = setting.networkId === MAINNET_ID
+    ? systemScripts.mainnetScripts
+    : setting.networkId === TESTNET_ID
+      ? systemScripts.testnetScripts
+      : new Map()
+
+  scriptsToShow.forEach((script, name) => {
+    locks[`${script.codeHash}:${script.hashType}`] = {
+      name,
+      enabled: setting.locks[`${script.codeHash}:${script.hashType}`]?.enabled ?? true,
+      system: true,
+      ins: script
+    }
+  })
+
   return { ...setting, locks }
+}
+
+
+const broadcast = () => {
+  MainWindow.broadcast(Channel.ChannelName.GetSetting, getSetting())
 }
 
 export const updateSetting = (params: Channel.UpdateSetting.Params) => {
@@ -103,7 +119,7 @@ export const updateSetting = (params: Channel.UpdateSetting.Params) => {
     return false
   }
   fs.writeFileSync(filePath, JSON.stringify(setting))
-  broadcast(setting)
+  broadcast()
   return true
 }
 
@@ -118,7 +134,7 @@ export const updateDevnetUrl = async () => {
   }
   setting.networks[DEVNET_ID].url = newUrl
   fs.writeFileSync(filePath, JSON.stringify(setting))
-  broadcast(setting)
+  broadcast()
   return true
 }
 
@@ -149,7 +165,6 @@ export const setScriptsPath = async () => {
     title: 'Info',
     message: `Scripts Directory is set to ${scriptsFilePath}`,
   })
-  const setting = getSetting()
-  broadcast(setting)
+  broadcast()
   return true
 }

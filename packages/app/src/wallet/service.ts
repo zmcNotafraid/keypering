@@ -1,7 +1,6 @@
 import path from 'path'
 import fs from 'fs'
 import { Channel, KeyperingAgency } from '@keypering/specs'
-import CKB from '@nervosnetwork/ckb-sdk-core'
 import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
 import { getDataPath } from '../utils'
 import {
@@ -15,6 +14,7 @@ import { deleteAuthList } from '../auth'
 import PasswordWindow from './PasswordWindow'
 import { dialog } from 'electron'
 import MainWindow from '../MainWindow'
+import signTx from '../keyper/sign'
 
 const dataPath = getDataPath('wallet')
 const indexPath = path.resolve(dataPath, 'index.json')
@@ -109,7 +109,9 @@ export const deleteWallet = async () => {
   }
 
   const newWallets = wallets.filter(w => w.id !== current)
-  const newCurrent = newWallets.length > 0 ? newWallets[0].id : ''
+  const newCurrent = newWallets.length > 0
+    ? newWallets[0].id
+    : ''
   if (newCurrent) {
     udpateWalletIndex(newCurrent, newWallets)
   } else {
@@ -190,26 +192,12 @@ interface SignTransactionParams {
   keystore: Keystore
   tx: CKBComponents.RawTransactionToSign & { hash: string }
   password: string
+  lockHash: string
   signConfig?: KeyperingAgency.SignTransaction.InputSignConfig
 }
-export const signTransaction = ({ keystore, tx, password, signConfig }: SignTransactionParams) => {
-  const ckb = new CKB()
+export const signTransaction = async ({ keystore, tx, password, signConfig, lockHash }: SignTransactionParams) => {
   const xprv = decryptKeystore(keystore, password)
   const sk = `0x${xprv.slice(0, 64)}`
-
-  if (!signConfig) {
-    const signed = ckb.signTransaction(sk)(tx, [])
-    return signed
-  }
-
-  const witnesses =
-    signConfig.length < 0
-      ? tx.witnesses.slice(signConfig.index)
-      : tx.witnesses.slice(signConfig.index, signConfig.index + signConfig.length)
-  const signature = ckb.signWitnesses(sk)({
-    transactionHash: tx.hash,
-    witnesses,
-  })[0] as string
-  tx.witnesses[signConfig.index] = signature
-  return tx
+  const signed = await signTx(sk, { tx, lockHash, inputSignConfig: signConfig })
+  return signed
 }

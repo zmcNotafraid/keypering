@@ -1,12 +1,15 @@
 import path from 'path'
 import { BrowserWindow, ipcMain, dialog, shell } from 'electron'
 import { Channel } from '@keypering/specs'
+import CKB from '@nervosnetwork/ckb-sdk-core'
 import * as walletManager from './wallet'
 import * as settingManager from './setting'
 import * as authManager from './auth'
 import * as txManager from './tx'
 import { getAddrList } from './address'
 import { getWalletIndex } from './wallet'
+import { SECP256K1_BLAKE160_CODE_HASH } from './utils'
+import { CurrentWalletNotSetException } from './exception'
 
 export default class MainWindow {
   static id: number | undefined
@@ -165,10 +168,18 @@ export default class MainWindow {
       }
     })
 
-    ipcMain.handle(Channel.ChannelName.GetSetting, () => {
+    ipcMain.handle(Channel.ChannelName.GetSetting, (): Channel.GetSetting.Response => {
       try {
-        const result = settingManager.getSetting()
-        return { code: Channel.Code.Success, result }
+        const { locks, ...rest } = settingManager.getSetting()
+        const filteredLocks: Channel.Setting['locks'] = {}
+        Object.keys(locks).forEach(lockId => {
+          filteredLocks[lockId] = {
+            name: locks[lockId].name,
+            enabled: locks[lockId].enabled,
+            system: locks[lockId].system,
+          }
+        })
+        return { code: Channel.Code.Success, result: { ...rest, locks: filteredLocks } }
       } catch (err) {
         dialog.showErrorBox('Error', err.message)
         return { code: Channel.Code.Error, message: err.message }
@@ -212,9 +223,21 @@ export default class MainWindow {
 
     ipcMain.handle(Channel.ChannelName.RequestSign, async (_e, params: Channel.RequestSign.Params) => {
       try {
-        const tx = await txManager.requestSignTx({ ...params, referer: 'Keypering', description: '' })
+        const { current, wallets } = getWalletIndex()
+        const wallet = wallets.find(w => w.id === current)
+        if (!wallet) {
+          throw new CurrentWalletNotSetException()
+        }
+        const ckb = new CKB()
+        const lockHash = ckb.utils.scriptToHash({
+          codeHash: SECP256K1_BLAKE160_CODE_HASH,
+          hashType: 'type',
+          args: `0x${ckb.utils.blake160(`0x${wallet.xpub.slice(0, 66)}`, 'hex')}`
+        })
+        const tx = await txManager.requestSignTx({ ...params, lockHash, referer: 'Keypering', description: '' })
         return { code: Channel.Code.Success, result: { tx } }
       } catch (err) {
+        console.error(err)
         return { code: err.code || Channel.Code.Error, message: err.message }
       }
     })
