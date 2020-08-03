@@ -16,6 +16,7 @@ import {
   RequestRejected,
   CurrentWalletNotSetException,
   NetworkNotFoundException,
+  ParamsRequiredException,
 } from '../exception'
 
 const dataPath = getDataPath('tx')
@@ -92,6 +93,9 @@ export const requestSignTx = async (params: {
   referer: string
   signConfig?: KeyperingAgency.SignTransaction.InputSignConfig
 }) => {
+  if(!params.lockHash) {
+    throw new ParamsRequiredException('lockHash')
+  }
   if (!params.tx.hash) {
     const ckb = new CKB()
     params.tx.hash = ckb.utils.rawTransactionToHash(params.tx)
