@@ -8,12 +8,12 @@ const parseCells = (cells = [] as any[]) => {
   const inuse = cells
     .filter(cell => cell.output_data !== '0x')
     .map(cell => parseInt(cell.output.capacity))
-    .reduce((acc, curr) => acc + curr, 0)
+    .reduce((acc, curr) => acc + curr, 0).toString()
 
   const free = cells
     .filter(cell => cell.output_data === '0x')
     .map(cell => parseInt(cell.output.capacity))
-    .reduce((acc, curr) => acc + curr, 0)
+    .reduce((acc, curr) => acc + curr, 0).toString()
 
   return {
     inuse,
