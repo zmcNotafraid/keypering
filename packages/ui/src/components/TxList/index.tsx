@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Channel } from '@keypering/specs'
-import { ArrowRight } from 'react-feather'
+import { ArrowRight, CheckCircle, XCircle } from 'react-feather'
 import { getTxList, getSetting, openInBrowser } from '../../services/channels'
 import { isSuccessResponse, datetime } from '../../utils'
 import styles from './txList.module.scss'
@@ -56,7 +56,21 @@ const TxList = () => {
           <span className={styles.metaValue}>{tx.meta}</span>
           <div className={styles.status}>
             <time>{datetime(new Date(+tx.time))}</time>
-            <span data-is-approved={tx.isApproved}>{tx.isApproved ? 'Approved' : 'Declined'}</span>
+            <span data-is-approved={tx.isApproved}>
+              {tx.isApproved
+                ? (
+                  <>
+                    <CheckCircle size={16} />
+                    Approved
+                  </>
+                )
+                : (
+                  <>
+                    <XCircle size={16} />
+                    Declined
+                  </>
+                )}
+            </span>
           </div>
           <button
             className={styles.explorer}
