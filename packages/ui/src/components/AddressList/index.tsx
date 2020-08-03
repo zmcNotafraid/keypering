@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Channel } from '@keypering/specs'
 import { getAddressList, getWalletIndex } from '../../services/channels'
-import { isSuccessResponse } from '../../utils'
+import { isSuccessResponse, shannonToCkb, formatAddress } from '../../utils'
 import styles from './addressList.module.scss'
-
-const adaptAddress = (value: string) => {
-  if (value === undefined || value === null) return ''
-  if (value.length <= 40) return value
-  return `${value.substr(0, 20)}...${value.substr(value.length - 20, 20)}`
-}
-
-const formatCapacity = (capacity: number) => {
-  return (capacity / 10 ** 8).toFixed(8)
-}
 
 const copyAddress = (address: string) => {
   const element = document.createElement('textarea')
@@ -62,19 +52,19 @@ const AddressList = () => {
     <div className={styles.container}>
       {list.map(address => (
         <div key={address.address} className={styles.item}>
-          <span className={styles.tag}>{adaptAddress(address.tag)}</span>
+          <span className={styles.tag}>{address.tag}</span>
           <div className={styles.address} id="address" onClick={() => copyAddress(address.address)}>
-            {adaptAddress(address.address)}
+            {formatAddress(address.address)}
           </div>
           <div className={styles.capacity}>
             <div>
               <span>Free</span>
-              <span>{formatCapacity(address.free)}</span>
+              <span>{shannonToCkb(address.free)}</span>
             </div>
             <span className={styles.separate} />
             <div>
               <span>In Use</span>
-              <span>{formatCapacity(address.inUse)}</span>
+              <span>{shannonToCkb(address.inUse)}</span>
             </div>
           </div>
         </div>

@@ -44,4 +44,11 @@ export const shannonToCkb = (shannon = '0', showPositiveSign?: boolean, delimite
   return +unsignedCKB === 0 ? '0' : `${sign}${unsignedCKB}`
 }
 
-export default { datetime, shannonToCkb }
+export const formatAddress = (value: string, length = 40) => {
+  if (value === undefined || value === null) { return '' }
+  if (value.length <= length) { return value }
+  const half = length / 2
+  return `${value.substr(0, half)}...${value.substr(value.length - half, half)}`
+}
+
+export default { datetime, shannonToCkb, formatAddress }
