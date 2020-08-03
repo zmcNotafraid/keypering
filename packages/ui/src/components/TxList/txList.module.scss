@@ -43,14 +43,19 @@
 }
 
 .status {
+  display: flex;
   grid-area: status;
   font-size: 0.75rem;
   time {
     padding-right: 10px;
   }
   span {
+    display: flex;
     color: #009afd;
     letter-spacing: 0.2px;
+    svg {
+      margin-right: 4px;
+    }
     &[data-is-approved='false'] {
       color: #d50000;
     }
