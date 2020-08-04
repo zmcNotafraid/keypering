@@ -139,7 +139,7 @@ params:
       - lock: ''
         inputType: ''
         outputType: ''
-  lockHash: '0xcf5ee0f83a06309618fc50f8cd1138f44de17ca812d1c6e3a665e6763d041e8f'
+  lockHash: '0xcf5ee0f83a06309618fc50f8cd1138f44de17ca812d1c6e3a665e6763d041e8f'    # lock hash used to search enabled lock scripts
   description: custom description
   inputSignConfig:                            # optional, null for all
     index: start index of witnesses to sign   # start index of witnesses to sign
@@ -282,7 +282,7 @@ params:
       - lock: ''
         inputType: ''
         outputType: ''
-  lockHash: '0xcf5ee0f83a06309618fc50f8cd1138f44de17ca812d1c6e3a665e6763d041e8f'
+  lockHash: '0xcf5ee0f83a06309618fc50f8cd1138f44de17ca812d1c6e3a665e6763d041e8f'    # lock hash used to search enabled lock scripts
   description: custom description
   inputSignConfig:                            # optional, null for all
     index: start index of witnesses to sign   # start index of witnesses to sign
