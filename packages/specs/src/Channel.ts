@@ -23,7 +23,7 @@ export enum ChannelName {
   DeleteAuth = 'delete-auth',
   SubmitPassword = 'submit-password',
   OpenInBrowser = 'open-in-browser',
-  OpenDevnetSetting = 'open-devnet-setting'
+  OpenDevnetSetting = 'open-devnet-setting',
 }
 
 export type SuccessResponse<T = any> = {
