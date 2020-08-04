@@ -204,7 +204,7 @@ The lock plug-ins setting is used to specify which lock scripts are used to gene
 
 Custom lock scripts can be loaded by specifying a directory containing your scripts. After that your scripts will be parsed and whose in right fomrat will be imported.
 
-> Custom Lock Script should implements the [LockScript](https://github.com/ququzone/keyper/blob/d324671d2dc6e886e0a7a5cc102d7c3a3ed62335/packages/specs/src/lock.ts#L22) interface and exported as default.
+> Custom Lock Script should implement the [LockScript](https://github.com/ququzone/keyper/blob/d324671d2dc6e886e0a7a5cc102d7c3a3ed62335/packages/specs/src/lock.ts#L22) interface and exported as default.
 
 ### Rich Node RPC
 
