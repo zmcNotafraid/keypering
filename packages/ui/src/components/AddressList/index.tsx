@@ -57,12 +57,22 @@ const AddressList = () => {
   }, [setWalletId, setNetwork])
 
   useEffect(() => {
+    const { ipcRenderer } = window
     if (walletId && network) {
       getAddressList({ id: walletId, networkId: network.id }).then(res => {
         if (isSuccessResponse(res)) {
           setList(res.result)
         }
       })
+    }
+    const addressListener = (_e: Event, list: Channel.Address[]) => {
+      if (list && list.length > 0) {
+        setList(list)
+      }
+    }
+    ipcRenderer.on(Channel.ChannelName.GetAddrList, addressListener)
+    return () => {
+      ipcRenderer.removeListener(Channel.ChannelName.GetAddrList, addressListener)
     }
   }, [setList, walletId, network])
 
