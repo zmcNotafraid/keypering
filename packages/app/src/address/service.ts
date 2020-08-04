@@ -36,23 +36,25 @@ export const getAddrList = async (id: string, network: Channel.NetworkId): Promi
     return []
   }
   const ckb = new CKB()
-  const { AddressPrefix, AddressType } = ckb.utils
+  const { AddressPrefix, AddressType, blake160, fullPayloadToAddress, pubkeyToAddress } = ckb.utils
   const prefix = network === 'ckb' ? AddressPrefix.Mainnet : AddressPrefix.Testnet
   const publicKey = '0x' + currentWallets[0].xpub.slice(0, 66)
-  const args = '0x' + ckb.utils.blake160(publicKey, 'hex')
+  const args = '0x' + blake160(publicKey, 'hex')
   const secp256k1Cells = parseCells(await getCells(SECP256K1_BLAKE160_CODE_HASH, args, network))
   const anyoneCanPayCells = parseCells(await getCells(ANYONE_CAN_PAY_CODE_HASH, args, network))
 
-  const list: Channel.Address[] = [
+  let list: Channel.Address[] = [
     {
       tag: 'Secp256k1',
-      address: ckb.utils.pubkeyToAddress(publicKey, { prefix } as any),
+      address: pubkeyToAddress(publicKey, { prefix } as any),
       free: secp256k1Cells.free,
       inUse: secp256k1Cells.inuse,
     },
-    {
+  ]
+  if (network === 'ckb_test') {
+    list.push({
       tag: 'anyone-can-pay',
-      address: ckb.utils.fullPayloadToAddress({
+      address: fullPayloadToAddress({
         args,
         type: AddressType.TypeCodeHash,
         prefix,
@@ -60,8 +62,8 @@ export const getAddrList = async (id: string, network: Channel.NetworkId): Promi
       }),
       free: anyoneCanPayCells.free,
       inUse: anyoneCanPayCells.inuse,
-    },
-  ]
+    })
+  }
   return list
 }
 
@@ -72,28 +74,28 @@ export const getAddresses = async (id: string, network: Channel.NetworkId): Prom
     return []
   }
   const ckb = new CKB()
-  const { AddressPrefix, AddressType } = ckb.utils
+  const { AddressPrefix, AddressType, blake160, scriptToHash, pubkeyToAddress } = ckb.utils
   const prefix = network === 'ckb' ? AddressPrefix.Mainnet : AddressPrefix.Testnet
   const publicKey = '0x' + currentWallets[0].xpub.slice(0, 66)
-  const args = '0x' + ckb.utils.blake160(publicKey, 'hex')
+  const args = '0x' + blake160(publicKey, 'hex')
 
   const secp256k1LockScript: CKBComponents.Script = {
     codeHash: SECP256K1_BLAKE160_CODE_HASH,
     args,
     hashType: 'type',
   }
-  const secp256k1LockHash = ckb.utils.scriptToHash(secp256k1LockScript)
+  const secp256k1LockHash = scriptToHash(secp256k1LockScript)
 
   const anyoneCanPayLockScript: CKBComponents.Script = {
     codeHash: ANYONE_CAN_PAY_CODE_HASH,
     args,
     hashType: 'type',
   }
-  const anyoneCanPayLockHash = ckb.utils.scriptToHash(anyoneCanPayLockScript)
+  const anyoneCanPayLockHash = scriptToHash(anyoneCanPayLockScript)
 
-  const addresses: API.AddressInfo[] = [
+  let addresses: API.AddressInfo[] = [
     {
-      address: ckb.utils.pubkeyToAddress(publicKey, { prefix } as any),
+      address: pubkeyToAddress(publicKey, { prefix } as any),
       lockScript: secp256k1LockScript,
       lockHash: secp256k1LockHash,
       publicKey,
@@ -111,9 +113,11 @@ export const getAddresses = async (id: string, network: Channel.NetworkId): Prom
         headerDeps: [],
       },
     },
-    {
-      address: ckb.utils.pubkeyToAddress(publicKey, {
-        prefix: network === 'ckb' ? AddressPrefix.Mainnet : AddressPrefix.Testnet,
+  ]
+  if (network === 'ckb_test') {
+    addresses.push({
+      address: pubkeyToAddress(publicKey, {
+        prefix: AddressPrefix.Testnet,
         type: AddressType.TypeCodeHash,
         codeHashOrCodeHashIndex: ANYONE_CAN_PAY_CODE_HASH,
       }),
@@ -121,7 +125,7 @@ export const getAddresses = async (id: string, network: Channel.NetworkId): Prom
       lockHash: anyoneCanPayLockHash,
       publicKey,
       lockScriptMeta: {
-        name: 'anyone_can_pay',
+        name: 'anyone-can-pay',
         cellDeps: [
           {
             outPoint: {
@@ -133,8 +137,8 @@ export const getAddresses = async (id: string, network: Channel.NetworkId): Prom
         ],
         headerDeps: [],
       },
-    },
-  ]
+    })
+  }
   return addresses
 }
 
