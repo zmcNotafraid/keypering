@@ -6,7 +6,7 @@ import {
   SECP256K1_BLAKE160_CODE_HASH,
   SECP256K1_BLAKE160_MAINNET_TX_HASH,
   SECP256K1_BLAKE160_TESTNET_TX_HASH,
-  ANYONE_CAN_PAY_TX_HASH,
+  ANYONE_CAN_PAY_TESTNET_TX_HASH,
 } from '../utils/const'
 import { getAddressTags, getLocalLockCellCapacity, getRemoteLockCellCapacity, generateAddressList } from './utils'
 
@@ -79,7 +79,7 @@ export const getAddresses = async (id: string, network: Channel.NetworkId): Prom
         cellDeps: [
           {
             outPoint: {
-              txHash: ANYONE_CAN_PAY_TX_HASH,
+              txHash: ANYONE_CAN_PAY_TESTNET_TX_HASH,
               index: '0x0',
             },
             depType: 'depGroup',
