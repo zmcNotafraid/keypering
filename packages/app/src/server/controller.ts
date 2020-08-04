@@ -43,9 +43,10 @@ export const handleSignAndSend = async (params: KeyperingAgency.SignAndSendTrans
   })
   const rpcUrl = networksToRpcUrl(getSetting())
   if (tx) {
-    delete tx.hash
-    const txHash = await sendTx(rpcUrl, tx as CKBComponents.Transaction)
-    return { txHash }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { hash, ...txToSend } = tx
+    const txHash = await sendTx(rpcUrl, txToSend as CKBComponents.Transaction)
+    return { txHash, tx }
   }
   return tx
 }
