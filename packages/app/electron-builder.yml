@@ -10,16 +10,23 @@ directories:
 
 files:
   - package.json
-  - build
-  - public
-  - from: '../specs'
-    to: './node_modules/@keypering/specs'
+  - from: build
+    to: build
+    filter: ['!**/*.map']
+  - from: public
+    to: public
+    filter: ['!**/*.map']
+  - from: ../specs
+    to: ./node_modules/@keypering/specs
     filter: ['!src']
   - '!**/*.map'
-  - '!**/src/'
+  - '!src'
   - '!**/*.d.ts'
   - '!__mock__'
   - '!__tests__'
+  - '!**/*.example'
+  - '!jest.*'
+  - '!tsconfig.*'
 
 nsis:
   oneClick: false
