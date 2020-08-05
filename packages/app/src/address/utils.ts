@@ -100,16 +100,18 @@ export const getLocalLockCellCapacity = (id: string, network: Channel.NetworkId)
   const filePath0 = getAddressDataPath(id, network, LockType.Secp256k1)
   const filePath1 = getAddressDataPath(id, network, LockType.AnyoneCanPay)
 
-  if (fs.existsSync(filePath0) && fs.existsSync(filePath1)) {
-    return {
-      secp256k1: JSON.parse(fs.readFileSync(filePath0, 'utf8')),
-      anyoneCanPay: JSON.parse(fs.readFileSync(filePath1, 'utf8'))
-    }
-  }
-  return {
+  let cellCapacity = {
     secp256k1: {inuse: '0', free: '0'},
     anyoneCanPay: {inuse: '0', free: '0'}
   }
+
+  if (fs.existsSync(filePath0)) {
+    cellCapacity.secp256k1 = JSON.parse(fs.readFileSync(filePath0, 'utf8'))
+  }
+  if (fs.existsSync(filePath1)) {
+    cellCapacity.anyoneCanPay = JSON.parse(fs.readFileSync(filePath1, 'utf8'))
+  }
+  return cellCapacity
 }
 
 export const getAddressTags = (id: string, network: Channel.NetworkId): {secp256k1: AddressTag, anyoneCanPay?: AddressTag} => {
