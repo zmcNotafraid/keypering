@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Keypering-Mac_Big_Sur
-          path: release/mac/Keypering.app
+          path: release/mac/*
 
       - name: Upload Keypering Win
         uses: actions/upload-artifact@v2
