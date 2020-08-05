@@ -30,10 +30,9 @@ jobs:
 
       - name: Package
         run: |
-          cp ./packages/app/.env.example ./packages/app/.env
+          echo PORT=3102 > ./packages/app/.env
           npm run release
         env:
-          PORT: 3102
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Keypering Mac
@@ -41,12 +40,6 @@ jobs:
         with:
           name: Keypering-Mac
           path: release/Keypering-*-mac.zip
-
-      - name: Upload Keypering Mac_Big_Sur
-        uses: actions/upload-artifact@v2
-        with:
-          name: Keypering-Mac_Big_Sur
-          path: release/mac/*
 
       - name: Upload Keypering Win
         uses: actions/upload-artifact@v2
