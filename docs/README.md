@@ -1,66 +1,69 @@
-# 👛keypering (work-in-progress👷🔧️👷‍♀️⛏)
-HELLO
+<img src="https://raw.githubusercontent.com/Keith-CY/keypering/develop/docs/_media/icon.png" alt="logo" width=120 style="display: block; margin: 0 auto" />
 
-**Keypering** ia a [nervos CKB](https://www.nervos.org/) desktop wallet prototype for dApp interaction.
+<p align="center">
+  A desktop wallet for DApp developers working on <a href="https://github.com/nervosnetwork/ckb/" alt="ckb">Nervos Network CKB</a>
+</p>
 
-## Status
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Window%20%7C%20MacOS%20%7C%20Linux-3CC68A?style=flat-square" alt="Platform" />
 
-**This project is still in its early stages of development**
+  <img src="https://img.shields.io/badge/Application-Insider-brightgreen?style=flat-square&color=3A8FB7" alt="Insider" />
 
-## Development Setup
+  <a href="https://ezcook.de/keypering/#/manual" alt="Manual" style="text-decoration: none">
+    <img src="https://img.shields.io/badge/Docs-Manual-green?style=flat-square&color=69B0AC" alt="Manual" />
+  </a>
 
-### Prerequisites
+  <a href="https://ezcook.de/keypering/#/protocol" alt="Protocol" style="text-decoration: none">
+    <img src="https://img.shields.io/badge/Docs-Protocol-blue?style=flat-square&color=2D6D4B" alt="Protocol" />
+  </a>
 
-First you need to install [nodejs](https://nodejs.org/) and [yarn](https://yarnpkg.com/).
+  <img src="https://img.shields.io/github/license/keith-cy/keypering?style=flat-square&color=0089A7" alt="License" />
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), 
-and built with [Ant Design Mobile](https://mobile.ant.design/), 
-[Source Code Pro](https://github.com/adobe-fonts/source-code-pro), 
-[Google Lato Font](https://fonts.google.com/specimen/Lato), 
-[Feature Icon](https://github.com/feathericons/feather).
+  <a href="https://github.com/keith-cy/keypering/releases" alt="Release" style="text-decoration: none">
+    <img src="https://img.shields.io/github/v/release/keith-cy/keypering?include_prereleases&style=flat-square&color=006284" alt="Release" />
+  </a>
 
-It also uses [Tauri](https://github.com/tauri-apps/tauri) to build a desktop GUI.
-check [Tauri docs](https://tauri.studio/docs/getting-started/intro) to setup development environment.
+  <a href="https://github.com/Keith-CY/keypering/actions" alt="Workflow" style="text-decoration: none">
+    <img src="https://img.shields.io/github/workflow/status/keith-cy/keypering/Package%20Keypering?style=flat-square&color=005CAF" alt="Workflow" />
+  </a>
+</p>
 
-### Available Scripts
+<p align="center">
+  👉 <mark>Keypering is still under active development and considered to be a work in progress</mark> 👈
+</p>
 
-In the project directory, you can run:
+---
 
-#### `yarn start`
+# Getting Started
 
-Start a http server, which is listening on :3000, for development.
-
-The page will reload if you make edits.
-
-You will also see any lint errors in the console.
-
-### `yarn tauri dev`
-
-Compile and open the desktop app, which loads `http://127.0.0.1:3000/` as homepage.
-
-The app will recompile if you make edits on rust code. 
-
-## How to build production
-First, Setup the tauri
-
-for windows:
-
-https://tauri.studio/docs/getting-started/setup-windows
-
-for mac:
-
-https://tauri.studio/docs/getting-started/setup-macos
-
-And, run the following commands to build a standalone executable file:
-
-```shell
-yarn install
-yarn build
-yarn tauri build
+```bash
+$ git clone https://github.com/Keith-CY/keypering.git
+$ cd keypering
+$ npm run bootstrap
+$ npm run build:specs
+$ cp ./packages/app/.env.example ./packages/app/.env
+$ npm start
 ```
 
-Check `src-tauri/target/release/keypering.exe`
+Then the Keypering Application should launch as this
 
-## License
+![](https://raw.githubusercontent.com/Keith-CY/keypering/develop/docs/_media/screenshots/01.welcome.png)
 
-Keypering is released under the terms of the MIT license. See [COPYING](https://github.com/liusong1111/keypering-ui/blob/develop/COPYING) for more information or see https://opensource.org/licenses/MIT.
+- Keypring Main Interface runs on `localhost:3000`
+- Keypering Agency Server runs on `localhost:3102`, the `3102` is specified in `./packages/app/.env`
+
+# Components
+
+Keypering consists of 3 components:
+
+1. [@keypering/specs](https://github.com/Keith-CY/keypering/tree/develop/packages/specs) defines APIs between [renderer process](https://www.electronjs.org/docs/api/ipc-renderer), [main process](https://www.electronjs.org/docs/api/ipc-main#ipcmain) and [DApp](https://github.com/duanyytop/simplestdapp);
+2. [@keypering/ui](https://github.com/Keith-CY/keypering/tree/develop/packages/ui) renders the main interface of Keypering;
+3. [@keypering/app](https://github.com/Keith-CY/keypering/tree/develop/packages/app) maintains data and handle requests from renderer process and DApp.
+
+# Resources
+
+- [Keypering Manual](https://ezcook.de/keypering/#/manual) - User Guide of Keypering
+- [Keypering Agency Protocol](https://ezcook.de/keypering/#/protocol) - DApp Developer Guide of Keypering
+- [Keyper](https://github.com/ququzone/keyper) - Lock Script Manager used in Keypering
+- [CKB Rich Node](https://github.com/ququzone/ckb-rich-node) - Remote server used in Keypering
+- [CKB Indexer](https://github.com/quake/ckb-indexer) - Core Module of CKB Rich Node
