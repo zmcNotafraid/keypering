@@ -2,6 +2,7 @@ import React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
 import Main from './containers/Main'
+import Footer from './containers/Footer'
 import Welcome from './containers/Welcome'
 import Mnemonic from './containers/Mnemonic'
 import Keystore from './containers/Keystore'
@@ -35,6 +36,9 @@ function App() {
           <ChangeWalletName />
         </Route>
       </Switch>
+      <Route path={Routes.Main}>
+        <Footer />
+      </Route>
     </Router>
   )
 }

@@ -33,7 +33,7 @@ const Main = () => {
     }
   }, [active])
   return (
-    <div className={styles.container}>
+    <>
       <MainHeader />
       <div className={styles.balance}>
         <SendCkb />
@@ -50,7 +50,7 @@ const Main = () => {
           {list}
         </div>
       </div>
-    </div>
+    </>
   )
 }
 

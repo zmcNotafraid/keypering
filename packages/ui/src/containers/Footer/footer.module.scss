@@ -1,0 +1,21 @@
+.network {
+  display: flex;
+  align-items: center;
+  color: var(--primary-green);
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 4px 10px;
+
+  &:before {
+    display: block;
+    content: '';
+    height: 11px;
+    width: 11px;
+    margin-right: 4px;
+    border-radius: 50%;
+    background-color: currentColor;
+  }
+  &[data-is-online=false] {
+    color: var(--error)
+  }
+}
