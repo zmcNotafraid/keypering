@@ -1,3 +1,6 @@
 - [Home](README.md "Keypering")
 - [Keypering Manual](manual.md "Keypering Manual")
 - [Keyper Agency Protocol](protocol.md "Keyper Protocol")
+- [Download](https://github.com/keith-cy/keypering/releases "Download")
+- [Simplest DApp](https://prototype.ckbapp.dev/simplest-dapp "Simplest DApp")
+- [Lock Scripts](https://github.com/Keith-CY/keyper_lock_scripts/ "Lock Scripts")

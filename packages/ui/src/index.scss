@@ -9,6 +9,10 @@ a {
   text-decoration: none;
 }
 
+input { 
+  user-select: unset;
+}
+
 button {
   border-radius: 2px;
   line-height: 1;

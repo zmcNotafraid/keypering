@@ -75,6 +75,11 @@ Import an existing wallet from a keystore file
 
 Addresses will be speculated from enabled lock scripts in Keypering.
 
+There're two types of balance belong to an adress
+
+- Free - total capacity of cells who has no data and no type script thus they are safe to consume;
+- In Use - total capacity of cells who has data or type script and require doublethink to use.
+
 <div class="center">
   <b><small>Addresses</small></b>
   <img src="_media/screenshots/06.wallet_addresses.png" alt="Addresses">
@@ -90,7 +95,7 @@ Three're 3 steps to send a transaction from Keypering
 2. Check the transaction information
 3. Confirm to sign the transaction
 
-<small><b>Tips</b>: Click the right arrow in the Transaction panel to view details on Explorer.</small>
+<small><b>Tip</b>: Click the right arrow in the Transaction panel to view details on Explorer.</small>
 
 <div class="center">
   <b><small>Send Transaction From Keypering</small></b>
@@ -204,7 +209,7 @@ The lock plug-ins setting is used to specify which lock scripts are used to gene
 
 Custom lock scripts can be loaded by specifying a directory containing your scripts. After that your scripts will be parsed and whose in right fomrat will be imported.
 
-> Custom Lock Script should implement the [LockScript](https://github.com/ququzone/keyper/blob/d324671d2dc6e886e0a7a5cc102d7c3a3ed62335/packages/specs/src/lock.ts#L22) interface and be exported as default. [Lock Script Example](https://github.com/Keith-CY/keypering/blob/develop/examples/lockScript.js)
+> Custom Lock Script should implement the [LockScript](https://github.com/ququzone/keyper/blob/d324671d2dc6e886e0a7a5cc102d7c3a3ed62335/packages/specs/src/lock.ts#L22) interface and be exported as default. [Lock Script Example](https://github.com/Keith-CY/keyper_lock_scripts)
 
 ### Rich Node RPC
 

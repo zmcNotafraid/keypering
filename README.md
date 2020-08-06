@@ -1,4 +1,6 @@
-<img src="https://raw.githubusercontent.com/Keith-CY/keypering/develop/docs/_media/icon.png" alt="logo" width=120 style="display: block; margin: 0 auto" />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Keith-CY/keypering/develop/docs/_media/icon.png" alt="logo" width=120 />
+</p>
 
 <p align="center">
   A desktop wallet for DApp developers working on <a href="https://github.com/nervosnetwork/ckb/" alt="ckb">Nervos Network CKB</a>
@@ -67,3 +69,6 @@ Keypering consists of 3 components:
 - [Keyper](https://github.com/ququzone/keyper) - Lock Script Manager used in Keypering
 - [CKB Rich Node](https://github.com/ququzone/ckb-rich-node) - Remote server used in Keypering
 - [CKB Indexer](https://github.com/quake/ckb-indexer) - Core Module of CKB Rich Node
+- [CKB Explorer](https://explorer.nervos.org)
+- [CKB Faucet](https://faucet.nervos.org)
+- [Simplest DApp](https://prototype.ckbapp.dev/simplest-dapp) - The simplest DApp to interact with Keypering
