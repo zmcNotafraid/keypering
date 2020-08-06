@@ -22,7 +22,9 @@ const sign = (sk: string, params: Omit<KeyperingAgency.SignTransaction.Params['p
 
   Object.values(locks).forEach(lock => {
     try {
-      container.addLockScript(lock.ins)
+      if (lock.enabled) {
+        container.addLockScript(lock.ins)
+      }
     } catch (err) {
       console.error(`[${__filename}]: adding lock ${lock.name} => ${err.message}`)
     }
