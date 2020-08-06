@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Channel } from '@keypering/specs'
 import Core from '@nervosnetwork/ckb-sdk-core'
 import { blake160, bech32Address } from '@nervosnetwork/ckb-sdk-utils'
@@ -24,6 +24,7 @@ const SendCkb = () => {
   const [network, setNetwork] = useState<{ id: string; url: string } | null>(null)
   const [balance, setBalance] = useState<bigint | string>('-')
   const [dialogShow, setDialogShow] = useState(false)
+  const requestIdRef = useRef(0)
 
   useEffect(() => {
     const { ipcRenderer } = window
@@ -59,13 +60,27 @@ const SendCkb = () => {
   useEffect(() => {
     setBalance('-')
     if (args && network) {
-      getCapacityByArgs({ args, indexerUrl: network.url }).then(capacity => {
-        if (typeof capacity === 'bigint') {
-          setBalance(capacity)
-        }
-      })
+      const updateBalance = () => {
+        requestIdRef.current += 1
+        const currentRequestId = requestIdRef.current
+
+        getCapacityByArgs({ args, indexerUrl: network.url }).then(capacity => {
+          if (typeof capacity === 'bigint' && currentRequestId === requestIdRef.current) {
+            setBalance(capacity)
+          }
+        })
+      }
+      updateBalance()
+      const INTERVAL_TIME = 3000
+      const interval = setInterval(updateBalance, INTERVAL_TIME)
+      return () => {
+        clearInterval(interval)
+      }
     }
-  }, [args, network, setBalance])
+    return () => {
+      // ignore
+    }
+  }, [args, network, setBalance, requestIdRef])
 
   const handleOpenDialog = useCallback(() => setDialogShow(true), [setDialogShow])
   const handleCloseDialog = useCallback(() => setDialogShow(false), [setDialogShow])
