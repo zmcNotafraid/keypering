@@ -16,6 +16,11 @@ const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function })
     setShow(false)
   }
 
+  const changeWalletPassword = () => {
+    history.push(Routes.ChangeWalletPassword)
+    setShow(false)
+  }
+
   const handleBackupWallet = () => {
     backupWallet().then(res => {
       if (isSuccessResponse(res)) {
@@ -48,7 +53,7 @@ const WalletManager = ({ show, setShow }: { show?: boolean; setShow: Function })
           <div className={styles.modal}>
             <div className={styles.navs}>
               <button onClick={changeWalletName}>Change Wallet Name</button>
-              <button>Change Password</button>
+              <button onClick={changeWalletPassword}>Change Password</button>
               <button onClick={handleBackupWallet}>Backup Wallet</button>
               <button onClick={handleDeleteWallet}>Delete Wallet</button>
             </div>
