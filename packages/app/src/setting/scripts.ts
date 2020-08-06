@@ -7,13 +7,13 @@ import {
   SECP256K1_BLAKE160_TESTNET_TX_HASH,
   ANYONE_CAN_PAY_CODE_HASH,
   ANYONE_CAN_PAY_TESTNET_TX_HASH,
+  SECP256K1_LOCK_NAME,
 } from '../utils'
 
 
 const mainnetScripts = new Map<string, LockScript>([
   [
-    'secp256k1',
-
+    SECP256K1_LOCK_NAME,
     new Secp256k1LockScript(SECP256K1_BLAKE160_CODE_HASH, 'type', [{
       outPoint: {
         txHash: SECP256K1_BLAKE160_MAINNET_TX_HASH,
@@ -27,8 +27,7 @@ const mainnetScripts = new Map<string, LockScript>([
 
 const testnetScripts = new Map<string, LockScript>([
   [
-    'secp256k1',
-
+    SECP256K1_LOCK_NAME,
     new Secp256k1LockScript(SECP256K1_BLAKE160_CODE_HASH, 'type', [{
       outPoint: {
         txHash: SECP256K1_BLAKE160_TESTNET_TX_HASH,
@@ -36,11 +35,9 @@ const testnetScripts = new Map<string, LockScript>([
       },
       depType: 'depGroup'
     }])
-
-
   ],
   [
-    'any one can pay',
+    'anyone-can-pay',
     new AnyPayLockScript(
       ANYONE_CAN_PAY_CODE_HASH, "type", [{
         outPoint: {

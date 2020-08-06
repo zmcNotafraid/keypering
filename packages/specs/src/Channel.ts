@@ -115,6 +115,7 @@ export interface Address {
   address: string
   free: string
   inUse: string
+  codeHash: string
 }
 
 export namespace GetAddrList {

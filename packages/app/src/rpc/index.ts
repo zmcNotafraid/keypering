@@ -1,10 +1,9 @@
 import fetch from 'node-fetch'
-import type { Channel } from '@keypering/specs'
 import { getSetting } from '../setting'
 import { NetworkNotFoundException } from '../exception'
 
-export const getCells = async (codeHash: string, lockArgs: string, networkId: Channel.NetworkId) => {
-  const { networks } = getSetting()
+export const getCells = async (codeHash: string, lockArgs: string) => {
+  const { networks, networkId } = getSetting()
   const indexerUrl = networks[networkId]?.url
   if (!indexerUrl) {
     throw new NetworkNotFoundException()
