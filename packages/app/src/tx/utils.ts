@@ -36,8 +36,8 @@ export const getAddrByScript = (lock: CKBComponents.Script) => {
     ckb.utils.AddressPrefix.Testnet
 
   const secp256k1Script = networkId === MAINNET_ID
-    ? systemScripts.mainnetScripts.get('secp256k1')
-    : systemScripts.testnetScripts.get('secp256k1')
+    ? systemScripts.mainnetScripts[0]
+    : systemScripts.testnetScripts[0]
   const isSecp256k1Lock = lock.codeHash === secp256k1Script?.codeHash && lock.hashType === secp256k1Script?.hashType
   if (isSecp256k1Lock) {
     return ckb.utils.bech32Address(lock.args, {
