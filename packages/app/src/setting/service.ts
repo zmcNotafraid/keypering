@@ -29,7 +29,7 @@ export const getCustomScripts = () => {
     console.error(err)
   }
   const scripts = new Map<string, LockScript>()
-  if (!scriptsDir || !fs.statSync(scriptsDir).isDirectory()) {
+  if (!scriptsDir || !fs.existsSync(scriptsDir) || !fs.statSync(scriptsDir).isDirectory()) {
     return scripts
   }
 
@@ -48,6 +48,8 @@ export const getCustomScripts = () => {
 
   return scripts
 }
+
+const getScriptId = (script: LockScript) => `${script.codeHash}:${script.hashType}`
 
 export const getSetting = () => {
   let setting: {
@@ -72,14 +74,13 @@ export const getSetting = () => {
   const locks: Record<string, { name: string, enabled: boolean, system: boolean, ins: LockScript }> = {}
 
   customScripts.forEach((script, name) => {
-    locks[`${script.codeHash}:${script.hashType}`] = {
+    locks[getScriptId(script)] = {
       name,
-      enabled: setting.locks[name]?.enabled,
+      enabled: setting.locks[getScriptId(script)]?.enabled,
       system: false,
       ins: script
     }
   })
-
 
   const scriptsToShow = setting.networkId === MAINNET_ID
     ? systemScripts.mainnetScripts
@@ -88,9 +89,9 @@ export const getSetting = () => {
       : new Map()
 
   scriptsToShow.forEach((script, name) => {
-    locks[`${script.codeHash}:${script.hashType}`] = {
+    locks[getScriptId(script)] = {
       name,
-      enabled: setting.locks[`${script.codeHash}:${script.hashType}`]?.enabled ?? true,
+      enabled: setting.locks[getScriptId(script)]?.enabled ?? true,
       system: true,
       ins: script
     }

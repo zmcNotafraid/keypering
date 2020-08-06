@@ -9,7 +9,7 @@ import * as txManager from './tx'
 import { getAddrList } from './address'
 import { getWalletIndex } from './wallet'
 import { SECP256K1_BLAKE160_CODE_HASH } from './utils'
-import { CurrentWalletNotSetException } from './exception'
+import { CurrentWalletNotSetException, LockNotFoundException } from './exception'
 
 export default class MainWindow {
   static id: number | undefined
@@ -237,6 +237,9 @@ export default class MainWindow {
         const tx = await txManager.requestSignTx({ ...params, lockHash, referer: 'Keypering', description: '' })
         return { code: Channel.Code.Success, result: { tx } }
       } catch (err) {
+        if (err instanceof LockNotFoundException) {
+          dialog.showErrorBox('Error', err.message)
+        }
         console.error(err)
         return { code: err.code || Channel.Code.Error, message: err.message }
       }

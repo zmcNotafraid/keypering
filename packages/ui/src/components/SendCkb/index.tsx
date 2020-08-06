@@ -133,7 +133,7 @@ const SendCkb = () => {
           console.info(`Sending tx: ${hash}`)
           await core.rpc.sendTransaction(txToSend)
         } else {
-          // ignore, handled by app
+          console.warn(`[Error handled by Main Process]: ${signedRes.message}`)
         }
         return true
       } catch (err) {

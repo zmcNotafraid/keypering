@@ -113,3 +113,9 @@ export class InvalidDirectoryException extends Error {
     super(`${name} is not a directory`)
   }
 }
+
+export class LockNotFoundException extends Error {
+  constructor() {
+    super(`Lock is not found`)
+  }
+}

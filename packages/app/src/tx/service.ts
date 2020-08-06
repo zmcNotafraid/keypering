@@ -17,6 +17,7 @@ import {
   CurrentWalletNotSetException,
   NetworkNotFoundException,
   ParamsRequiredException,
+  LockNotFoundException,
 } from '../exception'
 
 const dataPath = getDataPath('tx')
@@ -93,7 +94,7 @@ export const requestSignTx = async (params: {
   referer: string
   signConfig?: KeyperingAgency.SignTransaction.InputSignConfig
 }) => {
-  if(!params.lockHash) {
+  if (!params.lockHash) {
     throw new ParamsRequiredException('lockHash')
   }
   if (!params.tx.hash) {
@@ -151,6 +152,10 @@ export const requestSignTx = async (params: {
 
         tx: { ...txProfile, isApproved: false, time: Date.now().toString() },
       })
+    }
+
+    if (err.message === 'context hash or holder not exists') {
+      throw new LockNotFoundException()
     }
     console.error(err)
     throw err
