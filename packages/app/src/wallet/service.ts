@@ -4,7 +4,6 @@ import { Channel, KeyperingAgency } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
 import { getDataPath } from '../utils'
 import {
-  IncorrectPasswordException,
   WalletNotFoundException,
   CurrentWalletNotSetException,
   RequestPasswordRejected,
@@ -173,11 +172,8 @@ export const updateCurrentPassword = (currentPassword: string, newPassword: stri
   }
   const name = wallets.filter(wallet => wallet.id === current)[0].name
   const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
-  if (!checkPassword(keystore, currentPassword)) {
-    throw new IncorrectPasswordException()
-  }
-  const newWallets = wallets.filter(w => w.id !== current)
   const xprv = decryptKeystore(keystore, currentPassword)
+  const newWallets = wallets.filter(w => w.id !== current)
   const newKeystore = getKeystoreFromXPrv(Buffer.from(xprv, 'hex'), newPassword)
   const xpub = getXpub(newKeystore, newPassword)
   fs.unlinkSync(getKeystorePath(current))
