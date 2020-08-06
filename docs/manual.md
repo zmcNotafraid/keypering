@@ -211,6 +211,16 @@ Custom lock scripts can be loaded by specifying a directory containing your scri
 
 > Custom Lock Script should implement the [LockScript](https://github.com/ququzone/keyper/blob/d324671d2dc6e886e0a7a5cc102d7c3a3ed62335/packages/specs/src/lock.ts#L22) interface and be exported as default. [Lock Script Example](https://github.com/Keith-CY/keyper_lock_scripts)
 
+<small><b>Tip</b>: System lock scripts take precedence over custom lock scripts, use devnet to ignore system lock scripts.</small>
+
+> Short Tour of Custom Scripts
+>
+> 1. Clone the [Lock Scripts Repo](https://github.com/Keith-CY/keyper_lock_scripts);
+> 2. Prepare preset scripts as the Repo said;
+> 3. Launch Keypering and set the network to devnet so that system scripts won't be loaded, and now transactions based on secp256k1 lock script should throw errors;
+> 4. Specify `lock_scripts_repo/lib` as the lock script directory by clicking the <kbd>⚙</kbd> icon next to the **Lock Plug-ins**, and then lock scripts located in the repo should be imported;
+> 5. Send a transaction to see if imported lock scripts works.
+
 ### Rich Node RPC
 
 There're three types of [CKB Rich Nodes](https://github.com/ququzone/ckb-rich-node) and the Devnet one is configurable for your local development.

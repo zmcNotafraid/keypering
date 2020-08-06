@@ -72,3 +72,4 @@ Keypering consists of 3 components:
 - [CKB Explorer](https://explorer.nervos.org)
 - [CKB Faucet](https://faucet.nervos.org)
 - [Simplest DApp](https://prototype.ckbapp.dev/simplest-dapp) - The simplest DApp to interact with Keypering
+- [Lock Scripts](https://github.com/Keith-CY/keyper_lock_scripts) - Basic lock scripts
