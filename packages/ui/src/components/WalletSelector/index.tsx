@@ -29,11 +29,21 @@ const WalletSelector = ({ show, setShow }: { show?: boolean; setShow: Function }
   }
 
   useEffect(() => {
+    const { ipcRenderer } = window
     getWalletIndex().then(res => {
       if (isSuccessResponse(res) && checkWalletIndex(res.result)) {
         setWalletIndex(res.result)
       }
     })
+    const listener = (_e: any, p: { current: string; wallets: Channel.WalletProfile[] }) => {
+      if (checkWalletIndex(p)) {
+        setWalletIndex(p)
+      }
+    }
+    ipcRenderer.on(Channel.ChannelName.GetWalletIndex, listener)
+    return () => {
+      ipcRenderer.removeListener(Channel.ChannelName.GetWalletIndex, listener)
+    }
   }, [setWalletIndex])
 
   useEffect(() => {

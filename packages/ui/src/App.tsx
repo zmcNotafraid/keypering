@@ -8,6 +8,7 @@ import Keystore from './containers/Keystore'
 import ChangeWalletName from './containers/ChangeWalletName'
 import Setting from './containers/Setting'
 import { Routes } from './utils'
+import ChangePassword from './containers/ChangePassword'
 
 require('typeface-source-code-pro')
 require('typeface-lato')
@@ -33,6 +34,9 @@ function App() {
         </Route>
         <Route path={Routes.ChangeWalletName}>
           <ChangeWalletName />
+        </Route>
+        <Route path={Routes.ChangeWalletPassword}>
+          <ChangePassword />
         </Route>
       </Switch>
     </Router>

@@ -3,7 +3,7 @@ import styles from './changePassword.module.scss'
 import { useHistory } from 'react-router-dom'
 import TextField from '../../components/TextField'
 import { useState } from 'react'
-import { getWalletIndex, updateWalletName } from '../../services/channels'
+import { updatePassword } from '../../services/channels'
 import { isSuccessResponse, Routes } from '../../utils'
 import { useReducer } from 'react'
 
@@ -41,7 +41,7 @@ const ChangePassword = () => {
     dispatch({ fieldName: fieldName as keyof FormState, value })
   }
 
-  const rePasswrodError =
+  const rePasswordError =
     form.newPassword && form.rePassword && form.newPassword !== form.rePassword
       ? 'Please re-confirm password'
       : undefined
@@ -50,31 +50,26 @@ const ChangePassword = () => {
     history.push(Routes.Main)
   }
 
-  const disabled = Object.values(form).some(v => !v) || !!rePasswrodError || submitting
+  const disabled = Object.values(form).some(v => !v) || !!rePasswordError || submitting
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (!disabled) {
       setSubmitting(true)
-      getWalletIndex()
-        .then(res => {
-          if (isSuccessResponse(res) && res.result.current) {
-            const id = res.result.current
-            updateWalletName({ id, name }).then(res => {
-              if (isSuccessResponse(res)) {
-                history.push(Routes.Main)
-              }
-            })
-          }
-        })
-        .finally(() => {
-          setSubmitting(false)
-        })
+      const { currentPassword, newPassword } = form
+      updatePassword({ currentPassword, newPassword }).then(res => {
+        if (isSuccessResponse(res) && res.result) {
+          alert('Change password successfully')
+          history.push(Routes.Main)
+        }
+      }).finally(() => {
+        setSubmitting(false)
+      })
     }
   }
 
   return (
     <div className={styles.container}>
-      <h2>Change Wallet Name</h2>
+      <h2>Change Wallet Password</h2>
       <TextField
         label="Current Password"
         fieldName="currentPassword"
@@ -91,7 +86,7 @@ const ChangePassword = () => {
       />
       <TextField
         label="Confirm Password"
-        fieldName="repPassword"
+        fieldName="rePassword"
         type="password"
         onChange={handleInput}
         disabled={submitting}

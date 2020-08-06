@@ -42,7 +42,7 @@ export const getWalletIndex = (): { current: string; wallets: Channel.WalletProf
 }
 
 export const addKeystore = ({ name, password, keystore }: { name: string; password: string; keystore: Keystore }) => {
-  const { wallets, current } = getWalletIndex()
+  const { wallets } = getWalletIndex()
 
   if (wallets.some(w => w.name === name)) {
     throw new Error(`Wallet name is used`)
@@ -62,7 +62,7 @@ export const addKeystore = ({ name, password, keystore }: { name: string; passwo
 
   fs.writeFileSync(getKeystorePath(keystore.id), JSON.stringify(keystore))
   const profile = { name, xpub, id: keystore.id }
-  udpateWalletIndex(current || profile.id, [...wallets, profile])
+  udpateWalletIndex(profile.id, [...wallets, profile])
   return profile
 }
 
@@ -167,24 +167,23 @@ export const checkCurrentPassword = (password: string) => {
 }
 
 export const updateCurrentPassword = (currentPassword: string, newPassword: string) => {
-  try {
-    const { current, wallets } = getWalletIndex()
-    if (!current) {
-      throw new CurrentWalletNotSetException()
-    }
-    const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
-    if (!checkPassword(keystore, currentPassword)) {
-      throw new IncorrectPasswordException()
-    }
-    const xprv = decryptKeystore(keystore, currentPassword)
-    const newKeystore = getKeystoreFromXPrv(Buffer.from(xprv), newPassword)
-    const xpub = getXpub(newKeystore, newPassword)
-    fs.writeFileSync(getKeystorePath(newKeystore.id), JSON.stringify(newKeystore))
-    const profile = { name, xpub, id: newKeystore.id }
-    udpateWalletIndex(current || profile.id, [...wallets, profile])
-  } catch (err) {
-    console.error(err)
+  const { current, wallets } = getWalletIndex()
+  if (!current) {
+    throw new CurrentWalletNotSetException()
   }
+  const name = wallets.filter(wallet => wallet.id === current)[0].name
+  const keystore = JSON.parse(fs.readFileSync(getKeystorePath(current), 'utf8'))
+  if (!checkPassword(keystore, currentPassword)) {
+    throw new IncorrectPasswordException()
+  }
+  const newWallets = wallets.filter(w => w.id !== current)
+  const xprv = decryptKeystore(keystore, currentPassword)
+  const newKeystore = getKeystoreFromXPrv(Buffer.from(xprv, 'hex'), newPassword)
+  const xpub = getXpub(newKeystore, newPassword)
+  fs.unlinkSync(getKeystorePath(current))
+  fs.writeFileSync(getKeystorePath(newKeystore.id), JSON.stringify(newKeystore))
+  const profile = { name, xpub, id: newKeystore.id }
+  udpateWalletIndex(profile.id, [...newWallets, profile])
   return true
 }
 

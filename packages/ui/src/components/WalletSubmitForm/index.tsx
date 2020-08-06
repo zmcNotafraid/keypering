@@ -43,10 +43,10 @@ const WalletSubmitForm = ({ mnemonic, onBack }: WalletSubmitFormProps) => {
     dispatch({ fieldName: fieldName as keyof FormState, value })
   }
 
-  const rePasswrodError =
+  const rePasswordError =
     form.password && form.rePassword && form.password !== form.rePassword ? 'Please re-confirm password' : undefined
 
-  const disabled = Object.values(form).some(v => !v) || !!rePasswrodError || submitting
+  const disabled = Object.values(form).some(v => !v) || !!rePasswordError || submitting
   const handleConfirm = (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (!disabled) {
@@ -89,7 +89,7 @@ const WalletSubmitForm = ({ mnemonic, onBack }: WalletSubmitFormProps) => {
           onChange={handleInput}
           type="password"
           disabled={submitting}
-          error={rePasswrodError}
+          error={rePasswordError}
         />
       </div>
       <div className={styles.buttons}>
