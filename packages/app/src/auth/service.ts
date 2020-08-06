@@ -111,8 +111,7 @@ export const requestAuth = async (origin: string, url: string): Promise<string> 
   const { response } = await dialog.showMessageBox({
     type: 'question',
     title: 'Authorization Request',
-    message: `Request from: ${url}\nYou are going to share following information to ${origin}`,
-    detail: '︎☑️ Addresses',
+    message: `Request from: ${url}\nYou are going to share following information to ${origin}\n\n︎☑️ Addresses`,
     buttons: ['Decline', 'Approve'],
     cancelId: 0,
     defaultId: 1,
