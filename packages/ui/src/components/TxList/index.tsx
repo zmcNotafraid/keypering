@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Channel } from '@keypering/specs'
-import { ArrowRight, CheckCircle, XCircle } from 'react-feather'
+import { ArrowRight, CheckCircle, XCircle, Copy } from 'react-feather'
 import { getTxList, getSetting, openInBrowser } from '../../services/channels'
 import { isSuccessResponse, datetime } from '../../utils'
 import styles from './txList.module.scss'
@@ -12,7 +12,9 @@ enum ExplorerUrl {
 
 const TxList = () => {
   const [list, setList] = useState<Channel.GetTxList.TxProfile[]>([])
+  const [copied, setCopied] = useState('')
   const [networkId, setNetworkId] = useState('')
+  const copyTimeRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     const { ipcRenderer } = window
@@ -44,6 +46,18 @@ const TxList = () => {
     openInBrowser({ url: `${networkId === 'ckb' ? ExplorerUrl.Mainnet : ExplorerUrl.Testnet}transaction/${txHash}` })
   }
 
+  const handleCopy = (e: React.SyntheticEvent<HTMLButtonElement>) => {
+    const { dataset: { txHash } } = e.currentTarget
+    if (txHash) {
+      window.navigator.clipboard.writeText(txHash)
+      clearTimeout(copyTimeRef.current as any)
+      setCopied(txHash)
+      copyTimeRef.current = setTimeout(() => {
+        setCopied('')
+      }, 300)
+    }
+  }
+
   const isOnExplorer = ['ckb', 'ckb_test'].includes(networkId)
 
   return (
@@ -73,6 +87,7 @@ const TxList = () => {
             </span>
           </div>
           <button
+            title="Open in Explorer"
             className={styles.explorer}
             type="button"
             data-tx-hash={tx.hash}
@@ -80,6 +95,17 @@ const TxList = () => {
             onClick={openExplorer}
           >
             <ArrowRight size={12} color="#fff" />
+          </button>
+          <button
+            title="Copy Transaction Hash"
+            className={styles.copy}
+            type="button"
+            data-tx-hash={tx.hash}
+            hidden={isOnExplorer || !tx.isApproved}
+            onClick={handleCopy}
+            disabled={copied === tx.hash}
+          >
+            <Copy size={12} />
           </button>
         </div>
       ))}
