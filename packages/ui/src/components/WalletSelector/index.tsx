@@ -28,6 +28,10 @@ const WalletSelector = ({ show, setShow }: { show?: boolean; setShow: Function }
     })
   }
 
+  const hideSelector = () => {
+    setShow(false)
+  }
+
   useEffect(() => {
     const { ipcRenderer } = window
     getWalletIndex().then(res => {
@@ -55,7 +59,7 @@ const WalletSelector = ({ show, setShow }: { show?: boolean; setShow: Function }
 
   return show
     ? createPortal(
-        <div className={styles.container} onClick={() => setShow(false)}>
+        <div className={styles.container} onClick={hideSelector}>
           <div className={styles.navs}>
             {walletIndex.wallets.map(wallet => (
               <button key={wallet.name} onClick={() => {handleSelectWallet(wallet.id)}}>
@@ -63,7 +67,7 @@ const WalletSelector = ({ show, setShow }: { show?: boolean; setShow: Function }
               </button>
             ))}
           </div>
-        </div>,
+        </div> ,
         element
       )
     : null

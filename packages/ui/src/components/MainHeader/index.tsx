@@ -67,13 +67,13 @@ const MainHeader = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.nav}>
+      <div className={styles.nav} >
         <img onClick={openSidebar} src={MenuIcon} alt="menu" />
         <MainSidebar show={showSidebar} setShow={setShowSidebar} />
-        <div className={styles.title}>
+        <div className={styles.title} onClick={toggleWalletSelector}>
           <h1>{getCurrentWalletName(walletIndex)}</h1>
-          <img src={DropdownIcon} onClick={toggleWalletSelector} alt="dropdown" />
-          <WalletSelector show={showWalletSelector} setShow={setShowWalletSelector} />
+          <img src={DropdownIcon} alt="dropdown" />
+          <WalletSelector show={showWalletSelector} setShow={setShowWalletSelector}/>
         </div>
         <img onClick={openWalletManager} src={ManagerIcon} alt="manager" />
         <WalletManager show={showWalletManager} setShow={setShowWalletManager} />
