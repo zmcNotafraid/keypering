@@ -28,7 +28,7 @@ export const getCustomScripts = () => {
   } catch (err) {
     console.error(err)
   }
-  const scripts = new Map<string, LockScript>()
+  const scripts: LockScript[] = []
   if (!scriptsDir || !fs.existsSync(scriptsDir) || !fs.statSync(scriptsDir).isDirectory()) {
     return scripts
   }
@@ -39,7 +39,7 @@ export const getCustomScripts = () => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const script: LockScript = require(path.resolve(scriptsDir, filename))
       if (script.name && script.codeHash && script.hashType && script.sign) {
-        scripts.set(script.name, script)
+        scripts.push(script)
       }
     } catch (err) {
       console.error(err)
@@ -53,9 +53,9 @@ const getScriptId = (script: LockScript) => `${script.codeHash}:${script.hashTyp
 
 export const getSetting = () => {
   let setting: {
-    locks: Record<string, { name: string, enabled: boolean, system: boolean, ins: LockScript }>,
-    networks: Channel.Setting['networks'],
-    networkId: Channel.NetworkId,
+    locks: Record<string, { name: string, enabled: boolean, system: boolean, ins: LockScript }>
+    networks: Channel.Setting['networks']
+    networkId: Channel.NetworkId
   } = { locks: {}, networks: {} as Channel.Setting['networks'], networkId: MAINNET_ID }
   if (fs.existsSync(filePath)) {
     setting = JSON.parse(fs.readFileSync(filePath, 'utf8'))
@@ -73,12 +73,12 @@ export const getSetting = () => {
   const customScripts = getCustomScripts()
   const locks: Record<string, { name: string, enabled: boolean, system: boolean, ins: LockScript }> = {}
 
-  customScripts.forEach((script, name) => {
+  customScripts.forEach(script => {
     locks[getScriptId(script)] = {
-      name,
+      name: script.name,
       enabled: setting.locks[getScriptId(script)]?.enabled,
       system: false,
-      ins: script
+      ins: script,
     }
   })
 
@@ -86,20 +86,19 @@ export const getSetting = () => {
     ? systemScripts.mainnetScripts
     : setting.networkId === TESTNET_ID
       ? systemScripts.testnetScripts
-      : new Map()
+      : []
 
-  scriptsToShow.forEach((script, name) => {
+  scriptsToShow.forEach(script => {
     locks[getScriptId(script)] = {
-      name,
+      name: script.name,
       enabled: setting.locks[getScriptId(script)]?.enabled ?? true,
       system: true,
-      ins: script
+      ins: script,
     }
   })
 
   return { ...setting, locks }
 }
-
 
 const broadcast = () => {
   MainWindow.broadcast(Channel.ChannelName.GetSetting, getSetting())
