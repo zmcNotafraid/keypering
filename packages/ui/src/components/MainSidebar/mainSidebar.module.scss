@@ -9,6 +9,7 @@
   background-color: #1b1b1b;
   animation-duration: 0.3s;
   animation-name: slidein;
+  z-index: 100;
 }
 
 @keyframes slidein {
