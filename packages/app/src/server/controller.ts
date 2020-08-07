@@ -1,11 +1,11 @@
 import type { KeyperingAgency } from '@keypering/specs'
+import CKB from '@nervosnetwork/ckb-sdk-core'
 import { requestAuth } from '../auth'
 import { getWalletIndex } from '../wallet'
 import { getAddresses } from '../address'
 import { requestSignTx, requestSendTx } from '../tx'
 import { getSetting } from '../setting'
 import { networksToRpcUrl } from '../utils/transformer'
-import sendTx from '../rpc/sendTx'
 
 export const handleAuth = async (_params: KeyperingAgency.Auth.Params['params'], origin: string, url: string) => {
   const token = await requestAuth(origin, url)
@@ -41,11 +41,12 @@ export const handleSignAndSend = async (params: KeyperingAgency.SignAndSendTrans
     referer: url,
     signConfig: params.inputSignConfig,
   })
-  const rpcUrl = networksToRpcUrl(getSetting())
   if (tx) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { hash, ...txToSend } = tx
-    const txHash = await sendTx(rpcUrl, txToSend as CKBComponents.Transaction)
+    const rpcUrl = networksToRpcUrl(getSetting())
+    const ckb = new CKB(rpcUrl)
+    const txHash = await ckb.rpc.sendTransaction(txToSend)
     return { txHash, tx }
   }
   return tx
