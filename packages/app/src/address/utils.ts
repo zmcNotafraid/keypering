@@ -49,21 +49,17 @@ export const getWalletXpub = (id: string) => {
   return currentWallets[0].xpub
 }
 
-export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId) => {
+const getInitAddressesFromLocks = (id: string, network: Channel.NetworkId) => {
   const { locks } = getSetting()
   const ckb = new CKB()
   const { AddressPrefix, AddressType, fullPayloadToAddress, pubkeyToAddress } = ckb.utils
   const prefix = network === 'ckb' ? AddressPrefix.Mainnet : AddressPrefix.Testnet
   const publicKey = '0x' + getWalletXpub(id).slice(0, 66)
 
-  const requests = [] as Promise<any>[]
-  const paths = [] as {key: string, path: string}[]
   let addresses = [] as Channel.Address[]
   Object.keys(locks).forEach(key => {
     let lock = locks[key].ins
     let args = lock.script(publicKey).args
-    paths.push({key: `${id}:${network}:${lock.codeHash}`, path: getAddressDataPath(id, network, lock.name)})
-    requests.push(getCells(lock.codeHash, args))
     addresses.push({
       codeHash: lock.codeHash,
       address: lock.codeHash === SECP256K1_BLAKE160_CODE_HASH ? 
@@ -78,6 +74,23 @@ export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId)
       inUse: '0', 
       free: '0',
     })
+  });
+  return addresses
+}
+
+export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId) => {
+  const { locks } = getSetting()
+  const publicKey = '0x' + getWalletXpub(id).slice(0, 66)
+
+  const requests = [] as Promise<any>[]
+  const paths = [] as {key: string, path: string}[]
+  let addresses = getInitAddressesFromLocks(id, network)
+
+  Object.keys(locks).forEach(key => {
+    let lock = locks[key].ins
+    let args = lock.script(publicKey).args
+    paths.push({key: `${id}:${network}:${lock.codeHash}`, path: getAddressDataPath(id, network, lock.name)})
+    requests.push(getCells(lock.codeHash, args))
   });
 
   Promise.all(requests).then((cellsList: any[]) => {
@@ -104,9 +117,14 @@ export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId)
 
 export const getLocalAddressCapacity = (id: string, network: Channel.NetworkId): Channel.Address[] => {
   const { locks } = getSetting()
+  for (let key of Object.keys(locks)) {
+    let path = getAddressDataPath(id, network, locks[key].ins.name)
+    if (!fs.existsSync(path)) {
+      return getInitAddressesFromLocks(id, network)
+    }
+  }
   return Object.keys(locks).map(key => {
-    let lock = locks[key].ins
-    let path = getAddressDataPath(id, network, lock.name)
+    let path = getAddressDataPath(id, network, locks[key].ins.name)
     return JSON.parse(fs.readFileSync(path, 'utf8'))
   });
 }
