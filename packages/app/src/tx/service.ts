@@ -7,7 +7,6 @@ import RequestWindow from './RequestWindow'
 import PasswordWindow from '../wallet/PasswordWindow'
 import { getDataPath, networksToRpcUrl } from '../utils'
 import { getTxProfile } from './utils'
-import sendTx from '../rpc/sendTx'
 import { getWalletIndex, signTransaction, getKeystoreByWalletId } from '../wallet'
 import { getSetting } from '../setting'
 import {
@@ -199,9 +198,7 @@ export const requestSendTx = async (params: {
     }
 
     delete params.tx.hash
-    return sendTx(ckb.node.url, params.tx)
-    // FIXME: axios has error on handling https
-    // return ckb.rpc.sendTransaction(params.tx)
+    return ckb.rpc.sendTransaction(params.tx)
   } catch (err) {
     if (err instanceof RequestRejected) {
       addTx({
