@@ -11,9 +11,6 @@ import Setting from './containers/Setting'
 import { Routes } from './utils'
 import ChangePassword from './containers/ChangePassword'
 
-require('typeface-source-code-pro')
-require('typeface-lato')
-
 function App() {
   return (
     <Router>

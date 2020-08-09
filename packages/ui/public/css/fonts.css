@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Lato';
+  src: url('../fonts/Lato-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  src: url('../fonts/SourceCodePro-Regular.ttf') format('truetype');
+}
