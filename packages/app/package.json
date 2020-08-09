@@ -33,7 +33,7 @@
   "devDependencies": {
     "@keypering/specs": "0.0.0",
     "@types/elliptic": "6.4.12",
-    "@types/uuid": "8.0.0",
+    "@types/uuid": "8.0.1",
     "electron": "9.1.1",
     "electron-builder": "22.7.0"
   },
@@ -48,6 +48,6 @@
     "elliptic": "6.5.3",
     "node-fetch": "^2.6.0",
     "sha3": "2.1.3",
-    "uuid": "8.2.0"
+    "uuid": "8.3.0"
   }
 }
