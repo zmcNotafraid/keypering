@@ -1,9 +1,9 @@
 {
   "name": "@keypering/app",
   "version": "0.0.0",
-  "description": "> TODO: description",
+  "description": "",
   "author": "Keith <keithwhisper@gmail.com>",
-  "homepage": "https://github.com/Keith-CY/keypering/tree/master/packages/app#readme",
+  "homepage": "https://nervosnetwork.github.io/keypering",
   "license": "MIT",
   "main": "build/index.js",
   "scripts": {
@@ -25,10 +25,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Keith-CY/keypering.git"
+    "url": "git+https://github.com/nervosnetwork/keypering.git"
   },
   "bugs": {
-    "url": "https://github.com/Keith-CY/keypering/issues"
+    "url": "https://github.com/nervosnetwork/keypering/issues"
   },
   "devDependencies": {
     "@keypering/specs": "0.0.0",

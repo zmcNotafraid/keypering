@@ -22,15 +22,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Keith-CY/keypering.git"
+    "url": "git+https://github.com/nervosnetwork/keypering.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Keith-CY/keypering/issues"
+    "url": "https://github.com/nervosnetwork/keypering/issues"
   },
-  "homepage": "https://github.com/Keith-CY/keypering#readme",
+  "homepage": "https://nervosnetwork.github.io/keypering",
   "devDependencies": {
     "@types/jest": "26.0.9",
     "@typescript-eslint/eslint-plugin": "3.8.0",
