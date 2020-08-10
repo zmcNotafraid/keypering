@@ -35,7 +35,7 @@
     "@types/elliptic": "6.4.12",
     "@types/uuid": "8.0.0",
     "electron": "9.1.1",
-    "electron-builder": "22.7.0"
+    "electron-builder": "22.8.0"
   },
   "dependencies": {
     "@keyper/container": "0.1.0",
