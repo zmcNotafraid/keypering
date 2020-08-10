@@ -1,7 +1,16 @@
 name: Package Keypering
 
 on:
-  - push
+  push:
+    branches:
+      - master
+      - develop
+      - 'rc/**'
+  pull_request:
+    branches:
+      - master
+      - develop
+      - 'rc/**'
 
 jobs:
   default:
