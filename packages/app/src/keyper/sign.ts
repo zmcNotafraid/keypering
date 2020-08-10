@@ -1,6 +1,6 @@
 import type { KeyperingAgency } from '@keypering/specs'
-import { Container } from '@keyper/container'
-import { SignatureAlgorithm } from '@keyper/specs'
+import { Container } from '@nervosnetwork/keyper-container'
+import { SignatureAlgorithm } from '@nervosnetwork/keyper-specs'
 import ECPair from '@nervosnetwork/ckb-sdk-utils/lib/ecpair'
 import { getSetting } from '../setting'
 

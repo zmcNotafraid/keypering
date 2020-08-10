@@ -17,8 +17,8 @@
     ]
   },
   "dependencies": {
-    "@keyper/container": "0.1.0",
-    "@keyper/specs": "0.1.0",
+    "@nervosnetwork/keyper-container": "0.1.0",
+    "@nervosnetwork/keyper-specs": "0.1.0",
     "@nervosnetwork/ckb-sdk-core": "0.34.0",
     "@nervosnetwork/ckb-sdk-utils": "0.34.0",
     "react": "16.13.1",

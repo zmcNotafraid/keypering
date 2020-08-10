@@ -1428,28 +1428,6 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@keyper/container@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/@keyper/container/-/container-0.1.0.tgz#8a071e3bee7b3afe58b5246516d60ee3299233f6"
-  integrity sha512-QeeolV+tHNZjQCy1UZvEJsP3LkZvKQBtzdRoEbmFJDCutdYzMgP53jsXpMoiatArVqkzsblFbUmk7VY6Vi7Olw==
-  dependencies:
-    "@keyper/specs" "^0.1.0"
-    "@nervosnetwork/ckb-sdk-core" "0.29.1"
-    number-to-bn "1.7.0"
-
-"@keyper/specs@0.1.0", "@keyper/specs@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/@keyper/specs/-/specs-0.1.0.tgz#13d47a9604c17682e9f93caa22c12da615926f55"
-  integrity sha512-KCGOoTXGi/xuYlzmIAFaChZ4PLjmf3fvY0kz7CfafinKzGud+S5o5g/XEIeg/Tw1tLKfNi2CviOzNPTdC07qFw==
-  dependencies:
-    "@types/bech32" "^1.1.2"
-    bech32 "^1.1.3"
-    blake2b "^2.1.3"
-    crypto "^1.0.1"
-    randombytes "^2.1.0"
-    scrypt.js "^0.3.0"
-    uuid "^7.0.1"
-
 "@lerna/add@3.21.0":
   version "3.21.0"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.21.0.tgz#27007bde71cc7b0a2969ab3c2f0ae41578b4577b"
@@ -2207,6 +2185,28 @@
   resolved "https://registry.npmjs.org/@nervosnetwork/ckb-types/-/ckb-types-0.34.0.tgz#4ae3329aa9e5b73dc337a1eac736305f0defd9fe"
   integrity sha512-gpwICFMltsuNYOVc9S5favA9ViEPfX29VHbnGibs8MelNrZcW/Mq88exWx+FXTnMOVn/bUFaQKOAY6ejWzOFtg==
 
+"@nervosnetwork/keyper-container@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/@nervosnetwork/keyper-container/download/@nervosnetwork/keyper-container-0.1.0.tgz#dd59e5237e310940af8142177c87a66c028b36b6"
+  integrity sha1-3VnlI34xCUCvgUIXfIembAKLNrY=
+  dependencies:
+    "@nervosnetwork/ckb-sdk-core" "0.29.1"
+    "@nervosnetwork/keyper-specs" "^0.1.0"
+    number-to-bn "1.7.0"
+
+"@nervosnetwork/keyper-specs@0.1.0", "@nervosnetwork/keyper-specs@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/@nervosnetwork/keyper-specs/download/@nervosnetwork/keyper-specs-0.1.0.tgz#d1cb5b1340aa75d51ed2efac9d39392596e1b209"
+  integrity sha1-0ctbE0CqddUe0u+snTk5JZbhsgk=
+  dependencies:
+    "@types/bech32" "^1.1.2"
+    bech32 "^1.1.3"
+    blake2b "^2.1.3"
+    crypto "^1.0.1"
+    randombytes "^2.1.0"
+    scrypt.js "^0.3.0"
+    uuid "^7.0.1"
+
 "@nodelib/fs.stat@^1.1.2":
   version "1.1.3"
   resolved "https://registry.npmjs.org/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
@@ -2573,9 +2573,9 @@
   resolved "https://registry.npmjs.org/@types/minimist/-/minimist-1.2.0.tgz#69a23a3ad29caf0097f06eda59b361ee2f0639f6"
   integrity sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
 
-"@types/node-fetch@^2.5.7":
+"@types/node-fetch@2.5.7":
   version "2.5.7"
-  resolved "https://registry.npm.taobao.org/@types/node-fetch/download/@types/node-fetch-2.5.7.tgz#20a2afffa882ab04d44ca786449a276f9f6bbf3c"
+  resolved "https://registry.npm.taobao.org/@types/node-fetch/download/@types/node-fetch-2.5.7.tgz?cache=0&sync_timestamp=1596840698879&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40types%2Fnode-fetch%2Fdownload%2F%40types%2Fnode-fetch-2.5.7.tgz#20a2afffa882ab04d44ca786449a276f9f6bbf3c"
   integrity sha1-IKKv/6iCqwTUTKeGRJonb59rvzw=
   dependencies:
     "@types/node" "*"
@@ -10055,7 +10055,7 @@ node-fetch-npm@^2.0.2:
     json-parse-better-errors "^1.0.0"
     safe-buffer "^5.1.1"
 
-node-fetch@^2.3.0, node-fetch@^2.5.0, node-fetch@^2.6.0:
+node-fetch@2.6.0, node-fetch@^2.3.0, node-fetch@^2.5.0:
   version "2.6.0"
   resolved "https://registry.npm.taobao.org/node-fetch/download/node-fetch-2.6.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fnode-fetch%2Fdownload%2Fnode-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha1-5jNFY4bUqlWGP2dqerDaqP3ssP0=

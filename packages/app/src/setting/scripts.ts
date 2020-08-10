@@ -1,6 +1,6 @@
-import { LockScript } from '@keyper/specs'
-import { Secp256k1LockScript } from '@keyper/container/lib/locks/secp256k1'
-import { AnyPayLockScript } from '@keyper/container/lib/locks/anyone-can-pay'
+import { LockScript } from '@nervosnetwork/keyper-specs'
+import { Secp256k1LockScript } from '@nervosnetwork/keyper-container/lib/locks/secp256k1'
+import { AnyPayLockScript } from '@nervosnetwork/keyper-container/lib/locks/anyone-can-pay'
 import {
   SECP256K1_BLAKE160_CODE_HASH,
   SECP256K1_BLAKE160_MAINNET_TX_HASH,
