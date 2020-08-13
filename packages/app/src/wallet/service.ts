@@ -1,13 +1,15 @@
 import path from 'path'
 import fs from 'fs'
+import { dialog } from 'electron'
 import { Channel, KeyperingAgency } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
-import { deleteAuthList } from '../auth'
+import { getAuthList, deleteAuthList } from '../auth'
+import { getTxList, deleteTxFilesByWalletId } from '../tx'
+import { getSetting } from '../setting'
 import PasswordWindow from './PasswordWindow'
-import { dialog } from 'electron'
 import signTx from '../keyper/sign'
 import { getDataPath } from '../utils'
-import { broadcastWalletIndex as broadcast } from '../broadcast'
+import { broadcastWalletIndex as broadcast, broadcastAuthList, broadcastTxList } from '../broadcast'
 import {
   WalletNotFoundException,
   CurrentWalletNotSetException,
@@ -23,7 +25,10 @@ const getKeystorePath = (id: string) => path.resolve(dataPath, `${id}.json`)
 
 const udpateWalletIndex = (current: string, wallets: Channel.WalletProfile[]) => {
   fs.writeFileSync(indexPath, JSON.stringify({ current, wallets }))
+  const setting = getSetting()
   broadcast({ current, wallets })
+  broadcastTxList(getTxList(current, setting.networkId))
+  broadcastAuthList(getAuthList(current))
 }
 
 export const getWalletIndex = (): { current: string; wallets: Channel.WalletProfile[] } => {
@@ -97,6 +102,7 @@ export const deleteWallet = async () => {
   fs.unlinkSync(keystorePath)
   try {
     deleteAuthList(current)
+    deleteTxFilesByWalletId(current)
   } catch (err) {
     console.error(err)
   }
