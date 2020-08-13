@@ -2,7 +2,11 @@ import fs from 'fs'
 import path from 'path'
 import { dialog } from 'electron'
 import { Channel } from '@keypering/specs'
+import { getWalletIndex } from '../wallet'
+import PasswordWindow from '../wallet/PasswordWindow'
+import simpleToken from './strategy/simple'
 import { getDataPath } from '../utils'
+import { broadcastAuthList as broadcast } from '../broadcast'
 import {
   ParamsRequiredException,
   AuthNotFoundException,
@@ -10,20 +14,9 @@ import {
   AuthRejected,
   FileNotFoundException,
 } from '../exception'
-import { getWalletIndex } from '../wallet'
-import MainWindow from '../MainWindow'
-import PasswordWindow from '../wallet/PasswordWindow'
-import simpleToken from './strategy/simple'
 
 const dataPath = getDataPath('auth')
 const getAuthFilePath = (id: string) => path.resolve(dataPath, `${id}.json`)
-
-const broadcast = (list: ReturnType<typeof getAuthList>) => {
-  MainWindow.broadcast<Channel.GetAuthList.AuthProfile[]>(
-    Channel.ChannelName.GetAuthList,
-    list.map(auth => ({ url: auth.url, time: auth.time }))
-  )
-}
 
 export const getAuthList = (id: string): (Channel.GetAuthList.AuthProfile & { token: string })[] => {
   if (!id) {

@@ -2,13 +2,13 @@ import fs from 'fs'
 import path from 'path'
 import { Channel, KeyperingAgency } from '@keypering/specs'
 import CKB from '@nervosnetwork/ckb-sdk-core'
-import MainWindow from '../MainWindow'
 import RequestWindow from './RequestWindow'
 import PasswordWindow from '../wallet/PasswordWindow'
-import { getDataPath, networksToRpcUrl } from '../utils'
-import { getTxProfile } from './utils'
 import { getWalletIndex, signTransaction, getKeystoreByWalletId } from '../wallet'
 import { getSetting } from '../setting'
+import { getTxProfile } from './utils'
+import { getDataPath, networksToRpcUrl } from '../utils'
+import { broadcastTxList as broadcast } from '../broadcast'
 import {
   WalletNotFoundException,
   FileNotFoundException,
@@ -21,10 +21,6 @@ import {
 
 const dataPath = getDataPath('tx')
 const getTxDataPath = (id: string, networkId: string) => path.resolve(dataPath, `${id}:${networkId}.json`)
-
-const broadcast = (list: ReturnType<typeof getTxList>) => {
-  MainWindow.broadcast<Channel.GetTxList.TxProfile[]>(Channel.ChannelName.GetTxList, list)
-}
 
 export const getTxList = (id: string, networkId: string): Channel.GetTxList.TxProfile[] => {
   const filePath = getTxDataPath(id, networkId)

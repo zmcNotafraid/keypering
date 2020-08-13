@@ -2,28 +2,22 @@ import path from 'path'
 import fs from 'fs'
 import { Channel, KeyperingAgency } from '@keypering/specs'
 import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
+import { deleteAuthList } from '../auth'
+import PasswordWindow from './PasswordWindow'
+import { dialog } from 'electron'
+import signTx from '../keyper/sign'
 import { getDataPath } from '../utils'
+import { broadcastWalletIndex as broadcast } from '../broadcast'
 import {
   WalletNotFoundException,
   CurrentWalletNotSetException,
   RequestPasswordRejected,
   DirectoryNotFound,
 } from '../exception'
-import { deleteAuthList } from '../auth'
-import PasswordWindow from './PasswordWindow'
-import { dialog } from 'electron'
-import MainWindow from '../MainWindow'
-import signTx from '../keyper/sign'
 
 const dataPath = getDataPath('wallet')
 const indexPath = path.resolve(dataPath, 'index.json')
 
-const broadcast = (walletIndex: ReturnType<typeof getWalletIndex>) => {
-  MainWindow.broadcast<{ current: string; wallets: Channel.WalletProfile[] }>(
-    Channel.ChannelName.GetWalletIndex,
-    walletIndex
-  )
-}
 
 const getKeystorePath = (id: string) => path.resolve(dataPath, `${id}.json`)
 

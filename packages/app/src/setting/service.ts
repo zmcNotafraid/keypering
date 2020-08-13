@@ -3,11 +3,11 @@ import fs from 'fs'
 import { dialog } from 'electron'
 import { Channel } from '@keypering/specs'
 import { LockScript } from '@nervosnetwork/keyper-specs'
-import MainWindow from '../MainWindow'
-import { getDataPath, MAINNET_ID, TESTNET_ID, DEVNET_ID } from '../utils'
 import systemScripts from './scripts'
 import systemNetworks from './networks'
 import DevnetWindow from './DevnetWindow'
+import { getDataPath, MAINNET_ID, TESTNET_ID, DEVNET_ID } from '../utils'
+import { broadcastSetting as broadcast } from '../broadcast'
 import { NetworkNotFoundException, InvalidDirectoryException } from '../exception'
 
 const dataPath = getDataPath('setting')
@@ -100,10 +100,6 @@ export const getSetting = () => {
   return { ...setting, locks }
 }
 
-const broadcast = () => {
-  MainWindow.broadcast(Channel.ChannelName.GetSetting, getSetting())
-}
-
 export const updateSetting = (params: Channel.UpdateSetting.Params) => {
   const setting = getSetting()
   if ('lockIds' in params) {
@@ -119,7 +115,7 @@ export const updateSetting = (params: Channel.UpdateSetting.Params) => {
     return false
   }
   fs.writeFileSync(filePath, JSON.stringify(setting))
-  broadcast()
+  broadcast(getSetting())
   return true
 }
 
@@ -134,7 +130,7 @@ export const updateDevnetUrl = async () => {
   }
   setting.networks[DEVNET_ID].url = newUrl
   fs.writeFileSync(filePath, JSON.stringify(setting))
-  broadcast()
+  broadcast(getSetting())
   return true
 }
 
@@ -165,6 +161,6 @@ export const setScriptsPath = async () => {
     title: 'Info',
     message: `Scripts Directory is set to ${scriptsFilePath}`,
   })
-  broadcast()
+  broadcast(getSetting())
   return true
 }
