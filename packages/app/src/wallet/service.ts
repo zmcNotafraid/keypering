@@ -16,11 +16,11 @@ import {
   CurrentWalletNotSetException,
   RequestPasswordRejected,
   DirectoryNotFound,
+  RemoveFileFailed,
 } from '../exception'
 
 const dataPath = getDataPath('wallet')
 const indexPath = path.resolve(dataPath, 'index.json')
-
 
 const getKeystorePath = (id: string) => path.resolve(dataPath, `${id}.json`)
 
@@ -105,7 +105,13 @@ export const deleteWallet = async () => {
   pwdWindow.close()
 
   const keystorePath = getKeystorePath(current)
-  fs.unlinkSync(keystorePath)
+  try {
+    fs.unlinkSync(keystorePath)
+  } catch (err) {
+    console.error(err)
+    throw new RemoveFileFailed()
+  }
+
   try {
     deleteAuthList(current)
     deleteTxFilesByWalletId(current)
@@ -117,11 +123,7 @@ export const deleteWallet = async () => {
   const newCurrent = newWallets.length > 0
     ? newWallets[0].id
     : ''
-  if (newCurrent) {
-    updateWalletIndex(newCurrent, newWallets)
-  } else {
-    broadcast({ current: newCurrent, wallets: newWallets })
-  }
+  updateWalletIndex(newCurrent, newWallets)
   return newCurrent
 }
 
