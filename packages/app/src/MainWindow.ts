@@ -16,7 +16,9 @@ export default class MainWindow {
   #win = new BrowserWindow({
     width: 440,
     height: 690,
-    resizable: false,
+    minWidth: 440,
+    minHeight: 690,
+    resizable: true,
     maximizable: false,
     fullscreenable: false,
     autoHideMenuBar: true,
