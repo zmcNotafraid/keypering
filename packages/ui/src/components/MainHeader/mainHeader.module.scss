@@ -1,13 +1,6 @@
 .container {
   display: flex;
   flex-direction: column;
-
-  &:after {
-    content: '';
-    background: #e2e2e2;
-    height: 1px;
-    width: 100%;
-  }
 }
 
 
