@@ -15,7 +15,7 @@ import { getSetting } from '../setting'
 
 const dataPath = getDataPath('address')
 const getAddressDataPath = (id: string, networkId: string, name: string) => 
-  path.resolve(dataPath, `${id}:${networkId}:${name}.json`)
+  path.resolve(dataPath, `${id}-${networkId}-${name}.json`)
 
 const broadcast = (list: ReturnType<typeof getAddrList>) => {
   MainWindow.broadcast<Channel.Address[]>(Channel.ChannelName.GetAddrList, list)
@@ -89,7 +89,7 @@ export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId)
   Object.keys(locks).forEach(key => {
     let lock = locks[key].ins
     let args = lock.script(publicKey).args
-    paths.push({key: `${id}:${network}:${lock.codeHash}`, path: getAddressDataPath(id, network, lock.name)})
+    paths.push({key: `${id}-${network}-${lock.codeHash}`, path: getAddressDataPath(id, network, lock.name)})
     requests.push(getCells(lock.codeHash, args))
   });
 
@@ -106,7 +106,7 @@ export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId)
     })
     paths.forEach(path => {
       addresses.forEach(address => {
-        if (path.key === `${id}:${network}:${address.codeHash}`) {
+        if (path.key === `${id}-${network}-${address.codeHash}`) {
           fs.writeFileSync(path.path, JSON.stringify(address))
         }
       })
