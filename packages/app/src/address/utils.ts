@@ -40,13 +40,14 @@ const parseCells = (cells = [] as any[]) => {
   }
 }
 
-export const getWalletXpub = (id: string) => {
+export const getWalletChildXpub = (id: string) => {
   const { wallets } = getWalletIndex()
   const currentWallets = wallets.filter(wallet => wallet.id === id)
   if (!currentWallets) {
     throw new WalletNotFoundException()
   }
-  return currentWallets[0].xpub
+
+  return currentWallets[0].childXpub
 }
 
 const getInitAddressesFromLocks = (id: string, network: Channel.NetworkId) => {
@@ -54,7 +55,7 @@ const getInitAddressesFromLocks = (id: string, network: Channel.NetworkId) => {
   const ckb = new CKB()
   const { AddressPrefix, AddressType, fullPayloadToAddress, pubkeyToAddress } = ckb.utils
   const prefix = network === 'ckb' ? AddressPrefix.Mainnet : AddressPrefix.Testnet
-  const publicKey = '0x' + getWalletXpub(id).slice(0, 66)
+  const publicKey = '0x' + getWalletChildXpub(id).slice(0, 66)
 
   let addresses = [] as Channel.Address[]
   Object.keys(locks).forEach(key => {
@@ -80,7 +81,7 @@ const getInitAddressesFromLocks = (id: string, network: Channel.NetworkId) => {
 
 export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId) => {
   const { locks } = getSetting()
-  const publicKey = '0x' + getWalletXpub(id).slice(0, 66)
+  const publicKey = '0x' + getWalletChildXpub(id).slice(0, 66)
 
   const requests = [] as Promise<any>[]
   const paths = [] as {key: string, path: string}[]

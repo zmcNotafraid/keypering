@@ -1,6 +1,6 @@
 import { Channel, API } from '@keypering/specs'
 import CKB from '@nervosnetwork/ckb-sdk-core'
-import { getWalletXpub, getRemoteAddressCapacity, getLocalAddressCapacity } from './utils'
+import { getWalletChildXpub, getRemoteAddressCapacity, getLocalAddressCapacity } from './utils'
 import { getSetting } from '../setting'
 
 export const getAddrList = (id: string, network: Channel.NetworkId): Channel.Address[] => {
@@ -13,7 +13,7 @@ export const getAddresses = async (id: string, network: Channel.NetworkId): Prom
   const ckb = new CKB()
   const { AddressPrefix, pubkeyToAddress, scriptToHash } = ckb.utils
   const prefix = network === 'ckb' ? AddressPrefix.Mainnet : AddressPrefix.Testnet
-  const publicKey = '0x' + getWalletXpub(id).slice(0, 66)
+  const publicKey = '0x' + getWalletChildXpub(id).slice(0, 66)
 
   const addresses = Object.keys(locks).map(key => {
     let lock = locks[key].ins
