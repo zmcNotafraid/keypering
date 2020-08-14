@@ -2,7 +2,8 @@ import path from 'path'
 import fs from 'fs'
 import { dialog } from 'electron'
 import { Channel, KeyperingAgency } from '@keypering/specs'
-import { getXpub, Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
+import { Keystore, checkPassword, decryptKeystore, getKeystoreFromXPrv } from './keystore'
+import Keychain from './Keychain'
 import { getAuthList, deleteAuthList } from '../auth'
 import { getTxList, deleteTxFilesByWalletId } from '../tx'
 import { getSetting } from '../setting'
@@ -50,7 +51,12 @@ export const addKeystore = ({ name, password, keystore }: { name: string; passwo
     throw new Error(`Wallet exists`)
   }
 
-  const xpub = getXpub(keystore, password)
+
+  const xprv = decryptKeystore(keystore, password)
+  const masterSk = xprv.slice(0, 64)
+  const masterChainCode = xprv.slice(64)
+  const masterKeychain = new Keychain(Buffer.from(masterSk, 'hex'), Buffer.from(masterChainCode, 'hex'))
+  const { xpub, childXpub } = masterKeychain.getXpubAndChildXpub()
 
   const exist = wallets.find(w => w.xpub === xpub)
 
@@ -59,7 +65,7 @@ export const addKeystore = ({ name, password, keystore }: { name: string; passwo
   }
 
   fs.writeFileSync(getKeystorePath(keystore.id), JSON.stringify(keystore))
-  const profile = { name, xpub, id: keystore.id }
+  const profile = { name, xpub, id: keystore.id, childXpub }
   updateWalletIndex(profile.id, [...wallets, profile])
   return profile
 }
@@ -175,10 +181,11 @@ export const updateCurrentPassword = (currentPassword: string, newPassword: stri
   const xprv = decryptKeystore(keystore, currentPassword)
   const newWallets = wallets.filter(w => w.id !== current)
   const newKeystore = getKeystoreFromXPrv(Buffer.from(xprv, 'hex'), newPassword)
-  const xpub = getXpub(newKeystore, newPassword)
+  const newKeychain = new Keychain(Buffer.from(xprv.slice(0, 64), 'hex'), Buffer.from(xprv.slice(64), 'hex'))
+  const { xpub, childXpub } = newKeychain.getXpubAndChildXpub()
   fs.unlinkSync(getKeystorePath(current))
   fs.writeFileSync(getKeystorePath(newKeystore.id), JSON.stringify(newKeystore))
-  const profile = { name, xpub, id: newKeystore.id }
+  const profile = { name, xpub, id: newKeystore.id, childXpub }
   updateWalletIndex(profile.id, [...newWallets, profile])
   return true
 }
@@ -192,7 +199,11 @@ interface SignTransactionParams {
 }
 export const signTransaction = async ({ keystore, tx, password, signConfig, lockHash }: SignTransactionParams) => {
   const xprv = decryptKeystore(keystore, password)
-  const sk = `0x${xprv.slice(0, 64)}`
+  const masterSk = xprv.slice(0, 64)
+  const masterChainCode = xprv.slice(64)
+  const masterKeychain = new Keychain(Buffer.from(masterSk, 'hex'), Buffer.from(masterChainCode, 'hex'))
+  const childKeychain = masterKeychain.getFirstChildKeychain()
+  const sk = `0x${childKeychain.privateKey.toString('hex')}`
   const signed = await signTx(sk, { tx, lockHash, inputSignConfig: signConfig })
   return signed
 }

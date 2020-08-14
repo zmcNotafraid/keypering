@@ -23,6 +23,7 @@ export class Keychain {
   identifier: Buffer = EMPTY_BUFFER
   fingerprint = 0
   parentFingerprint = 0
+  #WalletPath = `m/44'/309'/0'/0/0`
 
   constructor(privateKey: Buffer, chainCode: Buffer) {
     this.privateKey = privateKey
@@ -136,6 +137,17 @@ export class Keychain {
       .createHash('ripemd160')
       .update(sha256)
       .digest()
+  }
+
+  public getFirstChildKeychain = () => {
+    return this.derivePath(this.#WalletPath)
+  }
+
+  public getXpubAndChildXpub = () => {
+    const childKeychain = this.getFirstChildKeychain()
+    const childXpub = Buffer.concat([childKeychain.publicKey, childKeychain.chainCode]).toString('hex')
+    const xpub = this.publicKey.toString('hex') + this.chainCode.toString('hex')
+    return { xpub, childXpub }
   }
 
   private static privateKeyAdd = (privateKey: Buffer, factor: Buffer): Buffer => {

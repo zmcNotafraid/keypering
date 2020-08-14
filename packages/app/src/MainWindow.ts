@@ -232,7 +232,7 @@ export default class MainWindow {
         const lockHash = ckb.utils.scriptToHash({
           codeHash: SECP256K1_BLAKE160_CODE_HASH,
           hashType: 'type',
-          args: `0x${ckb.utils.blake160(`0x${wallet.xpub.slice(0, 66)}`, 'hex')}`
+          args: `0x${ckb.utils.blake160(`0x${wallet.childXpub.slice(0, 66)}`, 'hex')}`
         })
         const tx = await txManager.requestSignTx({ ...params, lockHash, referer: 'Keypering', description: '' })
         return { code: Channel.Code.Success, result: { tx } }
