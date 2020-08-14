@@ -81,7 +81,12 @@ const AddressList = () => {
       {list.map(address => (
         <div key={address.address} className={styles.item}>
           <span className={styles.tag}>{address.tag}</span>
-          <div className={styles.address} id="address" onClick={() => copyAddress(address.address)}>
+          <div
+            className={styles.address}
+            id="address"
+            onClick={() => copyAddress(address.address)}
+            title={address.address}
+          >
             {formatAddress(address.address)}
           </div>
           <div className={styles.capacity}>
