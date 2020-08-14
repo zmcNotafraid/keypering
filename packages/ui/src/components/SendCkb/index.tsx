@@ -12,7 +12,7 @@ import styles from './sendCkb.module.scss'
 const getArgs = (params: { current: string; wallets: Channel.WalletProfile[] }) => {
   const wallet = params.wallets.find(w => w.id === params.current)
   if (wallet) {
-    const pk = wallet.xpub.slice(0, 66)
+    const pk = wallet.childXpub.slice(0, 66)
     const args = `0x${blake160(`0x${pk}`, 'hex')}`
     return args
   }

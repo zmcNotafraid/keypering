@@ -40,6 +40,7 @@ export interface WalletProfile {
   name: string
   id: string
   xpub: string
+  childXpub: string
 }
 
 export namespace GetWalletIndex {

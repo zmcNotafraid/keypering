@@ -152,6 +152,16 @@ describe('BIP32 Keychain tests', () => {
     )
   })
 
+  it('get first child keychain', () => {
+    const master = Keychain.fromSeed(shortSeed)
+    const child = master.getFirstChildKeychain()
+    expect(child.privateKey.toString('hex')).toEqual('bb39d218506b30ca69b0f3112427877d983dd3cd2cabc742ab723e2964d98016')
+  })
+
+  it.skip('get xpub and child xpub', () => {
+    // TODO:
+  })
+
   it('derive ckb keys another seed', () => {
     const master = Keychain.fromSeed(
       // From mnemonic `tank planet champion pottery together intact quick police asset flower sudden question`

@@ -21,7 +21,8 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true
   },
   "exclude": ["./__tests__/**", "./__mock__/**", "./build/**"]
 }
