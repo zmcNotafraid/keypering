@@ -46,8 +46,7 @@ export const getWalletPublicKey = (id: string) => {
   if (!currentWallets) {
     throw new WalletNotFoundException()
   }
-
-  return '0x' + currentWallets[0].childXpub.slice(0, 66)
+  return `0x${currentWallets[0].childXpub.slice(0, 66)}`
 }
 
 const getInitAddressesFromLocks = (id: string, network: Channel.NetworkId) => {
