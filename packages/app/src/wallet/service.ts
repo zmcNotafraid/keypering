@@ -51,7 +51,6 @@ export const addKeystore = ({ name, password, keystore }: { name: string; passwo
     throw new Error(`Wallet exists`)
   }
 
-
   const xprv = decryptKeystore(keystore, password)
   const masterSk = xprv.slice(0, 64)
   const masterChainCode = xprv.slice(64)
