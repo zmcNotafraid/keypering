@@ -62,8 +62,6 @@ There're two steps to create a wallet from an existing mnemonic(seed)
 
 Import an existing wallet from a keystore file
 
-**Keypering is not an HD wallet and doesn't have a specific wallet path, which means the wallet exported from [Neuron](https://github.com/nervosnetwork/neuron) cannot be recovered in Keypering theoratically.**
-
 <div class="center">
   <b><small>Import Keystore</small></b>
   <img src="_media/screenshots/05.import_keystore.png" alt="Import Keystore">
