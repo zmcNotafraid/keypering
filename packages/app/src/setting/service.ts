@@ -113,6 +113,9 @@ export const updateSetting = (params: Channel.UpdateSetting.Params) => {
   } else {
     return false
   }
+  Object.keys(setting.locks).forEach(key => {
+    delete setting.locks[key].ins
+  })
   fs.writeFileSync(filePath, JSON.stringify(setting))
   broadcast(getSetting())
   return true
@@ -128,6 +131,9 @@ export const updateDevnetUrl = async () => {
     return false
   }
   setting.networks[DEVNET_ID].url = newUrl
+  Object.keys(setting.locks).forEach(key => {
+    delete setting.locks[key].ins
+  })
   fs.writeFileSync(filePath, JSON.stringify(setting))
   broadcast(getSetting())
   return true
