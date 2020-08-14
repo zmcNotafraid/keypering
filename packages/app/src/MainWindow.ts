@@ -81,7 +81,7 @@ export default class MainWindow {
         const result = walletManager.getWalletIndex()
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: WalletIndex', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -92,7 +92,7 @@ export default class MainWindow {
         walletManager.addKeystore({ ...params, keystore })
         return { code: Channel.Code.Success, result: true }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Create Wallet', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -102,7 +102,7 @@ export default class MainWindow {
         const res = walletManager.selectWallet(params.id)
         return { code: Channel.Code.Success, result: res }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Select Wallet', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -112,7 +112,7 @@ export default class MainWindow {
         const result = walletManager.deleteWallet()
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Delete Wallet', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -122,7 +122,7 @@ export default class MainWindow {
         const result = walletManager.updateWallet(params)
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Update Wallet', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -132,7 +132,7 @@ export default class MainWindow {
         const result = await walletManager.exportKeystore()
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Backup Wallet', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -143,7 +143,7 @@ export default class MainWindow {
         const result = walletManager.checkCurrentPassword(params.password)
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Check Password', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -153,7 +153,7 @@ export default class MainWindow {
         const result = walletManager.getMnemonic()
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Get Mnemonic', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -165,7 +165,7 @@ export default class MainWindow {
         walletManager.addKeystore({ ...params, keystore })
         return { code: Channel.Code.Success, result: true }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Import Keystore', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -183,7 +183,7 @@ export default class MainWindow {
         })
         return { code: Channel.Code.Success, result: { ...rest, locks: filteredLocks } }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Get Setting', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -195,7 +195,7 @@ export default class MainWindow {
           const result = settingManager.updateSetting(params)
           return { code: Channel.Code.Success, result }
         } catch (err) {
-          dialog.showErrorBox('Error', err.message)
+          dialog.showErrorBox('Error: Update Setting', err.message)
           return { code: Channel.Code.Error, message: err.message }
         }
       }
@@ -206,7 +206,7 @@ export default class MainWindow {
         const result = await settingManager.setScriptsPath()
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Update Script Directory', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -218,7 +218,7 @@ export default class MainWindow {
         const result = txManager.getTxList(current, networkId)
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Get Transaction List', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -240,7 +240,7 @@ export default class MainWindow {
         return { code: Channel.Code.Success, result: { tx } }
       } catch (err) {
         if (err instanceof LockNotFoundException) {
-          dialog.showErrorBox('Error', err.message)
+          dialog.showErrorBox('Error: Request Sign Transaction', err.message)
         }
         console.error(err)
         return { code: err.code || Channel.Code.Error, message: err.message }
@@ -256,7 +256,7 @@ export default class MainWindow {
           result: list,
         }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Get Address List', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -270,7 +270,7 @@ export default class MainWindow {
           result: list.map(auth => ({ url: auth.url, time: auth.time })),
         }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Get Authorization List', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -283,7 +283,7 @@ export default class MainWindow {
           const result = await authManager.deleteAuth(current, params.url)
           return { code: Channel.Code.Success, result }
         } catch (err) {
-          dialog.showErrorBox('Error', err.message)
+          dialog.showErrorBox('Error: Delete Authorization', err.message)
           return { code: Channel.Code.Error, message: err.message }
         }
       }
@@ -295,7 +295,7 @@ export default class MainWindow {
         const result = walletManager.updateCurrentPassword(currentPassword, newPassword)
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Submit Password', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
@@ -313,7 +313,7 @@ export default class MainWindow {
         const result = await settingManager.updateDevnetUrl()
         return { code: Channel.Code.Success, result }
       } catch (err) {
-        dialog.showErrorBox('Error', err.message)
+        dialog.showErrorBox('Error: Open Devnet Setting', err.message)
         return { code: Channel.Code.Error, message: err.message }
       }
     })
