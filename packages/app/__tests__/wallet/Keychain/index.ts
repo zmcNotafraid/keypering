@@ -155,7 +155,7 @@ describe('BIP32 Keychain tests', () => {
   it('get first child keychain', () => {
     const master = Keychain.fromSeed(shortSeed)
     const child = master.getFirstChildKeychain()
-    expect(child.privateKey.toString('hex')).toEqual('bb39d218506b30ca69b0f3112427877d983dd3cd2cabc742ab723e2964d98016')
+    expect(child.privateKey.toString('hex')).toEqual('fcba4708f1f07ddc00fc77422d7a70c72b3456f5fef3b2f68368cdee4e6fb498')
   })
 
   it.skip('get xpub and child xpub', () => {

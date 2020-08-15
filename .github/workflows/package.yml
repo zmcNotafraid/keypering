@@ -1,16 +1,15 @@
 name: Package Keypering
 
 on:
-  push:
-    branches:
+  workflow_run:
+    workflows: 
+      - Tests
+    branches: 
       - master
       - develop
       - 'rc/**'
-  pull_request:
-    branches:
-      - master
-      - develop
-      - 'rc/**'
+    types: 
+      - completed
 
 jobs:
   default:

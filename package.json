@@ -9,6 +9,8 @@
   "scripts": {
     "bootstrap": "npx lerna bootstrap",
     "start": "npm run build:specs && npx cross-env BROWSER=none npx lerna run --concurrency 2 start",
+    "test": "npx lerna run test --scope=@keypering/app",
+    "test:coverage": "npx lerna run test:coverage --scope=@keypering/app",
     "build": "npx lerna run --parallel build",
     "build:specs": "npx lerna run build --scope=@keypering/specs",
     "bundle:ui": "ncp ./packages/ui/build ./packages/app/public/ui",
