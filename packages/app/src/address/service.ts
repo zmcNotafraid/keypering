@@ -3,8 +3,14 @@ import CKB from '@nervosnetwork/ckb-sdk-core'
 import { getWalletPublicKey, getRemoteAddressCapacity, getLocalAddressCapacity } from './utils'
 import { getSetting } from '../setting'
 
+let interval: NodeJS.Timeout | undefined
+
 export const getAddrList = (id: string, network: Channel.NetworkId): Channel.Address[] => {
+  clearInterval(interval as any)
   getRemoteAddressCapacity(id, network)
+  interval = setInterval(() => {
+    getRemoteAddressCapacity(id, network)
+  }, 1000)
   return getLocalAddressCapacity(id, network)
 }
 

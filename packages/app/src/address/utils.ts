@@ -111,7 +111,11 @@ export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId)
         }
       })
     })
-    broadcast(addresses)
+    const { current } = getWalletIndex()
+    const { networkId } = getSetting()
+    if (current === id && network === networkId) {
+      broadcast(addresses)
+    }
   })
 }
 
