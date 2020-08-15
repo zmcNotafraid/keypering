@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Channel } from '@keypering/specs'
 import Core from '@nervosnetwork/ckb-sdk-core'
 import { blake160, bech32Address } from '@nervosnetwork/ckb-sdk-utils'
 import { EMPTY_WITNESS_ARGS } from '@nervosnetwork/ckb-sdk-utils/lib/const'
 import SendCkbDialog, { FormState } from '../SendCkbDialog'
-import { getWalletIndex, getSetting, requestSign, showAlert } from '../../services/channels'
-import { getCapacityByArgs, getEnoughCellsByAddress } from '../../services/rpc'
+import { getWalletIndex, getSetting, requestSign, showAlert, getAddressList } from '../../services/channels'
+import { getEnoughCellsByAddress } from '../../services/rpc'
 import { isSuccessResponse, shannonToCkb, CkbToShannon, SECP256K1_SCRIPT_DEPS } from '../../utils'
 import styles from './sendCkb.module.scss'
 
@@ -19,68 +19,74 @@ const getArgs = (params: { current: string; wallets: Channel.WalletProfile[] }) 
   return ''
 }
 
+const getSum = (shannons: string[]) => shannons.reduce((sum, s) => sum + BigInt(s), BigInt(0))
+
 const SendCkb = () => {
+  const [walletId, setWalletId] = useState('')
   const [args, setArgs] = useState('')
+  const [currentNetworkId, setCurrentNetworkId] = useState<Channel.NetworkId>('' as any)
   const [network, setNetwork] = useState<{ id: string; url: string } | null>(null)
   const [balance, setBalance] = useState<bigint | string>('-')
   const [dialogShow, setDialogShow] = useState(false)
-  const requestIdRef = useRef(0)
 
   useEffect(() => {
     const { ipcRenderer } = window
     getWalletIndex().then(res => {
       if (isSuccessResponse(res)) {
         setArgs(getArgs(res.result))
+        setWalletId(res.result.current)
       } else {
         // ignore, handled by ipc
       }
     })
+
     getSetting().then(res => {
       if (isSuccessResponse(res)) {
         const currentNetwork = res.result.networks[res.result.networkId]
         setNetwork(currentNetwork ? { id: res.result.networkId, url: currentNetwork.url } : null)
+        setCurrentNetworkId(res.result.networkId)
       }
     })
+
     const walletListener = (_e: Event, walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
       setArgs(getArgs(walletIndex))
+      setWalletId(walletIndex.current)
     }
+
     const settingListener = (_e: Event, setting: Channel.Setting) => {
       const currentNetwork = setting.networks[setting.networkId]
       setNetwork(currentNetwork ? { id: setting.networkId, url: currentNetwork.url } : null)
+      setCurrentNetworkId(setting.networkId)
+    }
+
+    const addrListListener = (_e: Event, addrList: Channel.Address[]) => {
+      if (addrList?.length) {
+        const sum = getSum(addrList.map(addr => addr.free))
+        setBalance(sum)
+      }
     }
     ipcRenderer.on(Channel.ChannelName.GetWalletIndex, walletListener)
     ipcRenderer.on(Channel.ChannelName.GetSetting, settingListener)
+    ipcRenderer.on(Channel.ChannelName.GetAddrList, addrListListener)
 
     return () => {
       ipcRenderer.removeListener(Channel.ChannelName.GetWalletIndex, walletListener)
       ipcRenderer.removeListener(Channel.ChannelName.GetSetting, settingListener)
+      ipcRenderer.removeListener(Channel.ChannelName.GetAddrList, addrListListener)
     }
   }, [setArgs, setNetwork])
 
   useEffect(() => {
     setBalance('-')
-    if (args && network) {
-      const updateBalance = () => {
-        requestIdRef.current += 1
-        const currentRequestId = requestIdRef.current
-
-        getCapacityByArgs({ args, indexerUrl: network.url }).then(capacity => {
-          if (typeof capacity === 'bigint' && currentRequestId === requestIdRef.current) {
-            setBalance(capacity)
-          }
-        })
-      }
-      updateBalance()
-      const INTERVAL_TIME = 3000
-      const interval = setInterval(updateBalance, INTERVAL_TIME)
-      return () => {
-        clearInterval(interval)
-      }
+    if (walletId && currentNetworkId) {
+      getAddressList({ id: walletId, networkId: currentNetworkId }).then(res => {
+        if (isSuccessResponse(res)) {
+          const sum = getSum(res.result.map(addr => addr.free))
+          setBalance(sum)
+        }
+      })
     }
-    return () => {
-      // ignore
-    }
-  }, [args, network, setBalance, requestIdRef])
+  }, [setBalance, walletId, currentNetworkId])
 
   const handleOpenDialog = useCallback(() => setDialogShow(true), [setDialogShow])
   const handleCloseDialog = useCallback(() => setDialogShow(false), [setDialogShow])
