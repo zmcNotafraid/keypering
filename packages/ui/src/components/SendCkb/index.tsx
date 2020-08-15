@@ -137,6 +137,10 @@ const SendCkb = () => {
         }
         return true
       } catch (err) {
+        if (err.message === 'Expect address send to a short version one') {
+          window.alert('Please enter a short version address of secp256k1 lock')
+          return false
+        }
         window.alert(err.message)
         return false
       }
