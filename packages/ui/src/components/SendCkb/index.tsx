@@ -101,13 +101,14 @@ const SendCkb = () => {
         || (await core.loadDeps().then(config => config.secp256k1Dep!))
       try {
         const requiredShannon = CkbToShannon(form.amount)
-        const cells = await getEnoughCellsByAddress(form.address, requiredShannon, network.url)
 
         const fromAddress = bech32Address(args, {
           prefix: network.id === 'ckb' ? core.utils.AddressPrefix.Mainnet : core.utils.AddressPrefix.Testnet,
           type: core.utils.AddressType.HashIdx,
           codeHashOrCodeHashIndex: '0x00',
         })
+
+        const cells = await getEnoughCellsByAddress(fromAddress, requiredShannon, network.url)
 
         const params = {
           fromAddress,
@@ -118,6 +119,7 @@ const SendCkb = () => {
           safeMode: true,
           deps,
         }
+
         const txTpl = core.generateRawTransaction(params)
         const EXTRA_TX_SIZE = 4
         const txSize = core.utils.serializeRawTransaction(txTpl).length / 2 + EXTRA_TX_SIZE
