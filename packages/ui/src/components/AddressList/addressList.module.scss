@@ -20,11 +20,17 @@
 }
 
 .address {
+  display: flex;
+  align-items: center;
+  line-height: 1;
   color: #000000;
   font-weight: 600;
   margin-top: 8px;
   font-family: monospace;
-  cursor: pointer;
+
+  button {
+    padding: 0 6px;
+  }
 }
 
 .capacity {

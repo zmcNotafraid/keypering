@@ -98,7 +98,6 @@ const TxList = () => {
           </button>
           <button
             title="Copy Transaction Hash"
-            className={styles.copy}
             type="button"
             data-tx-hash={tx.hash}
             hidden={isOnExplorer || !tx.isApproved}

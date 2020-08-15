@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Channel } from '@keypering/specs'
+import { Copy } from 'react-feather'
 import { getAddressList, getWalletIndex, getSetting } from '../../services/channels'
 import { isSuccessResponse, shannonToCkb, formatAddress } from '../../utils'
 import styles from './addressList.module.scss'
-
-const copyAddress = (address: string) => {
-  const element = document.createElement('textarea')
-  element.value = address
-  document.body.appendChild(element)
-  element.select()
-  document.execCommand('copy')
-  document.body.removeChild(element)
-  alert('Copied')
-}
 
 const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
   const { current, wallets } = walletIndex
@@ -23,6 +14,8 @@ const AddressList = () => {
   const [list, setList] = useState<Channel.Address[]>([])
   const [walletId, setWalletId] = useState('')
   const [network, setNetwork] = useState<{ id: Channel.NetworkId; url: string } | null>(null)
+  const [copied, setCopied] = useState('')
+  const copyTimerRef = useRef<NodeJS.Timeout>()
 
   useEffect(() => {
     const { ipcRenderer } = window
@@ -65,9 +58,9 @@ const AddressList = () => {
         }
       })
     }
-    const addressListener = (_e: Event, list: Channel.Address[]) => {
-      if (list && list.length > 0) {
-        setList(list)
+    const addressListener = (_e: Event, addrs: Channel.Address[]) => {
+      if (addrs?.length > 0) {
+        setList(addrs)
       }
     }
     ipcRenderer.on(Channel.ChannelName.GetAddrList, addressListener)
@@ -76,18 +69,39 @@ const AddressList = () => {
     }
   }, [setList, walletId, network])
 
+  const handleCopy = (e: React.SyntheticEvent<HTMLButtonElement>) => {
+    const { dataset: { address } } = e.currentTarget
+    if (address) {
+      window.navigator.clipboard.writeText(address)
+      clearTimeout(copyTimerRef.current as any)
+      setCopied(address)
+      copyTimerRef.current = setTimeout(() => {
+        setCopied('')
+      }, 300)
+    }
+  }
+
   return (
     <div className={styles.container}>
       {list.map(address => (
         <div key={address.address} className={styles.item}>
           <span className={styles.tag}>{address.tag}</span>
           <div
+            role="presentation"
             className={styles.address}
             id="address"
-            onClick={() => copyAddress(address.address)}
             title={address.address}
           >
             {formatAddress(address.address)}
+            <button
+              title="Copy Address"
+              type="button"
+              data-address={address.address}
+              onClick={handleCopy}
+              disabled={copied === address.address}
+            >
+              <Copy size={12} />
+            </button>
           </div>
           <div className={styles.capacity}>
             <div>
