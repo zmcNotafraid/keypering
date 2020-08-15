@@ -20,6 +20,7 @@
 }
 
 .address {
+  width: 100%;
   display: flex;
   align-items: center;
   line-height: 1;
@@ -27,6 +28,12 @@
   font-weight: 600;
   margin-top: 8px;
   font-family: monospace;
+
+  .addrLeading {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   button {
     padding: 0 6px;

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Channel } from '@keypering/specs'
 import { Copy } from 'react-feather'
 import { getAddressList, getWalletIndex, getSetting } from '../../services/channels'
-import { isSuccessResponse, shannonToCkb, formatAddress } from '../../utils'
+import { isSuccessResponse, shannonToCkb } from '../../utils'
 import styles from './addressList.module.scss'
 
 const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
@@ -92,7 +92,8 @@ const AddressList = () => {
             id="address"
             title={address.address}
           >
-            {formatAddress(address.address)}
+            <span className={styles.addrLeading}>{address.address.slice(0, -10)}</span>
+            <span>{address.address.slice(-10)}</span>
             <button
               title="Copy Address"
               type="button"
