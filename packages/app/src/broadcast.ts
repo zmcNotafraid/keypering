@@ -17,6 +17,7 @@ export const broadcastTxList = (list: ReturnType<typeof getTxList>) => {
 }
 
 export const broadcastSetting = (setting: ReturnType<typeof getSetting>) => {
+  Object.values(setting.locks).forEach(lock => delete lock.ins)
   MainWindow.broadcast(Channel.ChannelName.GetSetting, setting)
 }
 
