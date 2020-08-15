@@ -4,7 +4,7 @@ import Core from '@nervosnetwork/ckb-sdk-core'
 import { blake160, bech32Address } from '@nervosnetwork/ckb-sdk-utils'
 import { EMPTY_WITNESS_ARGS } from '@nervosnetwork/ckb-sdk-utils/lib/const'
 import SendCkbDialog, { FormState } from '../SendCkbDialog'
-import { getWalletIndex, getSetting, requestSign } from '../../services/channels'
+import { getWalletIndex, getSetting, requestSign, showAlert } from '../../services/channels'
 import { getCapacityByArgs, getEnoughCellsByAddress } from '../../services/rpc'
 import { isSuccessResponse, shannonToCkb, CkbToShannon, SECP256K1_SCRIPT_DEPS } from '../../utils'
 import styles from './sendCkb.module.scss'
@@ -138,10 +138,14 @@ const SendCkb = () => {
         return true
       } catch (err) {
         if (err.message === 'Expect address send to a short version one') {
-          window.alert('Please enter a short version address of secp256k1 lock')
+          showAlert({
+            message: 'Please enter a short version address of secp256k1 lock',
+          })
           return false
         }
-        window.alert(err.message)
+        showAlert({
+          message: err.message,
+        })
         return false
       }
     },

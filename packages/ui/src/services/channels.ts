@@ -49,3 +49,6 @@ export const requestSign = (params: Channel.RequestSign.Params): Promise<Channel
   invoke(Channel.ChannelName.RequestSign, params)
 
 export const openDevnetSetting = () => invoke(Channel.ChannelName.OpenDevnetSetting)
+
+export const showAlert = (params: Channel.ShowAlert.Params): Promise<Channel.ShowAlert.Response> =>
+  invoke(Channel.ChannelName.ShowAlert, params)

@@ -24,6 +24,7 @@ export enum ChannelName {
   SubmitPassword = 'submit-password',
   OpenInBrowser = 'open-in-browser',
   OpenDevnetSetting = 'open-devnet-setting',
+  ShowAlert = 'show-alert'
 }
 
 export type SuccessResponse<T = any> = {
@@ -213,5 +214,12 @@ export namespace OpenInBrowser {
 }
 
 export namespace OpenDevnetSetting {
+  export type Response = SuccessResponse<boolean> | ErrorResponse
+}
+
+export namespace ShowAlert {
+  export interface Params {
+    message: string
+  }
   export type Response = SuccessResponse<boolean> | ErrorResponse
 }

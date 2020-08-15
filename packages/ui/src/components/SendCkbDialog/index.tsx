@@ -1,5 +1,6 @@
 import React, { useState, useReducer, useRef, useEffect } from 'react'
 import TextField from '../TextField'
+import { showAlert } from '../../services/channels'
 import styles from './sendCkbDialog.module.scss'
 
 export interface FormState {
@@ -74,7 +75,9 @@ const SendCkbDialog = ({ onSubmit, onCancel, show }: SendCkbDialogProps) => {
     try {
       await onSubmit(form)
     } catch (err) {
-      window.alert(err.message)
+      showAlert({
+        message: err.message,
+      })
     } finally {
       setIsSubmitting(false)
     }

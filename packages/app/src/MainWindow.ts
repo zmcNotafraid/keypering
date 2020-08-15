@@ -317,5 +317,12 @@ export default class MainWindow {
         return { code: Channel.Code.Error, message: err.message }
       }
     })
+
+    ipcMain.handle(Channel.ChannelName.ShowAlert, (_e, params: Channel.ShowAlert.Params) => {
+      if (params.message) {
+        dialog.showErrorBox('Alert', params.message)
+      }
+      return { code: Channel.Code.Success, result: true }
+    })
   }
 }
