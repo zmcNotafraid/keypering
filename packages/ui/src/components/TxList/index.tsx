@@ -65,9 +65,9 @@ const TxList = () => {
       {list.map(tx => (
         <div key={`${tx.hash}:${tx.time}`} className={styles.item}>
           <span className={styles.originLabel}>Request from:</span>
-          <span className={styles.originValue}>{tx.referer}</span>
+          <span className={styles.originValue} title={tx.referer}>{tx.referer}</span>
           <span className={styles.metaLabel}>Meta Info:</span>
-          <span className={styles.metaValue}>{tx.meta}</span>
+          <span className={styles.metaValue} title={tx.meta}>{tx.meta}</span>
           <div className={styles.status}>
             <time>{datetime(new Date(+tx.time))}</time>
             <span data-is-approved={tx.isApproved}>

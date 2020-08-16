@@ -30,10 +30,15 @@ const AuthList = () => {
         <div key={auth.url} className={styles.item}>
           <div className={styles.info}>
             Application:
-            <span className={styles.url}>{auth.url}</span>
+            <span className={styles.url} title={auth.url}>{auth.url}</span>
           </div>
           <div className={styles.time}>{datetime(new Date(+auth.time))}</div>
-          <button className={styles.revoke} type="button" onClick={() => revokeAuth({ url: auth.url })}>
+          <button
+            className={styles.revoke}
+            title="Revoke authorization"
+            type="button"
+            onClick={() => revokeAuth({ url: auth.url })}
+          >
             Revoke
           </button>
         </div>
