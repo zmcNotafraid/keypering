@@ -122,6 +122,6 @@ export class InvalidDirectoryException extends Error {
 
 export class LockNotFoundException extends Error {
   constructor() {
-    super(`Lock is not found`)
+    super(`Lock hash or it's holder is not found`)
   }
 }
