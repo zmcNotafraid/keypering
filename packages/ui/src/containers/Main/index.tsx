@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import { NavLink, useParams } from 'react-router-dom'
-import MainHeader from '../../components/MainHeader'
 import SendCkb from '../../components/SendCkb'
 import AuthList from '../../components/AuthList'
 import TxList from '../../components/TxList'
@@ -34,7 +33,6 @@ const Main = () => {
   }, [active])
   return (
     <>
-      <MainHeader />
       <div className={styles.balance}>
         <SendCkb />
       </div>

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useHistory } from 'react-router-dom'
 import { Channel } from '@keypering/specs'
 import styles from './mainHeader.module.scss'
 import { getWalletIndex } from '../../services/channels'
 import { isSuccessResponse, Routes } from '../../utils'
-import WalletManager from '../WalletManager'
+import WalletManager from '../../components/WalletManager'
 import MenuIcon from '../../assets/menu.png'
 import ManagerIcon from '../../assets/manager.png'
 import DropdownIcon from '../../assets/dropdown.png'
-import MainSidebar from '../MainSidebar'
-import WalletSelector from '../WalletSelector'
+import MainSidebar from '../../components/MainSidebar'
+import WalletSelector from '../../components/WalletSelector'
 
 const checkWalletIndex = (walletIndex: { current: string; wallets: Channel.WalletProfile[] }) => {
   const { current, wallets } = walletIndex
@@ -21,7 +22,7 @@ const getCurrentWalletName = (walletIndex: { current: string; wallets: Channel.W
   return current && wallets.length > 0 ? wallets.filter(wallet => wallet.id === current)[0].name : 'Unknown Wallet'
 }
 
-const MainHeader = () => {
+const Header = () => {
   const [walletIndex, setWalletIndex] = useState<{ current: string; wallets: Channel.WalletProfile[] }>({
     current: '',
     wallets: [],
@@ -67,7 +68,7 @@ const MainHeader = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.nav} >
+      <div className={styles.nav}>
         <img onClick={openSidebar} src={MenuIcon} alt="menu" />
         <MainSidebar show={showSidebar} setShow={setShowSidebar} />
         <div className={styles.title} onClick={toggleWalletSelector}>
@@ -82,4 +83,6 @@ const MainHeader = () => {
   )
 }
 
-export default MainHeader
+// export default MainHeader
+export default () => createPortal(<Header />, document.querySelector<HTMLElement>('header')!)
+

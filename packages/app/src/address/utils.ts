@@ -14,7 +14,7 @@ import { getAddrList } from './service'
 import { getSetting } from '../setting'
 
 const dataPath = getDataPath('address')
-const getAddressDataPath = (id: string, networkId: string, name: string) => 
+const getAddressDataPath = (id: string, networkId: string, name: string) =>
   path.resolve(dataPath, `${id}-${networkId}-${name}.json`)
 
 const broadcast = (list: ReturnType<typeof getAddrList>) => {
@@ -53,82 +53,93 @@ const getInitAddressesFromLocks = (id: string, network: Channel.NetworkId) => {
   const { locks } = getSetting()
   const ckb = new CKB()
   const { AddressPrefix, AddressType, fullPayloadToAddress, pubkeyToAddress } = ckb.utils
-  const prefix = network === 'ckb' ? AddressPrefix.Mainnet : AddressPrefix.Testnet
+  const prefix = network === 'ckb'
+    ? AddressPrefix.Mainnet
+    : AddressPrefix.Testnet
   const publicKey = getWalletPublicKey(id)
 
-  let addresses = [] as Channel.Address[]
+  const addresses = [] as Channel.Address[]
   Object.keys(locks).forEach(key => {
-    let lock = locks[key].ins
-    let args = lock.script(publicKey).args
+    const lock = locks[key].ins
+    const args = lock.script(publicKey).args
     addresses.push({
       codeHash: lock.codeHash,
-      address: lock.codeHash === SECP256K1_BLAKE160_CODE_HASH ? 
-        pubkeyToAddress(publicKey, { prefix } as any) : 
+      address: lock.codeHash === SECP256K1_BLAKE160_CODE_HASH ?
+        pubkeyToAddress(publicKey, { prefix } as any) :
         fullPayloadToAddress({
           args,
-          type: lock.hashType === "data" ? AddressType.DataCodeHash : AddressType.TypeCodeHash,
+          type: lock.hashType === "data"
+            ? AddressType.DataCodeHash
+            : AddressType.TypeCodeHash,
           prefix,
           codeHash: lock.codeHash,
         }),
       tag: lock.name,
-      inUse: '0', 
+      inUse: '0',
       free: '0',
     })
-  });
+  })
   return addresses
 }
 
 export const getRemoteAddressCapacity = (id: string, network: Channel.NetworkId) => {
-  const { locks } = getSetting()
-  const publicKey = getWalletPublicKey(id)
+  try {
+    const { locks } = getSetting()
+    const publicKey = getWalletPublicKey(id)
 
-  const requests = [] as Promise<any>[]
-  const paths = [] as {key: string, path: string}[]
-  let addresses = getInitAddressesFromLocks(id, network)
+    const requests = [] as Promise<any>[]
+    const paths = [] as { key: string, path: string }[]
+    let addresses = getInitAddressesFromLocks(id, network)
 
-  Object.keys(locks).forEach(key => {
-    let lock = locks[key].ins
-    let args = lock.script(publicKey).args
-    paths.push({key: `${id}-${network}-${lock.codeHash}`, path: getAddressDataPath(id, network, lock.name)})
-    requests.push(getCells(lock.codeHash, args))
-  });
-
-  Promise.all(requests).then((cellsList: any[]) => {
-     cellsList.forEach(cells => {
-      if (cells && cells.length > 0) {
-        addresses = addresses.map(address => 
-          address.codeHash === cells[0].output.lock.code_hash ? {
-            ...address,
-            ...parseCells(cells),
-          } : address
-        )
-      }
+    Object.keys(locks).forEach(key => {
+      const lock = locks[key].ins
+      const args = lock.script(publicKey).args
+      paths.push({ key: `${id}-${network}-${lock.codeHash}`, path: getAddressDataPath(id, network, lock.name) })
+      requests.push(getCells(lock.codeHash, args))
     })
-    paths.forEach(path => {
-      addresses.forEach(address => {
-        if (path.key === `${id}-${network}-${address.codeHash}`) {
-          fs.writeFileSync(path.path, JSON.stringify(address))
+
+    return Promise.all(requests).then((cellsList: any[]) => {
+      cellsList.forEach(cells => {
+        if (cells && cells.length > 0) {
+          addresses = addresses.map(address =>
+            address.codeHash === cells[0].output.lock.code_hash
+              ? {
+                ...address,
+                ...parseCells(cells),
+              }
+              : address
+          )
         }
       })
-    })
-    const { current } = getWalletIndex()
-    const { networkId } = getSetting()
-    if (current === id && network === networkId) {
-      broadcast(addresses)
-    }
-  })
+      paths.forEach(path => {
+        addresses.forEach(address => {
+          if (path.key === `${id}-${network}-${address.codeHash}`) {
+            fs.writeFileSync(path.path, JSON.stringify(address))
+          }
+        })
+      })
+      const { current } = getWalletIndex()
+      const { networkId } = getSetting()
+      if (current === id && network === networkId) {
+        broadcast(addresses)
+      }
+    }).then(() => true)
+  } catch (err) {
+    console.error(err)
+    return Promise.resolve(false)
+  }
 }
 
 export const getLocalAddressCapacity = (id: string, network: Channel.NetworkId): Channel.Address[] => {
   const { locks } = getSetting()
-  for (let key of Object.keys(locks)) {
-    let path = getAddressDataPath(id, network, locks[key].ins.name)
+  for (const key of Object.keys(locks)) {
+    const path = getAddressDataPath(id, network, locks[key].ins.name)
     if (!fs.existsSync(path)) {
       return getInitAddressesFromLocks(id, network)
     }
   }
   return Object.keys(locks).map(key => {
-    let path = getAddressDataPath(id, network, locks[key].ins.name)
+    const path = getAddressDataPath(id, network, locks[key].ins.name)
     return JSON.parse(fs.readFileSync(path, 'utf8'))
-  });
+  })
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 
+import Header from './containers/Header'
 import Main from './containers/Main'
 import Footer from './containers/Footer'
 import Welcome from './containers/Welcome'
@@ -38,6 +39,7 @@ function App() {
         </Route>
       </Switch>
       <Route path={Routes.Main}>
+        <Header />
         <Footer />
       </Route>
     </Router>
