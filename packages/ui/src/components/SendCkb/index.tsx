@@ -169,7 +169,12 @@ const SendCkb = () => {
       <button type="button" onClick={handleOpenDialog}>
         Send
       </button>
-      <SendCkbDialog onSubmit={handleSubmitSend} onCancel={handleCloseDialog} show={dialogShow} />
+      <SendCkbDialog
+        onSubmit={handleSubmitSend}
+        onCancel={handleCloseDialog}
+        show={dialogShow}
+        networkId={currentNetworkId}
+      />
     </div>
   )
 }
