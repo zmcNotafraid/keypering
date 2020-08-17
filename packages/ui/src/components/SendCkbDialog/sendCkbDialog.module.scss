@@ -17,6 +17,9 @@
     label {
       min-width: 60px;
     }
+    div[class^='textField'] {
+      margin-bottom: 5px;
+    }
   }
 
   .footer {
