@@ -118,7 +118,7 @@ const SendCkbDialog = ({ onSubmit, onCancel, show, networkId }: SendCkbDialogPro
         </div>
 
         <div className={styles.footer}>
-          <button type="button" onClick={onCancel} disabled={disabled}>
+          <button type="button" onClick={onCancel} disabled={isSubmitting}>
             Cancel
           </button>
           <button type="submit" disabled={disabled} onClick={handleSubmit} data-is-submitting={isSubmitting}>
