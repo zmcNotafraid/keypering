@@ -1,0 +1,62 @@
+name: Upload Artifacts to Release
+
+on:
+  workflow_run:
+    workflows: 
+      - Tests
+    branches: 
+      - master
+    types: 
+      - completed
+
+jobs:
+  default:
+    name: Package Keypering
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2-beta
+
+      - name: Restore
+        uses: actions/cache@v2
+        with:
+          path: |
+            node_modules
+            */*/node_modules
+          key: ${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Bootstrap
+        run: npx lerna bootstrap
+
+      - name: Build Specs
+        run: npm run build:specs
+
+      - name: Package
+        run: |
+          echo PORT=3102 > ./packages/app/.env
+          npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Keypering Mac
+        uses: actions/upload-artifact@v2
+        with:
+          name: Keypering-Mac
+          path: release/Keypering-*-mac.zip
+
+      - name: Upload Keypering Win
+        uses: actions/upload-artifact@v2
+        with:
+          name: Keypering-Win
+          path: release/Keypering-*-setup.exe
+
+      - name: Upload Keypering Linux
+        uses: actions/upload-artifact@v2
+        with:
+          name: Keypering-Linux
+          path: release/Keypering-*.AppImage
