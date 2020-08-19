@@ -108,11 +108,7 @@ method: sign_transaction
 params:
   tx:    # transaction to sign
     version: '0x0'
-    cellDeps:
-      - outPoint:
-          txHash: '0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37'
-          index: '0x0'
-        depType: depGroup
+    cellDeps: []    # leave this empty since Keypering Agency provides cell deps
     inputs:
       - previousOutput:
           txHash: '0x29220d33fa282c4fdbade6e4af5589ab86edfa9b1a00f2a2ebef8adabdf4bbc0'
@@ -251,11 +247,7 @@ method: sign_transaction
 params:
   tx:    # transaction to sign and send
     version: '0x0'
-    cellDeps:
-      - outPoint:
-          txHash: '0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37'
-          index: '0x0'
-        depType: depGroup
+    cellDeps: []    # leave this empty since Keypering Agency provides cell deps
     inputs:
       - previousOutput:
           txHash: '0x29220d33fa282c4fdbade6e4af5589ab86edfa9b1a00f2a2ebef8adabdf4bbc0'
