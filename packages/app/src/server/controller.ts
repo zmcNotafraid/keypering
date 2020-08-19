@@ -42,12 +42,10 @@ export const handleSignAndSend = async (params: KeyperingAgency.SignAndSendTrans
     signConfig: params.inputSignConfig,
   })
   if (tx) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { hash, ...txToSend } = tx
     const rpcUrl = networksToRpcUrl(getSetting())
     const ckb = new CKB(rpcUrl)
-    const txHash = await ckb.rpc.sendTransaction(txToSend)
-    return { txHash, tx }
+    const txHash = await ckb.rpc.sendTransaction(tx)
+    return { txHash, tx: { ...tx, hash: txHash } }
   }
   return tx
 }
