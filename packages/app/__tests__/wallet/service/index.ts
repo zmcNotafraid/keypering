@@ -143,7 +143,7 @@ describe('Test wallet service', () => {
     it('should return keystore', () => {
       const expected = expect.objectContaining({
         id: expect.any(String),
-        version: '3',
+        version: 3,
         crypto: {
           cipher: 'aes-128-ctr',
           cipherparams: {

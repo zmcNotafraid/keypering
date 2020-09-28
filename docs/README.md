@@ -62,6 +62,11 @@ Keypering consists of 3 components:
 2. [@keypering/ui](https://github.com/nervosnetwork/keypering/tree/develop/packages/ui) renders the main interface of Keypering;
 3. [@keypering/app](https://github.com/nervosnetwork/keypering/tree/develop/packages/app) maintains data and handle requests from renderer process and DApp.
 
+# Tutorials
+
+- [How to Develop a CKB DApp with Keypering (Video, Chinese + English Subtitles)](https://youtu.be/i-gQ0enK5cY)
+- [How to Develop a CKB DApp with Keypering (Slides)](https://docs.google.com/presentation/d/1bswEhjSYwZZnUCF4rRL5x5vfOVXO_kDlbjsojsG94w8/edit?usp=sharing)
+
 # Resources
 
 - [Keypering Manual](https://nervosnetwork.github.io/keypering/#/manual) - User Guide of Keypering

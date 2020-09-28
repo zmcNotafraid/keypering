@@ -25,7 +25,7 @@ interface Crypto {
 
 export interface Keystore {
   id: string
-  version: string
+  version: number
   crypto: Crypto
 }
 
@@ -53,7 +53,7 @@ export const getKeystoreFromXPrv = (xPrv: Buffer, password: string) => {
   const ciphertext = Buffer.concat([cipher.update(xPrv), cipher.final()])
   return {
     id: uuid(),
-    version: '3',
+    version: 3,
     crypto: {
       ciphertext: ciphertext.toString('hex'),
       cipherparams: { iv: iv.toString('hex') },
