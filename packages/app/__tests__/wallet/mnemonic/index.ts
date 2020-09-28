@@ -16,7 +16,7 @@ describe('Test mnemonic module', () => {
       const keystore = getKeystoreFromMnemonic({ mnemonic, password })
       expect(keystore).toEqual(expect.objectContaining({
         id: expect.any(String),
-        version: '3',
+        version: 3,
         crypto: {
           ciphertext: expect.any(String),
           cipherparams: {

@@ -19,7 +19,7 @@ export const mockWallet = {
   keystores: [
     {
       id: '7dea774e-d829-4256-9a3f-2c6c0a62968a',
-      version: '3',
+      version: 3,
       crypto: {
         ciphertext:
           '51550837505b7b19544e88ae83e11cddf7427d42215fbd5458de0fb8c3719ffd5dc3337cd0d44cd202b468df12ddc22d7088d219b5f59a3a6f5c4cc2f860c1fa',
@@ -37,7 +37,7 @@ export const mockWallet = {
       },
     },
     {
-      version: '3',
+      version: 3,
       crypto: {
         cipher: 'aes-128-ctr',
         cipherparams: { iv: 'd18787c19b1be9680aa317e879c1f04f' },
