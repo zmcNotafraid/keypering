@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0-alpha.2](https://github.com/nervosnetwork/keypering/compare/v0.1.0-alpha.1...v0.1.0-alpha.2) (2020-09-28)
+
+
+### Bug Fixes
+
+* fix the type of keystore version which should be number ([4b7f203](https://github.com/nervosnetwork/keypering/commit/4b7f203628684c34fda066153e7d490616c36c48))
+
+
+
+
+
 # 0.1.0-alpha.1 (2020-08-19)
 
 
