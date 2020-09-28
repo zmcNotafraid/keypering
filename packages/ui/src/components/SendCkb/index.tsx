@@ -134,6 +134,7 @@ const SendCkb = () => {
         const tx = core.generateRawTransaction({ ...params, fee })
         tx.witnesses = tx.inputs.map(() => '0x')
         tx.witnesses[0] = EMPTY_WITNESS_ARGS
+        tx.cellDeps = []
         const signedRes = await requestSign({ tx })
         setDialogShow(false)
         if (isSuccessResponse(signedRes)) {

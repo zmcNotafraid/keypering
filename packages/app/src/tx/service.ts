@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { dialog } from 'electron'
 import { Channel, KeyperingAgency } from '@keypering/specs'
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import RequestWindow from './RequestWindow'
@@ -92,9 +93,17 @@ export const requestSignTx = async (params: {
   if (!params.lockHash) {
     throw new ParamsRequiredException('lockHash')
   }
-  if (!params.tx.hash) {
-    const ckb = new CKB()
-    params.tx.hash = ckb.utils.rawTransactionToHash(params.tx)
+
+  if (!params.tx) {
+    throw new Error('Transaction is not found in parameter')
+  }
+
+  if (params.tx?.cellDeps?.length) {
+    dialog.showMessageBox({
+      type: 'warning',
+      title: 'Warning',
+      message: 'Please leave cell deps empty since Keypering provides them'
+    })
   }
   const dataToConfirm = await getTxProfile(params.tx, params.referer, params.description)
   const { current } = getWalletIndex()
@@ -103,7 +112,7 @@ export const requestSignTx = async (params: {
   }
   const { networkId } = getSetting()
   const txProfile = {
-    hash: params.tx.hash,
+    hash: '',
     referer: params.referer,
     meta: params.description,
   }
@@ -128,6 +137,8 @@ export const requestSignTx = async (params: {
         password: passwordRes,
         signConfig: params.signConfig,
       })
+      const ckb = new CKB()
+      txProfile.hash = ckb.utils.rawTransactionToHash(params.tx)
       addTx({
         id: current,
         networkId,
