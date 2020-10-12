@@ -4,7 +4,7 @@ import { SignatureAlgorithm } from '@nervosnetwork/keyper-specs'
 import ECPair from '@nervosnetwork/ckb-sdk-utils/lib/ecpair'
 import { getSetting } from '../setting'
 
-const sign = (sk: string, params: Omit<KeyperingAgency.SignTransaction.Params['params'], 'description'>) => {
+export const signTx = (sk: string, params: Omit<KeyperingAgency.SignTransaction.Params['params'], 'description'>) => {
 
   const container = new Container([
     {
@@ -35,4 +35,12 @@ const sign = (sk: string, params: Omit<KeyperingAgency.SignTransaction.Params['p
   return container.sign({ lockHash: params.lockHash }, params.tx, params.inputSignConfig)
 }
 
-export default sign
+export const signMsg = (sk: string, message: string) => {
+  const key  = new ECPair(sk)
+  let hexMessage = Buffer.from(message).toString('hex')
+  // needs 32 bytes length
+  if (hexMessage.length < 64){
+    hexMessage = hexMessage.padEnd(64, "0")
+  }
+  return key.sign(`0x${hexMessage}`)
+}
