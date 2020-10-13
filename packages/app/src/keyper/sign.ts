@@ -3,7 +3,7 @@ import { Container } from '@nervosnetwork/keyper-container'
 import { SignatureAlgorithm } from '@nervosnetwork/keyper-specs'
 import ECPair from '@nervosnetwork/ckb-sdk-utils/lib/ecpair'
 import { getSetting } from '../setting'
-import { messageToHex } from '../utils/transformer'
+import Blake2b from "../models/blake2b"
 
 export const signTx = (sk: string, params: Omit<KeyperingAgency.SignTransaction.Params['params'], 'description'>) => {
 
@@ -37,7 +37,16 @@ export const signTx = (sk: string, params: Omit<KeyperingAgency.SignTransaction.
 }
 
 export const signMsg = (sk: string, message: string) => {
-  const key  = new ECPair(sk)
-  const hexMessage = messageToHex(message)
-  return key.sign(hexMessage)
+  const digest = signtureHash(message)
+  const ecPair = new ECPair(sk)
+  const signature = ecPair.signRecoverable(digest)
+  return signature
+}
+
+const signtureHash = (message: string) => {
+  const magicString = 'Nervos Message:'
+  const buffer = Buffer.from(magicString + message, 'utf-8')
+  const blake2b = new Blake2b()
+  blake2b.updateBuffer(buffer)
+  return blake2b.digest()
 }
