@@ -44,4 +44,15 @@ export const networksToRpcUrl = (params: { networkId: string, networks: Record<s
   throw new Error('Url is empty')
 }
 
-export default { shannonToCkb, networksToRpcUrl }
+export const messageToHex = (message: string) => {
+  let hexMessage = Buffer.from(message).toString('hex')
+  // needs 32 bytes length, same as ckb-cli
+  if (hexMessage.length <= 64){
+    hexMessage = hexMessage.padEnd(64, "0")
+  }else {
+    throw new Error("Message length greater than 32 bytes")
+  }
+  return `0x${hexMessage}`
+}
+
+export default { shannonToCkb, networksToRpcUrl, messageToHex }
