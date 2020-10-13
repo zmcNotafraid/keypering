@@ -93,8 +93,8 @@
 
     const channel = `signMsg:${address}`
 
-    const message = document.querySelector("#message")
-    const address = document.querySelector('#address')
+    const messageElement = document.querySelector("#message")
+    const addressElement = document.querySelector('#address')
     const form = document.querySelector('form')
     const submitBtn = document.querySelector('button[type=submit]')
     const declineBtn = document.querySelector('button[type=button]')
@@ -127,8 +127,8 @@
     ipcRenderer?.once(channel, (_e, params) => {
       try {
         const { message, address } = params
-        message.innerText = message
-        address.innerText = address
+        messageElement.innerText = message
+        addressElement.innerText = address
       } catch (err) {
         window.alert(err.message)
         window.close()
