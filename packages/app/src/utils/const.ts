@@ -9,6 +9,8 @@ export const ANYONE_CAN_PAY_TESTNET_TX_HASH = '0x4f32b3e39bd1b6350d326fdfafdfe05
 export const SECP256K1_BLAKE160_CODE_HASH = '0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8'
 export const SECP256K1_BLAKE160_TESTNET_TX_HASH = '0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37'
 export const SECP256K1_BLAKE160_MAINNET_TX_HASH = '0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c'
+export const SECP256K1_BLAKE160_DEVNET_TX_HASH = '0xace5ea83c478bb866edf122ff862085789158f5cbff155b7bb5f13058555b708'
 
 export const RICH_NODE_MAINNET_INDEXER_URL = 'https://prototype.ckbapp.dev/mainnet/indexer'
 export const RICH_NODE_TESTNET_INDEXER_URL = 'https://prototype.ckbapp.dev/testnet/indexer'
+export const RICH_NODE_DEVNET_INDEXER_URL = 'http://localhost:8114/indexer'
