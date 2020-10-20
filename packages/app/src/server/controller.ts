@@ -3,7 +3,7 @@ import CKB from '@nervosnetwork/ckb-sdk-core'
 import { requestAuth } from '../auth'
 import { getWalletIndex } from '../wallet'
 import { getAddresses } from '../address'
-import { requestSignTx, requestSendTx } from '../tx'
+import { requestSignTx, requestSendTx, requestSignMsg } from '../tx'
 import { getSetting } from '../setting'
 import { networksToRpcUrl } from '../utils/transformer'
 
@@ -57,5 +57,12 @@ export const handleQueryAddresses = async () => {
   return {
     userId: current,
     addresses
+  }
+}
+
+export const handleSignMessage = async (params: KeyperingAgency.SignMessage.Params['params']) => {
+  const sig = await requestSignMsg(params.message, params.address)
+  return {
+    sig
   }
 }

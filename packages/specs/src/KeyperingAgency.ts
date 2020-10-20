@@ -10,6 +10,7 @@ export enum Method {
   SignTransaction = 'sign_transaction',
   SendTransaction = 'send_transaction',
   SignAndSendTransactoin = 'sign_and_send_transaction',
+  SignMessage = 'sign_message',
 }
 
 export interface ParamsBase<M = Method, P = unknown> {
@@ -113,4 +114,16 @@ export namespace SignAndSendTransaction {
     tx: Transaction
     txHash: string
   }>
+}
+
+export namespace SignMessage {
+  export type Params = ParamsBase<
+    Method.SignMessage,
+    {
+      message: string,
+      address: string
+    }
+  >
+
+  export type Response = ResponseBase<{ sig: string }>
 }

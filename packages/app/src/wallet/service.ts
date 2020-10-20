@@ -8,7 +8,7 @@ import { getAuthList, deleteAuthList } from '../auth'
 import { getTxList, deleteTxFilesByWalletId } from '../tx'
 import { getSetting } from '../setting'
 import PasswordWindow from './PasswordWindow'
-import signTx from '../keyper/sign'
+import { signTx, signMsg } from '../keyper/sign'
 import { getDataPath } from '../utils'
 import { broadcastWalletIndex as broadcast, broadcastAuthList, broadcastTxList } from '../broadcast'
 import {
@@ -199,12 +199,27 @@ interface SignTransactionParams {
   signConfig?: KeyperingAgency.SignTransaction.InputSignConfig
 }
 export const signTransaction = async ({ keystore, tx, password, signConfig, lockHash }: SignTransactionParams) => {
+  const sk = getChildSk(keystore, password)
+  const signed = await signTx(sk, { tx, lockHash, inputSignConfig: signConfig })
+  return signed
+}
+
+interface SignMessageParams {
+  keystore: Keystore
+  password: string
+  message: string
+}
+export const signMessage = async({keystore, password, message}: SignMessageParams) => {
+  const sk = getChildSk(keystore, password)
+  const signedMessage = await signMsg(sk, message)
+  return signedMessage
+}
+
+const getChildSk = function(keystore: Keystore, password: string) {
   const xprv = decryptKeystore(keystore, password)
   const masterSk = xprv.slice(0, 64)
   const masterChainCode = xprv.slice(64)
   const masterKeychain = new Keychain(Buffer.from(masterSk, 'hex'), Buffer.from(masterChainCode, 'hex'))
   const childKeychain = masterKeychain.getFirstChildKeychain()
-  const sk = `0x${childKeychain.privateKey.toString('hex')}`
-  const signed = await signTx(sk, { tx, lockHash, inputSignConfig: signConfig })
-  return signed
+  return `0x${childKeychain.privateKey.toString('hex')}`
 }

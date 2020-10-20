@@ -4,8 +4,9 @@ import { dialog } from 'electron'
 import { Channel, KeyperingAgency } from '@keypering/specs'
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import RequestWindow from './RequestWindow'
+import SignMessageWindow from './SignMessageWindow'
 import PasswordWindow from '../wallet/PasswordWindow'
-import { getWalletIndex, signTransaction, getKeystoreByWalletId } from '../wallet'
+import { getWalletIndex, signTransaction, getKeystoreByWalletId, signMessage } from '../wallet'
 import { getSetting } from '../setting'
 import { getTxProfile } from './utils'
 import { getDataPath, networksToRpcUrl } from '../utils'
@@ -219,3 +220,42 @@ export const requestSendTx = async (params: {
   }
 }
 
+export const requestSignMsg = async (
+  message: string,
+  address: string
+) => {
+  const { current } = getWalletIndex()
+  if (!current) {
+    throw new CurrentWalletNotSetException()
+  }
+
+  try {
+    const signMessageWindow = new SignMessageWindow(message, address)
+    const approve = await signMessageWindow.response()
+    if (!approve) {
+      throw new RequestRejected()
+    }
+
+    const pwdWindow = new PasswordWindow("NoRequestId", 'Sign Message')
+    pwdWindow.win.setParentWindow(signMessageWindow.win)
+    const passwordRes = await pwdWindow.response()
+    signMessageWindow.close()
+
+    if (typeof passwordRes === 'string') {
+      const keystore = getKeystoreByWalletId(current)
+      const signedMsg = await signMessage({
+        keystore,
+        password: passwordRes,
+        message
+      })
+      return signedMsg
+    }
+    if (passwordRes === false) {
+      throw new RequestRejected()
+    }
+    return false
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}

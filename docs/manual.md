@@ -196,6 +196,20 @@ DApp can send JSON RPC conforming to [Keypering Agency Protocal](/protocol) to i
 
 ---
 
+### Sign Message from DApp
+
+<div class="center">
+  <b><small>Sign Message</small></b>
+  <img src="_media/screenshots/24.sign_message_rpc.png" alt="Sign Message from DApp">
+</div>
+
+<div class="center">
+  <b><small>Check Signed Message from DApp</small></b>
+  <img src="_media/screenshots/25.check_signed_message.png" alt="Check Signed Message from DApp">
+</div>
+
+---
+
 ## Setting
 
 ![Sidebar](_media/screenshots/22.sidebar.png)
