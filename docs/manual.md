@@ -199,7 +199,7 @@ DApp can send JSON RPC conforming to [Keypering Agency Protocal](/protocol) to i
 ### Sign Message from DApp
 
 <div class="center">
-  <b><small>Sign Message from DApp</small></b>
+  <b><small>Sign Message</small></b>
   <img src="_media/screenshots/24.sign_message_rpc.png" alt="Sign Message from DApp">
 </div>
 
@@ -236,4 +236,3 @@ Custom lock scripts can be loaded by specifying a directory containing your scri
 ### Rich Node RPC
 
 There're three types of [CKB Rich Nodes](https://github.com/ququzone/ckb-rich-node) and the Devnet one is configurable for your local development.
-j
