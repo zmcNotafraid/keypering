@@ -11,6 +11,6 @@ export const SECP256K1_BLAKE160_TESTNET_TX_HASH = '0xf8de3bb47d055cdf460d93a2a6e
 export const SECP256K1_BLAKE160_MAINNET_TX_HASH = '0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c'
 export const SECP256K1_BLAKE160_DEVNET_TX_HASH = '0xace5ea83c478bb866edf122ff862085789158f5cbff155b7bb5f13058555b708'
 
-export const RICH_NODE_MAINNET_INDEXER_URL = 'https://prototype.ckbapp.dev/mainnet/indexer'
-export const RICH_NODE_TESTNET_INDEXER_URL = 'https://prototype.ckbapp.dev/testnet/indexer'
+export const RICH_NODE_MAINNET_INDEXER_URL = 'https://mainnet.ckbapp.dev/indexer'
+export const RICH_NODE_TESTNET_INDEXER_URL = 'https://testnet.ckbapp.dev/indexer'
 export const RICH_NODE_DEVNET_INDEXER_URL = 'http://localhost:8114/indexer'
