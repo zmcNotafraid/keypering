@@ -82,11 +82,21 @@ export const getSetting = () => {
     }
   })
 
-  const scriptsToShow = setting.networkId === MAINNET_ID
-    ? systemScripts.mainnetScripts
-    : setting.networkId === TESTNET_ID
-      ? systemScripts.testnetScripts
-      : []
+  let scriptsToShow: LockScript[];
+
+  switch(setting.networkId) {
+    case MAINNET_ID:
+      scriptsToShow = systemScripts.mainnetScripts
+      break;
+    case TESTNET_ID:
+      scriptsToShow = systemScripts.testnetScripts
+      break;
+    case DEVNET_ID:
+      scriptsToShow = systemScripts.devnetScripts
+      break;
+    default:
+      scriptsToShow = []
+  }
 
   scriptsToShow.forEach(script => {
     locks[getScriptId(script)] = {

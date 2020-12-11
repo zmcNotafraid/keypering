@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Signing</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      --primary-green: #3cc68a;
+      margin: 0;
+      padding: 20px;
+      font-size: 14px;
+      letter-spacing: 0.23px;
+      user-select: none;
+      line-height: 1.2;
+      font-weight: 400;
+      background: #fff;
+    }
+
+    #message, #address {
+      color: var(--primary-green);
+    }
+
+    h1 {
+      font-size: 16px;
+      letter-spacing: 0.2px;
+      color: #000;
+      margin-bottom: 20px;
+    }
+
+    form div {
+      margin-bottom: 14px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    button {
+      width: 80px;
+      height: 30px;
+      border-radius: 2px;
+      outline: none;
+      border: none;
+      text-transform: capitalize;
+      margin-left: 10px;
+    }
+
+    button:hover {
+      filter: brightness(0.9);
+    }
+
+    button[type=submit] {
+      background-color: var(--primary-green);
+      color: #fff;
+    }
+
+    button:disabled {
+      filter: grayscale(0) !important;
+    }
+  </style>
+</head>
+
+<body>
+  <form>
+    <h1>Message Confirmation</h1>
+    <div>Message: <span id="message">...</span></div>
+    <div>Address: <span id="address">...</span></div>
+    <div class="footer">
+      <button type="button">decline</button>
+      <button type="submit">approve</button>
+    </div>
+  </form>
+  <script>
+    const search = new URLSearchParams(location.search)
+    const address = search.get('address')
+    if (!address) {
+      window.alert('Invalid request')
+      window.close()
+    }
+
+    const channel = `signMsg:${address}`
+
+    const messageElement = document.querySelector("#message")
+    const addressElement = document.querySelector('#address')
+    const form = document.querySelector('form')
+    const submitBtn = document.querySelector('button[type=submit]')
+    const declineBtn = document.querySelector('button[type=button]')
+
+    const handleCancel = () => {
+      ipcRenderer?.send(channel, false)
+      window.close()
+    }
+
+    const handleSubmit = () => {
+      ipcRenderer?.send(channel, true)
+      submitBtn?.setAttribute('disabled', true)
+      declineBtn?.setAttribute('disabled', true)
+    }
+
+    declineBtn?.addEventListener('click', handleCancel)
+    submitBtn?.focus()
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      handleSubmit()
+    })
+
+    window.addEventListener('keyup', (e) => {
+      if (e.key === 'Escape') {
+        handleCancel()
+      }
+    })
+
+    ipcRenderer?.once(channel, (_e, params) => {
+      try {
+        const { message, address } = params
+        messageElement.innerText = message
+        addressElement.innerText = address
+      } catch (err) {
+        window.alert(err.message)
+        window.close()
+      }
+    })
+  </script>
+</body>
+
+</html>

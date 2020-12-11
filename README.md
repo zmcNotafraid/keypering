@@ -67,6 +67,15 @@ Keypering consists of 3 components:
 - [How to Develop a CKB DApp with Keypering (Video, Chinese + English Subtitles)](https://youtu.be/i-gQ0enK5cY)
 - [How to Develop a CKB DApp with Keypering (Slides)](https://docs.google.com/presentation/d/1bswEhjSYwZZnUCF4rRL5x5vfOVXO_kDlbjsojsG94w8/edit?usp=sharing)
 
+# Develop in devnet
+
+1. Clone [perkins-tent](https://github.com/xxuejie/perkins-tent)
+2. Run `docker run -e CKB_NETWORK=dev --rm -p 8114:9115 -v ~/.ckb-docker-devnet:/data xxuejie/perkins-tent`
+3. Go to `~/.ckb-docker-devnet/confs/nginx.conf` change `location = /indexer_rpc` to `location = /indexer`
+4. Open keypering setting page then click Rich Node RPC setting icon, set `http://localhost:8114/indexer` in devent input
+5. Finish!
+6. If you want to run a miner, append ` miner: ckb miner -C /data/ckb-data` to `~/.ckb-docker-devnet/confs/Procfile`
+
 # Resources
 
 - [Keypering Manual](https://nervosnetwork.github.io/keypering/#/manual) - User Guide of Keypering
