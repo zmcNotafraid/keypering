@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import { dialog } from 'electron'
 import { Channel, KeyperingAgency } from '@keypering/specs'
 import CKB from '@nervosnetwork/ckb-sdk-core'
 import RequestWindow from './RequestWindow'
@@ -99,13 +98,6 @@ export const requestSignTx = async (params: {
     throw new Error('Transaction is not found in parameter')
   }
 
-  if (params.tx?.cellDeps?.length) {
-    dialog.showMessageBox({
-      type: 'warning',
-      title: 'Warning',
-      message: 'Please leave cell deps empty since Keypering provides them'
-    })
-  }
   const dataToConfirm = await getTxProfile(params.tx, params.referer, params.description)
   const { current } = getWalletIndex()
   if (!current) {
