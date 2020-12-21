@@ -8,8 +8,8 @@ import { getSetting } from '../setting'
 import { networksToRpcUrl } from '../utils/transformer'
 
 export const handleAuth = async (_params: KeyperingAgency.Auth.Params['params'], origin: string, url: string) => {
-  const token = await requestAuth(origin, url)
-  return { token }
+  const { token, networkId } = await requestAuth(origin, url)
+  return { token, networkId }
 }
 
 export const handleSign = async (params: KeyperingAgency.SignTransaction.Params['params'], url: string) => {
