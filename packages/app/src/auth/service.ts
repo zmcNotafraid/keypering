@@ -7,6 +7,7 @@ import PasswordWindow from '../wallet/PasswordWindow'
 import simpleToken from './strategy/simple'
 import { getDataPath } from '../utils'
 import { broadcastAuthList as broadcast } from '../broadcast'
+import { getSetting } from '../setting'
 import {
   ParamsRequiredException,
   AuthNotFoundException,
@@ -96,7 +97,8 @@ export const deleteAuth = async (id: string, url: string): Promise<boolean> => {
   return true
 }
 
-export const requestAuth = async (origin: string, url: string): Promise<string> => {
+export const requestAuth = async (origin: string, url: string):
+  Promise<{ token: string, networkId: Channel.NetworkId }> => {
   const { current } = getWalletIndex()
   if (!current) {
     throw new CurrentWalletNotSetException()
@@ -124,8 +126,9 @@ export const requestAuth = async (origin: string, url: string): Promise<string> 
   }
 
   const token = addAuth(current, origin)
+  const { networkId } = getSetting()
 
-  return token
+  return { token, networkId }
 }
 
 export const isAuthedByCurrentWallet = (token: string) => {
