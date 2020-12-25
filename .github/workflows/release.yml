@@ -2,11 +2,11 @@ name: Upload Artifacts to Release
 
 on:
   workflow_run:
-    workflows: 
+    workflows:
       - Tests
-    branches: 
+    branches:
       - master
-    types: 
+    types:
       - completed
 
 jobs:
